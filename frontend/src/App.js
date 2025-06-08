@@ -87,6 +87,7 @@ import DoctorUpcomingAppointments from "./dashboard/doctor/DoctorUpcomingAppoint
 import DoctorAssignmentDashboard from "./dashboard/doctor/DoctorAssignmentDashboard";
 import DoctorsAppointments from "./dashboard/doctor/DoctorsAppointments";
 import DoctorPasswordRequest from "./dashboard/doctor/pages/DoctorPasswordRequest";
+import DoctorDashboardHome from "./dashboard/doctor/DoctorDashboardHome";
 
 // ==============================================
 // MASTER ADMIN DASHBOARD
@@ -318,6 +319,7 @@ const App = () => {
             <Route path="DoctorUpcomingAppointments" element={<DoctorUpcomingAppointments />} />
             <Route path="DoctorAssignmentDashboard" element={<DoctorAssignmentDashboard />} />
             <Route path="DoctorPasswordRequest" element={<DoctorPasswordRequest />} />
+            <Route path="DoctorDashboardHome" element={<DoctorDashboardHome />} />
           </Route>
 
           {/* ==============================================

@@ -495,8 +495,8 @@
         "dietitian": true
       },
       "prescription": {
-        "text": "ddede[kafsdpijefapok",
-        "fileUrl": ""
+        "text": "DSDSDD",
+        "fileUrl": "/prescriptions/final.pdf"
       },
       "charts": {
         "files": [
@@ -1135,6 +1135,60 @@
       "meetingLink": ""
     }
   ],
+  "patients_detailed": [
+    {
+      "id": "MRN001",
+      "clientName": "Amit Singh",
+      "referenceNumber": "REF-AMT-001",
+      "lastVisit": {
+        "date": "2025-05-10",
+        "time": "10:30 AM",
+        "summary": "Follow-up on knee pain",
+        "vitals": {
+          "BP": "120/80",
+          "Pulse": "72 bpm",
+          "Temp": "98.6°F"
+        },
+        "doctorNotes": "Patient is recovering well, slight stiffness remains in the left knee.",
+        "recommendation": "Continue Chart-6 physiotherapy sessions for 2 more weeks.",
+        "prescription": "/prescriptions/MRN123456_labreport.pdf"
+      },
+      "newVisit": {
+        "date": "2025-06-10",
+        "time": "09:00 AM"
+      },
+      "documents": [
+        "Knee_Report.pdf",
+        "XRay_Scan.png"
+      ],
+      "approvals": {
+        "nutrition": true,
+        "diet": true,
+        "physio": true
+      }
+    },
+    {
+      "id": "MRN002",
+      "clientName": "Riya Sharma",
+      "referenceNumber": "REF-RIY-002",
+      "lastVisit": {
+        "date": "2025-04-20",
+        "summary": "Diet follow-up"
+      },
+      "newVisit": {
+        "date": "2025-06-11",
+        "time": "11:00 AM"
+      },
+      "documents": [
+        "Diet_Summary.pdf"
+      ],
+      "approvals": {
+        "nutrition": false,
+        "diet": false,
+        "physio": false
+      }
+    }
+  ],
   "passwordChangeRequests": [
     {
       "id": "9809",
@@ -1327,5 +1381,19 @@
         "timestamp": "2025-05-29T12:30:00Z"
       }
     ]
-  }
+  },
+  "appointments": [
+    {
+      "mrn": "MRN001",
+      "patientName": "Amit Singh",
+      "time": "09:00 AM",
+      "status": "Pending"
+    },
+    {
+      "mrn": "MRN002",
+      "patientName": "Riya Sharma",
+      "time": "10:30 AM",
+      "status": "Completed"
+    }
+  ]
 }

@@ -169,6 +169,17 @@ const DoctorSidebar = () => {
               </NavLink>
             </li>
             <li>
+              <NavLink to="/doctor/DoctorDashboardHome" className={navLinkClass}>
+                <Home
+                  size={18}
+                  style={{
+                    marginRight: !collapsed || isHovering ? "10px" : "0",
+                  }}
+                />
+                <span>Doctor Dashboard Home</span>
+              </NavLink>
+            </li>
+            <li>
               <NavLink to="/doctor/doctor_clients" className={navLinkClass}>
                 <Users
                   size={18}
