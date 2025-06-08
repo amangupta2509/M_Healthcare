@@ -1,0 +1,85 @@
+.uppercase-input {
+  text-transform: uppercase;
+  background-color: transparent;
+}
+
+.report-body {
+  /* padding: 2rem; */
+  background-color: var(--bg-primary, #f9f9f9);
+  min-height: 100vh;
+  color: var(--text-primary, #111);
+}
+.page-description {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 20px;
+  max-width: 600px;
+  line-height: 1.5;
+  text-align: justify;
+}
+
+.report-card {
+  max-width: 700px;
+  margin: auto;
+  background: var(--bg-secondary, #fff);
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.content-area h2 {
+  margin-bottom: 1rem; /* equivalent to mb-4 */
+}
+
+.search-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.search-container input {
+  flex-grow: 1;
+  border: 1px solid var(--border-color, #ccc);
+  padding: 0.5rem;
+  color: var(--text-primary, #111);
+  background-color: var(--bg-secondary, #f9f9f9);
+  font-size: 1rem;
+}
+
+.search-container button {
+  background-color: #cc5500;
+  color: white;
+  border: none;
+  padding: 0 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.search-container button:hover {
+  background-color: #a24300;
+}
+
+.remove-button {
+  margin: 1rem auto 0;
+  background-color: #e74c3c;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: block; /* make it a block element so margin auto works */
+}
+
+.remove-button:hover {
+  background-color: #c0392b;
+}
+
+.error-text {
+  color: #e74c3c;
+  margin-top: 1rem;
+}
+.report-card {
+  border: 1px solid #cc5500;
+  padding: 1.5rem;
+  border-radius: 8px;
+  background-color: var(--bg-secondary, #fff);
+}

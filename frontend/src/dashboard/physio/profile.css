@@ -1,0 +1,9 @@
+.mobile-margin {
+  margin-right: 0;
+}
+
+@media (max-width: 768px) {
+  .mobile-margin {
+    margin-right: 1rem;
+  }
+}

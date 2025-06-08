@@ -1,0 +1,1331 @@
+{
+  "fitnessJourney": [
+    {
+      "id": "1",
+      "clientName": "Shahbaaz Hussain",
+      "mrnId": "DNL1000000101",
+      "days": [
+        {
+          "day": 1,
+          "yoga": [
+            {
+              "name": "Diaphragmatic breathing exercises",
+              "times": "3x5 breaths",
+              "status": "Completed"
+            },
+            {
+              "name": "Ujjay breathing (Victorious breath)",
+              "times": "3x5 breaths",
+              "status": "Missed"
+            },
+            {
+              "name": "Bhramari (Bee breath)",
+              "times": "3x5 breaths",
+              "status": "Partial"
+            },
+            {
+              "name": "Nadi shodhana (Alternate nostril breathing)",
+              "times": "3x5 breaths",
+              "status": "Completed"
+            }
+          ],
+          "resistanceTraining": [
+            {
+              "name": "Kettle bell swing",
+              "times": "3x12-15",
+              "missed": true
+            },
+            {
+              "name": "Goblet squat",
+              "times": "3x12-15",
+              "missed": false
+            },
+            {
+              "name": "Turkish Get-up",
+              "times": "3x8-6 - 2.5kg",
+              "missed": false
+            },
+            {
+              "name": "Kettle bell row",
+              "times": "3x15 - 5 kg",
+              "missed": false
+            },
+            {
+              "name": "Dumbbell over the shoulder while squatting",
+              "times": "4x12-15 - start 5kg",
+              "missed": false
+            },
+            {
+              "name": "Farmers walk with kettle bell / Dumbbell",
+              "times": "3x200 meters",
+              "missed": true
+            }
+          ]
+        },
+        {
+          "day": 2,
+          "yoga": [
+            {
+              "name": "Cat/Cow stretch",
+              "times": "10 reps",
+              "status": "Completed"
+            },
+            {
+              "name": "Child's pose",
+              "times": "Hold for 30 seconds",
+              "status": "Completed"
+            },
+            {
+              "name": "Downward facing dog",
+              "times": "Hold for 30 seconds",
+              "status": "Partial"
+            },
+            {
+              "name": "Cobra pose",
+              "times": "Hold for 15 seconds",
+              "status": "Completed"
+            }
+          ],
+          "resistanceTraining": [
+            {
+              "name": "Push-ups (modified if needed)",
+              "times": "3x8-10",
+              "missed": false
+            },
+            {
+              "name": "Bodyweight squats",
+              "times": "3x15",
+              "missed": false
+            },
+            {
+              "name": "Plank",
+              "times": "3x30 seconds",
+              "missed": true
+            },
+            {
+              "name": "Glute bridges",
+              "times": "3x15",
+              "missed": false
+            },
+            {
+              "name": "Lateral lunges",
+              "times": "3x10 each side",
+              "missed": false
+            },
+            {
+              "name": "Bird-dog",
+              "times": "3x8 each side",
+              "missed": false
+            }
+          ]
+        },
+        {
+          "day": 3,
+          "yoga": [
+            {
+              "name": "Sun salutation (simplified)",
+              "times": "5 cycles",
+              "status": "Partial"
+            },
+            {
+              "name": "Warrior I pose",
+              "times": "Hold for 20 seconds each side",
+              "status": "Completed"
+            },
+            {
+              "name": "Triangle pose",
+              "times": "Hold for 20 seconds each side",
+              "status": "Missed"
+            },
+            {
+              "name": "Seated forward bend",
+              "times": "Hold for 30 seconds",
+              "status": "Completed"
+            }
+          ],
+          "resistanceTraining": [
+            {
+              "name": "Dumbbell chest press",
+              "times": "3x10 - start with 2.5kg",
+              "missed": false
+            },
+            {
+              "name": "Seated dumbbell shoulder press",
+              "times": "3x10 - start with 2kg",
+              "missed": true
+            },
+            {
+              "name": "Dumbbell rows",
+              "times": "3x12 - start with 5kg",
+              "missed": false
+            },
+            {
+              "name": "Dumbbell Romanian deadlift",
+              "times": "3x10 - start with 5kg",
+              "missed": false
+            },
+            {
+              "name": "Dumbbell lateral raises",
+              "times": "3x12 - start with 1kg",
+              "missed": false
+            },
+            {
+              "name": "Dumbbell bicep curls",
+              "times": "3x12 - start with 2.5kg",
+              "missed": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "clientName": "Priya Singh",
+      "mrnId": "DNL1000000102",
+      "days": [
+        {
+          "day": 1,
+          "yoga": [
+            {
+              "name": "Diaphragmatic breathing",
+              "times": "5x5 breaths",
+              "status": "Completed"
+            },
+            {
+              "name": "Easy seated twist",
+              "times": "Hold for 20 seconds each side",
+              "status": "Completed"
+            },
+            {
+              "name": "Knee to chest stretch",
+              "times": "Hold for 20 seconds each leg",
+              "status": "Completed"
+            },
+            {
+              "name": "Reclined butterfly",
+              "times": "Hold for 30 seconds",
+              "status": "Completed"
+            }
+          ],
+          "resistanceTraining": [
+            {
+              "name": "Wall push-ups",
+              "times": "3x10",
+              "missed": false
+            },
+            {
+              "name": "Seated leg extensions",
+              "times": "3x10 each leg",
+              "missed": false
+            },
+            {
+              "name": "Seated lateral shoulder raises",
+              "times": "3x10 with 1kg",
+              "missed": false
+            },
+            {
+              "name": "Seated bicep curls",
+              "times": "3x10 with 1kg",
+              "missed": false
+            },
+            {
+              "name": "Ankle pumps",
+              "times": "3x15 each foot",
+              "missed": false
+            },
+            {
+              "name": "Seated marching",
+              "times": "3x20 seconds",
+              "missed": false
+            }
+          ]
+        },
+        {
+          "day": 2,
+          "yoga": [
+            {
+              "name": "Seated neck stretch",
+              "times": "Hold for 15 seconds each direction",
+              "status": "Completed"
+            },
+            {
+              "name": "Seated side bend",
+              "times": "Hold for 15 seconds each side",
+              "status": "Missed"
+            },
+            {
+              "name": "Wrist circles",
+              "times": "10 each direction",
+              "status": "Completed"
+            },
+            {
+              "name": "Seated ankle rotations",
+              "times": "10 each direction",
+              "status": "Completed"
+            }
+          ],
+          "resistanceTraining": [
+            {
+              "name": "Chair squats",
+              "times": "3x8",
+              "missed": false
+            },
+            {
+              "name": "Resistance band chest press",
+              "times": "3x10",
+              "missed": true
+            },
+            {
+              "name": "Resistance band rows",
+              "times": "3x10",
+              "missed": false
+            },
+            {
+              "name": "Seated tricep extensions",
+              "times": "3x10 with 1kg",
+              "missed": false
+            },
+            {
+              "name": "Heel raises",
+              "times": "3x15",
+              "missed": false
+            },
+            {
+              "name": "Seated Russian twists",
+              "times": "3x10 each side",
+              "missed": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "profile": {
+    "personalInfo": {
+      "name": "John Doe",
+      "email": "john.doe@example.com",
+      "phone": "123-456-7890",
+      "dob": "1990-01-01",
+      "profilePicture": "https://via.placeholder.com/150"
+    },
+    "professionalInfo": {
+      "specialization": "Orthopedic",
+      "experience": "5 years",
+      "certifications": [
+        "Physiotherapy License",
+        "CPR Certification"
+      ]
+    },
+    "performanceData": {
+      "totalPatients": 200,
+      "patientsTreated": 150,
+      "successRate": "95%"
+    },
+    "weeklyMetrics": {
+      "patientsPerWeek": [
+        50,
+        45,
+        60,
+        70
+      ]
+    },
+    "appointments": [
+      {
+        "date": "2025-01-10",
+        "patient": "Alice Smith",
+        "time": "10:00 AM"
+      },
+      {
+        "date": "2025-01-11",
+        "patient": "Bob Johnson",
+        "time": "2:00 PM"
+      }
+    ],
+    "clientData": {
+      "totalClients": 300,
+      "randomNumber": 123
+    },
+    "clientManagement": {
+      "activeClients": 85,
+      "pastClients": 125,
+      "pendingConsultations": 12
+    },
+    "exercisePlans": {
+      "totalPlans": 34,
+      "templates": 8
+    },
+    "todaysAppointments": [
+      {
+        "patient": "Emily Johnson",
+        "time": "9:30 AM",
+        "status": "Confirmed"
+      },
+      {
+        "patient": "Michael Chen",
+        "time": "11:00 AM",
+        "status": "Confirmed"
+      },
+      {
+        "patient": "Sarah Williams",
+        "time": "2:15 PM",
+        "status": "Pending"
+      }
+    ]
+  },
+  "reports": [
+    {
+      "mrn": "MRN01",
+      "pdfUrl": "/pdfs/MRN01.pdf",
+      "id": "24d1"
+    },
+    {
+      "mrn": "MRN02",
+      "pdfUrl": "/pdfs/sample_report_02.pdf",
+      "id": "93bd"
+    },
+    {
+      "mrn": "MRN03",
+      "pdfUrl": "/pdfs/sample_report_03.pdf",
+      "id": "301c"
+    }
+  ],
+  "clients": [
+    {
+      "id": "4",
+      "name": "Emma Williams",
+      "email": "emmawilliams@example.com",
+      "status": "Active",
+      "avatar": "https://i.pravatar.cc/150?img=4",
+      "resolution": "Resolved",
+      "type": "Client"
+    },
+    {
+      "id": "5",
+      "name": "Olivia Brown",
+      "email": "oliviabrown@example.com",
+      "status": "Inactive",
+      "avatar": "https://i.pravatar.cc/150?img=5",
+      "resolution": "Resolved"
+    },
+    {
+      "id": "a1c2",
+      "name": "Aman Gupta",
+      "email": "adityagupta802624@gmail.com",
+      "status": "Active",
+      "type": "Client",
+      "resolution": "Resolved",
+      "avatar": "https://i.pravatar.cc/150?img=10"
+    }
+  ],
+  "users": [
+    {
+      "mrn": "MRN002",
+      "name": "Jane Smith",
+      "gender": "Female",
+      "product": "Vegan Plan",
+      "id": "7e61",
+      "password": "",
+      "email": "asasaasas",
+      "role": "dietitian"
+    },
+    {
+      "id": "6e0a",
+      "name": "aaaaaa",
+      "email": "aaa",
+      "role": "doctor",
+      "password": ""
+    },
+    {
+      "id": "6080",
+      "name": "Emma Williams",
+      "email": "adityagupta.d7@gmail.com",
+      "password": "password123",
+      "role": "lab"
+    }
+  ],
+  "login": [
+    {
+      "id": "1",
+      "name": "John Smith",
+      "email": "john@example.com",
+      "password": "password123",
+      "role": "physio"
+    },
+    {
+      "id": "2",
+      "name": "Jane Doe",
+      "email": "jane@example.com",
+      "password": "password123",
+      "role": "dietitian"
+    },
+    {
+      "id": "3",
+      "email": "doctor@example.com",
+      "password": "password123",
+      "role": "doctor",
+      "name": "Doctor User"
+    },
+    {
+      "id": "1001",
+      "name": "Admin Panel",
+      "email": "admin@example.com",
+      "password": "password123",
+      "role": "masteradmin"
+    },
+    {
+      "id": "1",
+      "name": "John Counselor",
+      "email": "counselor@example.com",
+      "password": "password123",
+      "role": "counselor"
+    }
+  ],
+  "patients": [
+    {
+      "id": "1",
+      "mrn": "MRN123456",
+      "name": "Jane Smith",
+      "age": 45,
+      "gender": "Female",
+      "condition": "Obesity and Joint Pain",
+      "report": "Elevated cholesterol levels...",
+      "reportPdfUrl": "/pdfs/MRN123456_labreport.pdf",
+      "assignedTo": {
+        "physio": true,
+        "dietitian": true
+      },
+      "prescription": {
+        "text": "ddede[kafsdpijefapok",
+        "fileUrl": ""
+      },
+      "charts": {
+        "files": [
+          null,
+          {
+            "name": "MODULE_4.pdf"
+          },
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "feedback": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    }
+  ],
+  "physiopatients": [
+    {
+      "id": "1",
+      "mrn": "MRN001",
+      "name": "John Doe",
+      "age": 35,
+      "gender": "Male",
+      "weight": "70kg",
+      "product": "Knee Brace",
+      "reportPdfUrl": "/reports/john_doe_report.pdf",
+      "charts": {
+        "files": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "feedback": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    }
+  ],
+  "doctorappointments": [
+    {
+      "id": "1",
+      "name": "Jane Smith",
+      "mrn": "MRN123456",
+      "reportPdfUrl": "/pdfs/MRN123456_labreport.pdf",
+      "appointmentDate": "2025-05-30",
+      "samples": [
+        "Blood",
+        "Saliva"
+      ]
+    },
+    {
+      "id": "2",
+      "name": "John Doe",
+      "mrn": "MRNOO1",
+      "reportPdfUrl": "/pdfs/MRNOO1_labreport.pdf",
+      "appointmentDate": "2025-05-30",
+      "samples": [
+        "Urine"
+      ]
+    }
+  ],
+  "samples": [
+    {
+      "id": "1",
+      "mrn": "MRN001",
+      "status": "collected",
+      "phlebotomist": "Phlebotomist A",
+      "date": "2025-05-21"
+    },
+    {
+      "id": "2",
+      "mrn": "MRN002",
+      "status": "processed",
+      "phlebotomist": "Phlebotomist A",
+      "date": "2025-05-21"
+    }
+  ],
+  "assignments": [
+    {
+      "id": "1",
+      "mrn": "MRN001",
+      "status": "pending",
+      "doctor": "Dr. Ramesh",
+      "date": "2025-05-22"
+    },
+    {
+      "id": "2",
+      "mrn": "MRN002",
+      "status": "completed"
+    }
+  ],
+  "sessions": [
+    {
+      "id": "1",
+      "mrn": "MRN001",
+      "type": "physio",
+      "status": "scheduled",
+      "date": "2025-05-23"
+    },
+    {
+      "id": "2",
+      "mrn": "MRN002",
+      "type": "diet",
+      "status": "completed",
+      "date": "2025-05-24"
+    }
+  ],
+  "resolutions": [
+    {
+      "id": "1",
+      "mrn": "MRN001",
+      "status": "in progress",
+      "by": "Dr. Ramesh",
+      "date": "2025-05-24"
+    },
+    {
+      "id": "2",
+      "mrn": "MRN002",
+      "status": "resolved",
+      "by": "Dr. Ramesh",
+      "date": "2025-05-24"
+    }
+  ],
+  "activityLogs": [
+    {
+      "id": "1",
+      "timestamp": "2025-05-22T10:30:00Z",
+      "actor": "doctor",
+      "mrn": "MRN123456",
+      "action": "Assigned patient to physio"
+    },
+    {
+      "id": "2",
+      "timestamp": "2025-05-22T12:00:00Z",
+      "actor": "lab",
+      "mrn": "MRN123456",
+      "action": "Uploaded lab report"
+    },
+    {
+      "id": "3",
+      "timestamp": "2025-05-23T08:15:00Z",
+      "actor": "physio",
+      "mrn": "MRN001",
+      "action": "Marked session as completed"
+    }
+  ],
+  "labTracking": [
+    {
+      "id": "1",
+      "mrn": "MRN123456",
+      "submittedBy": "Phlebotomist A",
+      "submittedDate": "2025-05-20",
+      "handledBy": "LabTech B",
+      "reportGivenDate": "2025-05-21",
+      "reportFile": "/pdfs/MRN123456_labreport.pdf"
+    }
+  ],
+  "physioCharts": [
+    {
+      "id": "1",
+      "mrn": "MRN123456",
+      "charts": [
+        {
+          "chartNumber": "P001",
+          "chartName": "Mobility Basics",
+          "dateAssigned": "2025-05-01"
+        },
+        {
+          "chartNumber": "P006",
+          "chartName": "Knee Strengthening",
+          "dateAssigned": "2025-05-14"
+        }
+      ],
+      "handlerName": "Physio A",
+      "submittedByDoctor": "Dr. John"
+    }
+  ],
+  "dietCharts": [
+    {
+      "id": "1",
+      "mrn": "MRN123456",
+      "charts": [
+        {
+          "chartNumber": "D002",
+          "chartName": "High Protein Plan",
+          "dateAssigned": "2025-05-01"
+        },
+        {
+          "chartNumber": "D003",
+          "chartName": "Calorie Deficit Plan",
+          "dateAssigned": "2025-05-15"
+        }
+      ],
+      "handlerName": "Dietitian B",
+      "submittedByDoctor": "Dr. Smith"
+    }
+  ],
+  "physioMasterCharts": [
+    {
+      "id": "1",
+      "chartName": "Mobility Basics",
+      "chartNumber": "P001"
+    },
+    {
+      "id": "2",
+      "chartName": "Lower Back Strengthening",
+      "chartNumber": "P002"
+    },
+    {
+      "id": "3",
+      "chartName": "Posture Correction",
+      "chartNumber": "P003"
+    },
+    {
+      "id": "4",
+      "chartName": "Balance & Coordination",
+      "chartNumber": "P004"
+    },
+    {
+      "id": "5",
+      "chartName": "Shoulder Rehab",
+      "chartNumber": "P005"
+    },
+    {
+      "id": "6",
+      "chartName": "Knee Strengthening",
+      "chartNumber": "P006"
+    },
+    {
+      "id": "7",
+      "chartName": "Core Activation",
+      "chartNumber": "P007"
+    },
+    {
+      "id": "8",
+      "chartName": "Ankle Mobility",
+      "chartNumber": "P008"
+    },
+    {
+      "id": "9",
+      "chartName": "Neck & Cervical Relief",
+      "chartNumber": "P009"
+    },
+    {
+      "id": "10",
+      "chartName": "Upper Limb Mobility",
+      "chartNumber": "P010"
+    },
+    {
+      "id": "11",
+      "chartName": "Gait Training",
+      "chartNumber": "P011"
+    },
+    {
+      "id": "12",
+      "chartName": "Stretching Protocol",
+      "chartNumber": "P012"
+    },
+    {
+      "id": "13",
+      "chartName": "Breathing & Relaxation",
+      "chartNumber": "P013"
+    },
+    {
+      "id": "14",
+      "chartName": "Post-Surgery Recovery",
+      "chartNumber": "P014"
+    },
+    {
+      "id": "15",
+      "chartName": "Sports Rehab",
+      "chartNumber": "P015"
+    }
+  ],
+  "dietMasterCharts": [
+    {
+      "id": "1",
+      "chartName": "Low Carb Diet",
+      "chartNumber": "D001"
+    },
+    {
+      "id": "2",
+      "chartName": "High Protein Plan",
+      "chartNumber": "D002"
+    },
+    {
+      "id": "3",
+      "chartName": "Calorie Deficit Plan",
+      "chartNumber": "D003"
+    },
+    {
+      "id": "4",
+      "chartName": "Diabetic Meal Plan",
+      "chartNumber": "D004"
+    },
+    {
+      "id": "5",
+      "chartName": "Cardiac Diet",
+      "chartNumber": "D005"
+    },
+    {
+      "id": "6",
+      "chartName": "Renal Diet",
+      "chartNumber": "D006"
+    },
+    {
+      "id": "7",
+      "chartName": "Anti-Inflammatory Diet",
+      "chartNumber": "D007"
+    },
+    {
+      "id": "8",
+      "chartName": "Thyroid Support Plan",
+      "chartNumber": "D008"
+    },
+    {
+      "id": "9",
+      "chartName": "Gluten-Free Diet",
+      "chartNumber": "D009"
+    },
+    {
+      "id": "10",
+      "chartName": "Mediterranean Diet",
+      "chartNumber": "D010"
+    },
+    {
+      "id": "11",
+      "chartName": "Weight Gain Plan",
+      "chartNumber": "D011"
+    },
+    {
+      "id": "12",
+      "chartName": "PCOS Diet",
+      "chartNumber": "D012"
+    },
+    {
+      "id": "13",
+      "chartName": "Postpartum Nutrition",
+      "chartNumber": "D013"
+    },
+    {
+      "id": "14",
+      "chartName": "Vegan Balanced Diet",
+      "chartNumber": "D014"
+    },
+    {
+      "id": "15",
+      "chartName": "General Wellness Plan",
+      "chartNumber": "D015"
+    }
+  ],
+  "services": [
+    {
+      "id": "1",
+      "banner": "blob:http://localhost:3000/4a145864-293c-4e86-9f78-8c29326a4b9f",
+      "title": "Slim Care",
+      "subtitle": "Weight Loss Plan",
+      "price1Month": "3900",
+      "price3Month": "10500",
+      "price6Month": "18500",
+      "rating": "4.9",
+      "description": "A comprehensive weight loss program.",
+      "previewVideo": "https://www.youtube.com/watch?v=example",
+      "features": [
+        "Customized workout plans",
+        "Nutrition guidance",
+        "Progress tracking",
+        "Community support",
+        "Expert coaching"
+      ]
+    },
+    {
+      "id": "1",
+      "banner": "blob:http://localhost:3000/2510e4f6-36df-456b-ad25-5d68df34491d",
+      "title": "Slim Care",
+      "subtitle": "Weight Loss Plan",
+      "priceMonthly": "3900",
+      "priceQuarterly": "10500",
+      "priceYearly": "35000",
+      "rating": "4.9",
+      "description": "A comprehensive weight loss program.",
+      "previewVideo": "https://www.youtube.com/watch?v=example",
+      "features": [
+        "Customized workout plans",
+        "Nutrition guidance",
+        "Progress tracking",
+        "Community support",
+        "Expert coaching"
+      ]
+    },
+    {
+      "id": "1",
+      "banner": "blob:http://localhost:3000/2582d76b-3fb1-4a64-8a9c-319b46e9599b",
+      "title": "Slim Care",
+      "subtitle": "Weight Loss Plan",
+      "priceMonthly": "3900",
+      "priceQuarterly": "10500",
+      "priceYearly": "35000",
+      "rating": "4.9",
+      "description": "A comprehensive weight loss program.",
+      "previewVideo": "https://www.youtube.com/watch?v=example",
+      "features": [
+        "Customized workout plans",
+        "Nutrition guidance",
+        "Progress tracking",
+        "Community support",
+        "Expert coaching"
+      ]
+    }
+  ],
+  "blogs": [
+    {
+      "id": "1",
+      "title": "Gut Health Tips",
+      "shortDesc": "Quick tips to improve digestion",
+      "longDesc": "Detailed explanation of gut health practices...",
+      "banner": "https://via.placeholder.com/300x150.png",
+      "dateTime": "5/26/2025, 10:32:00 AM"
+    },
+    {
+      "id": "7cf5",
+      "title": "Slim Care",
+      "shortDesc": "Quick tips to improve digestion",
+      "longDesc": "oskaosaosioasiaosiaoskaoskaskap aewa",
+      "banner": "blob:http://localhost:3000/7692eef3-d6f1-4b96-bdce-618da305a5a6",
+      "dateTime": "26/5/2025, 4:25:19 pm"
+    },
+    {
+      "id": "1a02",
+      "title": "slimkr",
+      "shortDesc": "dssddsds",
+      "longDesc": "dsdsdsdsdsdsds",
+      "banner": "blob:http://localhost:3000/8b8bfd79-d570-4135-b36a-199487b1872e",
+      "dateTime": "27/5/2025, 10:01:23 am"
+    }
+  ],
+  "counselorAppointments": [
+    {
+      "id": "1",
+      "mrn": "MRN-2025001",
+      "patientName": "John Doe",
+      "type": "Online",
+      "date": "2025-05-28",
+      "time": "10:30 AM",
+      "notes": "Discuss anxiety support.\n",
+      "status": "Completed",
+      "meetingLink": ""
+    },
+    {
+      "id": "2",
+      "mrn": "MRN-2025002",
+      "patientName": "Jane Smith",
+      "type": "In-Person",
+      "date": "2025-06-01",
+      "time": "2:00 PM",
+      "notes": "Follow-up session.",
+      "status": "Completed",
+      "meetingLink": ""
+    },
+    {
+      "id": "2",
+      "mrn": "MRN-2025001",
+      "patientName": "John Doe",
+      "type": "In-Person",
+      "date": "2025-05-29",
+      "time": "02:00 PM",
+      "notes": "Follow-up session after last evaluation.",
+      "status": "Pending",
+      "meetingLink": ""
+    },
+    {
+      "id": "1748586168410",
+      "mrn": "MRN-2025001",
+      "patientName": "John Doe",
+      "type": "Online",
+      "date": "2025-05-31",
+      "time": "14:55",
+      "notes": "Discuss anxiety support.",
+      "status": "Approved",
+      "meetingLink": ""
+    },
+    {
+      "id": "1748587327532",
+      "mrn": "MRN-2025001",
+      "patientName": "John Doe",
+      "type": "Online",
+      "date": "2025-05-06",
+      "time": "15:13",
+      "notes": "Discuss anxiety support.",
+      "status": "Pending",
+      "meetingLink": ""
+    }
+  ],
+  "doctorAppointments": [
+    {
+      "id": "1",
+      "mrn": "MRN-2025002",
+      "patientName": "Alice Smith",
+      "type": "Online",
+      "date": "2025-06-01",
+      "time": "09:00 AM",
+      "notes": "Discuss lab results and treatment.",
+      "status": "Approved",
+      "meetingLink": "https://zoom.us/j/391268149"
+    },
+    {
+      "id": "2",
+      "mrn": "MRN-2025003",
+      "patientName": "Bob Johnson",
+      "type": "In-Person",
+      "date": "2025-06-02",
+      "time": "11:30 AM",
+      "notes": "Follow-up for chronic condition.",
+      "status": "Pending",
+      "meetingLink": ""
+    }
+  ],
+  "dietitianAppointments": [
+    {
+      "id": "1",
+      "mrn": "MRN-2025010",
+      "patientName": "Emma Watson",
+      "type": "Online",
+      "date": "2025-06-03",
+      "time": "08:30 AM",
+      "notes": "Diet consultation for weight loss.",
+      "status": "Pending",
+      "meetingLink": "https://zoom.us/j/806924971"
+    },
+    {
+      "id": "2",
+      "mrn": "MRN-2025011",
+      "patientName": "Liam Turner",
+      "type": "In-Person",
+      "date": "2025-06-04",
+      "time": "12:00 PM",
+      "notes": "Nutritional evaluation session.",
+      "status": "Approved",
+      "meetingLink": ""
+    }
+  ],
+  "physioAppointments": [
+    {
+      "id": "1",
+      "mrn": "MRN-2025012",
+      "patientName": "Noah Patel",
+      "type": "Online",
+      "date": "2025-06-05",
+      "time": "10:00 AM",
+      "notes": "Initial physiotherapy assessment.",
+      "status": "Pending",
+      "meetingLink": ""
+    },
+    {
+      "id": "2",
+      "mrn": "MRN-2025013",
+      "patientName": "Olivia Khan",
+      "type": "In-Person",
+      "date": "2025-06-06",
+      "time": "03:00 PM",
+      "notes": "Follow-up for posture correction exercises.",
+      "status": "Approved",
+      "meetingLink": ""
+    }
+  ],
+  "phlebotomistAppointments": [
+    {
+      "id": "1",
+      "mrn": "MRN-2025015",
+      "patientName": "Sophia Brown",
+      "type": "In-Person",
+      "date": "2025-06-07",
+      "time": "08:00 AM",
+      "notes": "Blood collection for routine labs.",
+      "status": "Approved",
+      "meetingLink": ""
+    },
+    {
+      "id": "2",
+      "mrn": "MRN-2025016",
+      "patientName": "Ethan Thomas",
+      "type": "Online",
+      "date": "2025-06-08",
+      "time": "02:00 PM",
+      "notes": "Video verification for home test kit.",
+      "status": "Approved",
+      "meetingLink": ""
+    }
+  ],
+  "passwordChangeRequests": [
+    {
+      "id": "9809",
+      "counselorName": "aman",
+      "email": "admin@example.com",
+      "reason": "sssasasasasas",
+      "status": "Approved",
+      "requestedAt": "2025-05-30T09:12:20.113Z"
+    },
+    {
+      "id": "2932",
+      "counselorName": "aman",
+      "email": "admin@example.com",
+      "reason": "assaasa",
+      "status": "Approved",
+      "requestedAt": "2025-06-02T04:28:15.490Z"
+    },
+    {
+      "id": "7cdc",
+      "counselorName": "aman",
+      "email": "counselor@example.com",
+      "reason": "hi hello bye bye-bye",
+      "status": "Pending",
+      "requestedAt": "2025-06-05T18:13:47.137Z"
+    }
+  ],
+  "dashboardMetrics": {
+    "roleCounts": [
+      {
+        "role": "Doctor",
+        "count": 12
+      },
+      {
+        "role": "Dietitian",
+        "count": 5
+      },
+      {
+        "role": "Physio",
+        "count": 4
+      },
+      {
+        "role": "Phlebotomist",
+        "count": 3
+      },
+      {
+        "role": "Lab",
+        "count": 2
+      }
+    ],
+    "appointmentsStatus": [
+      {
+        "role": "Doctor",
+        "completed": 36,
+        "pending": 12
+      },
+      {
+        "role": "Dietitian",
+        "completed": 20,
+        "pending": 4
+      },
+      {
+        "role": "Physio",
+        "completed": 18,
+        "pending": 2
+      },
+      {
+        "role": "Phlebotomist",
+        "completed": 10,
+        "pending": 5
+      }
+    ],
+    "dailyAppointments": [
+      {
+        "date": "2025-05-25",
+        "Doctor": 5,
+        "Dietitian": 2,
+        "Physio": 1
+      },
+      {
+        "date": "2025-05-26",
+        "Doctor": 6,
+        "Dietitian": 3,
+        "Physio": 2
+      },
+      {
+        "date": "2025-05-27",
+        "Doctor": 4,
+        "Dietitian": 2,
+        "Physio": 3
+      }
+    ],
+    "topDoctors": [
+      {
+        "name": "Dr. Asha",
+        "count": 25
+      },
+      {
+        "name": "Dr. Raj",
+        "count": 20
+      },
+      {
+        "name": "Dr. Mehta",
+        "count": 18
+      },
+      {
+        "name": "Dr. Verma",
+        "count": 16
+      },
+      {
+        "name": "Dr. Khan",
+        "count": 14
+      }
+    ],
+    "reportContributions": [
+      {
+        "role": "Doctor",
+        "value": 20
+      },
+      {
+        "role": "Lab",
+        "value": 35
+      },
+      {
+        "role": "Dietitian",
+        "value": 10
+      }
+    ],
+    "roleAssignment": [
+      {
+        "role": "Doctor",
+        "patients": 120
+      },
+      {
+        "role": "Dietitian",
+        "patients": 60
+      },
+      {
+        "role": "Physio",
+        "patients": 30
+      }
+    ],
+    "noShowRates": [
+      {
+        "role": "Doctor",
+        "rate": 12.5
+      },
+      {
+        "role": "Dietitian",
+        "rate": 10.2
+      },
+      {
+        "role": "Physio",
+        "rate": 8
+      }
+    ],
+    "recentLogs": [
+      {
+        "id": 1,
+        "actor": "admin",
+        "action": "Created report",
+        "mrn": "MRN001",
+        "timestamp": "2025-05-29T10:30:00Z"
+      },
+      {
+        "id": 2,
+        "actor": "doctor",
+        "action": "Approved appointment",
+        "mrn": "MRN002",
+        "timestamp": "2025-05-29T11:00:00Z"
+      },
+      {
+        "id": 3,
+        "actor": "dietitian",
+        "action": "Updated plan",
+        "mrn": "MRN003",
+        "timestamp": "2025-05-29T11:30:00Z"
+      },
+      {
+        "id": 4,
+        "actor": "physio",
+        "action": "Marked completed",
+        "mrn": "MRN004",
+        "timestamp": "2025-05-29T12:00:00Z"
+      },
+      {
+        "id": 5,
+        "actor": "phlebotomist",
+        "action": "Collected sample",
+        "mrn": "MRN005",
+        "timestamp": "2025-05-29T12:30:00Z"
+      }
+    ]
+  }
+}

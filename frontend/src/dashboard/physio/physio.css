@@ -1,0 +1,215 @@
+
+:root {
+  --text-primary: #212529;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-hover: #eeeeee;
+  --accent: #ff6600;
+  --accent-hover: #cc5500;
+  --border-color: #cc5500;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] {
+  --text-primary: #f0f0f0;
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --bg-hover: #2c2c2c;
+  --accent: #ff6600;
+  --accent-hover: #cc5500;
+  --border-color: #cc5500;
+  --shadow-color: rgba(0, 0, 0, 0.4);
+}
+
+body {
+  font-family: "Segoe UI", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.physio-container {
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+  transition: background-color 0.3s ease;
+}
+
+h2 {
+  margin-bottom: 1.5rem;
+  color: var(--accent);
+  text-align: center;
+}
+
+.physio-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.chart-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  color: var(--text-primary);
+}
+
+.search-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.search-input {
+  flex: 1;
+  height: 44px;
+  padding: 0 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 1rem;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.search-button {
+  height: 44px;
+  padding: 0 1.25rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: var(--accent);
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: var(--accent-hover);
+}
+
+.card {
+  background-color: var(--bg-secondary);
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  width: 100%;
+  max-width: 100%;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.piechart {
+  max-width: 300px;
+}
+
+.user-details {
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.section-title {
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.user-table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+}
+
+.user-table th,
+.user-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.user-table th {
+  background-color: var(--bg-hover);
+  font-weight: bold;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  background-color: var(--accent);
+  margin: 1%;
+  color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  white-space: nowrap;   /* Prevent text from wrapping */
+  min-width: 80px;        /* Ensure a minimum width */
+  text-align: center;     /* Center the button text */
+}
+
+
+/* .btn:hover {
+  background-color: var(--accent-hover);
+} */
+
+.content-container {
+  padding: 2rem;
+  text-align: center;
+}
+
+.loading-spinner,
+.error-message {
+  font-size: 1.2rem;
+  color: var(--accent);
+  font-weight: bold;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .search-section {
+    flex-direction: column;
+  }
+  .search-input,
+  .search-button {
+    width: 100%;
+  }
+  .user-table {
+    font-size: 14px;
+    min-width: 500px;
+  }
+}
+
+@media (max-width: 600px) {
+  .search-container {
+    flex-direction: column;
+  }
+  .search-input,
+  .search-button {
+    width: 100%;
+  }
+  .search-button {
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-table th,
+  .user-table td {
+    padding: 0.75rem;
+  }
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
