@@ -3,6 +3,7 @@ import { useTheme } from "../../ThemeProvider";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../physio/clientManagement.css";
+import { CheckCircle } from "lucide-react";
 
 const DoctorDashboardHome = () => {
   const { theme } = useTheme();
@@ -15,6 +16,16 @@ const DoctorDashboardHome = () => {
   const [activeTab, setActiveTab] = useState("medical");
   const [pdfUrl, setPdfUrl] = useState(null);
   const [showLastVisitModal, setShowLastVisitModal] = useState(false);
+  const scrollRef = React.useRef(null);
+  const [showAssignTestModal, setShowAssignTestModal] = useState(false);
+  const [testForm, setTestForm] = useState({
+    testType: "",
+    testName: "",
+    priority: "normal",
+    notes: "",
+    scheduledDate: "",
+    scheduledTime: "",
+  });
 
   const quotes = [
     "Every patient is a story waiting to be heard.",
@@ -54,6 +65,7 @@ const DoctorDashboardHome = () => {
         setPatientData(null);
       });
   };
+
   const handleApproval = (type) => {
     if (!patientData || !type) return;
 
@@ -83,7 +95,60 @@ const DoctorDashboardHome = () => {
         toast.error("Could not update approval in database");
       });
   };
+  const handleAssignTest = () => {
+    if (
+      !testForm.testType ||
+      !testForm.testName ||
+      !testForm.scheduledDate ||
+      !testForm.scheduledTime
+    ) {
+      toast.warning("Please fill all required fields");
+      return;
+    }
 
+    const newTest = {
+      id: Date.now(), // Simple ID generation
+      ...testForm,
+      status: "scheduled",
+      assignedDate: new Date().toISOString().split("T")[0],
+      patientId: patientData.id,
+    };
+
+    // Update patient data with new test
+    const updatedPatient = {
+      ...patientData,
+      assignedTests: [...(patientData.assignedTests || []), newTest],
+    };
+
+    fetch(`http://localhost:3001/patients_detailed/${patientData.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ assignedTests: updatedPatient.assignedTests }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to assign test");
+        return res.json();
+      })
+      .then((data) => {
+        toast.success("Test assigned successfully!");
+        setPatientData(data);
+        setShowAssignTestModal(false);
+        // Reset form
+        setTestForm({
+          testType: "",
+          testName: "",
+          priority: "normal",
+          notes: "",
+          scheduledDate: "",
+          scheduledTime: "",
+        });
+      })
+      .catch(() => {
+        toast.error("Could not assign test");
+      });
+  };
   const medicalData = [
     {
       date: "2025-06-01",
@@ -196,7 +261,21 @@ const DoctorDashboardHome = () => {
           scrollbar-color: var(--primary-color, #ff6b35)
             var(--bg-secondary, #2a2a2a);
         }
+        .date-time-grid {
+          grid-template-columns: 1fr 1fr;
+        }
 
+        @media (max-width: 480px) {
+          .date-time-grid {
+            grid-template-columns: 1fr !important;
+          }
+
+          .modal-responsive form > div > input,
+          .modal-responsive form > div > select,
+          .modal-responsive form > div > textarea {
+            font-size: 16px !important; /* Prevents zoom on iOS */
+          }
+        }
         @media (max-width: 768px) {
           .responsive-table {
             display: block;
@@ -365,7 +444,7 @@ const DoctorDashboardHome = () => {
       </div>
 
       {/* MRN Search */}
-      <div className="card">
+      <div className="card" ref={scrollRef}>
         <h3 className="card-header">Search Patient by MRN</h3>
         <div
           className="mobile-search"
@@ -379,7 +458,7 @@ const DoctorDashboardHome = () => {
           <input
             type="text"
             value={searchMRN}
-            onChange={(e) => setSearchMRN(e.target.value)}
+            onChange={(e) => setSearchMRN(e.target.value.toUpperCase())}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 handleSearch();
@@ -396,6 +475,7 @@ const DoctorDashboardHome = () => {
               boxSizing: "border-box",
             }}
           />
+
           <button
             className="btn btn-primary btn-responsive"
             onClick={handleSearch}
@@ -425,6 +505,7 @@ const DoctorDashboardHome = () => {
                   <th style={{ textAlign: "center" }}>Last Visit</th>
                   <th>Next Visit</th>
                   <th style={{ textAlign: "center" }}>Records / Documents</th>
+                  <th style={{ textAlign: "center" }}>Assign Tests</th>
                 </tr>
               </thead>
               <tbody>
@@ -451,6 +532,16 @@ const DoctorDashboardHome = () => {
                         onClick={() => setShowDocumentModal(true)}
                       >
                         View Documents
+                      </button>
+                    </center>
+                  </td>
+                  <td>
+                    <center>
+                      <button
+                        className="btn btn-primary btn-responsive"
+                        onClick={() => setShowAssignTestModal(true)}
+                      >
+                        Assign Test
                       </button>
                     </center>
                   </td>
@@ -493,6 +584,411 @@ const DoctorDashboardHome = () => {
                 ? "Physio Approved ✅"
                 : "Approve for Physio"}
             </button>
+          </div>
+          {(patientData?.approvals?.physio ||
+            patientData?.approvals?.diet ||
+            patientData?.approvals?.nutrition) && (
+            <div
+              style={{
+                background: "--var(--bg-primary)",
+                color: "--var(--text-primary)",
+                border: "1px solid #cc5500",
+                borderRadius: "8px",
+                padding: "1rem",
+                marginTop: "1.5rem",
+                textAlign: "left",
+              }}
+            >
+              <h4 style={{ color: "#ff6b35", marginBottom: "0.5rem" }}>
+                <strong>Patient Assigned</strong>
+              </h4>
+              <p style={{ marginBottom: "0.5rem" }}>
+                <strong>{patientData.clientName}</strong> is currently assigned
+                to:
+              </p>
+              <ul style={{ listStyle: "none", paddingLeft: 0 }}>
+                {patientData.approvals.physio && (
+                  <li
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                    }}
+                  >
+                    <CheckCircle size={18} color="green" />
+                    <strong>Physio</strong>
+                  </li>
+                )}
+                {patientData.approvals.diet && (
+                  <li
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                    }}
+                  >
+                    <CheckCircle size={18} color="green" />
+                    <strong>Dietitian</strong>
+                  </li>
+                )}
+                {patientData.approvals.nutrition && (
+                  <li
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                    }}
+                  >
+                    <CheckCircle size={18} color="green" />
+                    <strong>Neutrogenomic</strong>
+                  </li>
+                )}
+              </ul>
+            </div>
+          )}
+          {(patientData?.approvals?.physio ||
+            patientData?.approvals?.diet ||
+            patientData?.approvals?.nutrition) && (
+            <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
+              <button
+                className="btn btn-primary"
+                style={{
+                  backgroundColor: "#ff6b35",
+                  border: "none",
+                  padding: "0.8rem 2rem",
+                  fontWeight: "bold",
+                  borderRadius: "6px",
+                  fontSize: "1rem",
+                }}
+                onClick={() => {
+                  toast.success("Patient Assignment Completed!");
+                  setPatientData(null); // Clear search result
+                  setSearchMRN(""); // Clear input
+                  scrollRef.current?.scrollIntoView({ behavior: "smooth" }); // Scroll back
+                }}
+              >
+                Click To Proceed
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+      {/* Assign Test Modal */}
+      {showAssignTestModal && (
+        <div
+          onClick={() => setShowAssignTestModal(false)}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.6)",
+            zIndex: 9999,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "1rem",
+            boxSizing: "border-box",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="modal-responsive"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              padding: "2rem",
+              borderRadius: "8px",
+              maxWidth: "600px",
+              width: "90%",
+              maxHeight: "90vh",
+              overflow: "auto",
+              border: "1px solid #cc5500",
+              position: "relative",
+              boxSizing: "border-box",
+            }}
+          >
+            <h2
+              style={{
+                marginBottom: "1.5rem",
+                fontSize: "clamp(1.2rem, 3vw, 1.5rem)",
+                paddingRight: "3rem",
+                color: "var(--text-primary)",
+              }}
+            >
+              Assign Test to {patientData?.clientName}
+            </h2>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleAssignTest();
+              }}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              {/* Test Type */}
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    marginBottom: "0.5rem",
+                    fontWeight: "bold",
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  Test Type *
+                </label>
+                <select
+                  value={testForm.testType}
+                  onChange={(e) =>
+                    setTestForm({ ...testForm, testType: e.target.value })
+                  }
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "0.8rem",
+                    border: "1px solid #ddd",
+                    borderRadius: "4px",
+                    fontSize: "1rem",
+                    backgroundColor: "var(--bg-secondary)",
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  <option value="">Select Test Type</option>
+                  <option value="Blood Work">Blood Work</option>
+                  <option value="Imaging">Imaging</option>
+                  <option value="Cardiology">Cardiology</option>
+                  <option value="Neurology">Neurology</option>
+                  <option value="Pathology">Pathology</option>
+                  <option value="Radiology">Radiology</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              {/* Test Name */}
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    marginBottom: "0.5rem",
+                    fontWeight: "bold",
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  Test Name *
+                </label>
+                <input
+                  type="text"
+                  value={testForm.testName}
+                  onChange={(e) =>
+                    setTestForm({ ...testForm, testName: e.target.value })
+                  }
+                  required
+                  placeholder="e.g., Complete Blood Count, X-Ray Chest"
+                  style={{
+                    width: "100%",
+                    padding: "0.8rem",
+                    border: "1px solid #ddd",
+                    borderRadius: "4px",
+                    fontSize: "1rem",
+                    backgroundColor: "var(--bg-secondary)",
+                    color: "var(--text-primary)",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+
+              {/* Priority */}
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    marginBottom: "0.5rem",
+                    fontWeight: "bold",
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  Priority
+                </label>
+                <select
+                  value={testForm.priority}
+                  onChange={(e) =>
+                    setTestForm({ ...testForm, priority: e.target.value })
+                  }
+                  style={{
+                    width: "100%",
+                    padding: "0.8rem",
+                    border: "1px solid #ddd",
+                    borderRadius: "4px",
+                    fontSize: "1rem",
+                    backgroundColor: "var(--bg-secondary)",
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  <option value="normal">Normal</option>
+                  <option value="urgent">Urgent</option>
+                  <option value="stat">STAT</option>
+                </select>
+              </div>
+
+              {/* Scheduled Date and Time */}
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "1rem",
+                }}
+                className="date-time-grid"
+              >
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      marginBottom: "0.5rem",
+                      fontWeight: "bold",
+                      color: "var(--text-primary)",
+                    }}
+                  >
+                    Scheduled Date *
+                  </label>
+                  <input
+                    type="date"
+                    value={testForm.scheduledDate}
+                    onChange={(e) =>
+                      setTestForm({
+                        ...testForm,
+                        scheduledDate: e.target.value,
+                      })
+                    }
+                    required
+                    min={new Date().toISOString().split("T")[0]}
+                    style={{
+                      width: "100%",
+                      padding: "0.8rem",
+                      border: "1px solid #ddd",
+                      borderRadius: "4px",
+                      fontSize: "1rem",
+                      backgroundColor: "var(--bg-secondary)",
+                      color: "var(--text-primary)",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      marginBottom: "0.5rem",
+                      fontWeight: "bold",
+                      color: "var(--text-primary)",
+                    }}
+                  >
+                    Scheduled Time *
+                  </label>
+                  <input
+                    type="time"
+                    value={testForm.scheduledTime}
+                    onChange={(e) =>
+                      setTestForm({
+                        ...testForm,
+                        scheduledTime: e.target.value,
+                      })
+                    }
+                    required
+                    style={{
+                      width: "100%",
+                      padding: "0.8rem",
+                      border: "1px solid #ddd",
+                      borderRadius: "4px",
+                      fontSize: "1rem",
+                      backgroundColor: "var(--bg-secondary)",
+                      color: "var(--text-primary)",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Notes */}
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    marginBottom: "0.5rem",
+                    fontWeight: "bold",
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  Additional Notes
+                </label>
+                <textarea
+                  value={testForm.notes}
+                  onChange={(e) =>
+                    setTestForm({ ...testForm, notes: e.target.value })
+                  }
+                  placeholder="Any special instructions or notes..."
+                  rows={3}
+                  style={{
+                    width: "100%",
+                    padding: "0.8rem",
+                    border: "1px solid #ddd",
+                    borderRadius: "4px",
+                    fontSize: "1rem",
+                    backgroundColor: "var(--bg-secondary)",
+                    color: "var(--text-primary)",
+                    resize: "vertical",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+
+              {/* Form Buttons */}
+              <div
+                style={{
+                  display: "flex",
+                  gap: "1rem",
+                  justifyContent: "flex-end",
+                  marginTop: "1rem",
+                  flexWrap: "wrap",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setShowAssignTestModal(false)}
+                  className="btn btn-responsive"
+                  style={{
+                    padding: "0.8rem 1.5rem",
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                    backgroundColor: "var(--bg-secondary)",
+                    color: "var(--text-primary)",
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary btn-responsive"
+                  style={{
+                    padding: "0.8rem 1.5rem",
+                    backgroundColor: "#cc5500",
+                    border: "none",
+                    borderRadius: "4px",
+                    color: "white",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                  }}
+                >
+                  Assign Test
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

@@ -1183,9 +1183,9 @@
         "Diet_Summary.pdf"
       ],
       "approvals": {
-        "nutrition": false,
-        "diet": false,
-        "physio": false
+        "nutrition": true,
+        "diet": true,
+        "physio": true
       }
     }
   ],
@@ -1387,13 +1387,15 @@
       "mrn": "MRN001",
       "patientName": "Amit Singh",
       "time": "09:00 AM",
-      "status": "Pending"
+      "status": "Pending",
+      "id": "ba2d"
     },
     {
       "mrn": "MRN002",
       "patientName": "Riya Sharma",
       "time": "10:30 AM",
-      "status": "Completed"
+      "status": "Completed",
+      "id": "227f"
     }
   ]
 }
