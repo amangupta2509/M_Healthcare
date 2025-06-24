@@ -179,6 +179,12 @@ const DietSidebar = () => {
               </NavLink>
             </li>
             <li>
+              <NavLink to="/diet/DietMealPlanAssign" className={navLinkClass}>
+                <Hamburger size={18} style={{ marginRight: !collapsed || isHovering ? "10px" : "0" }} />
+                <span>DietMealPlanAssign</span>
+              </NavLink>
+            </li>
+            <li>
               <NavLink to="/diet/diet_reports" className={navLinkClass}>
                 <BarChart2 size={18} style={{ marginRight: !collapsed || isHovering ? "10px" : "0" }} />
                 <span>Reports</span>

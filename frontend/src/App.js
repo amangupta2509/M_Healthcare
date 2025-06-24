@@ -67,7 +67,7 @@ import DietUserDetails from "./dashboard/diet/diet_userdetails";
 import DietPhysioo from "./dashboard/diet/diet_physioo";
 import DietitiansAppointments from "./dashboard/diet/DietitiansAppointments";
 import DietPasswordRequest from "./dashboard/diet/pages/DietPasswordRequest";
-
+import DietMealPlanAssign from "./dashboard/diet/DietMealPlanAssign";
 // ==============================================
 // DOCTOR DASHBOARD
 // ==============================================
@@ -77,18 +77,11 @@ import DoctorSidebar from "./dashboard/doctor/components/doctor_sidebar";
 import DoctorFooter from "./dashboard/doctor/components/doctor_footer";
 
 // Pages
-import DoctorProfile from "./dashboard/doctor/doctor_profile";
-import DoctorAssignDecision from "./dashboard/doctor/DoctorAssignDecision ";
-import DoctorClientManagement from "./dashboard/doctor/doctor_clientmanagement";
-import DoctorReport from "./dashboard/doctor/doctor_report";
-import DoctorUserDetails from "./dashboard/doctor/doctor_userdetails";
-import DoctorPhysioo from "./dashboard/doctor/doctor_physioo";
-import DoctorUpcomingAppointments from "./dashboard/doctor/DoctorUpcomingAppointments ";
 import DoctorAssignmentDashboard from "./dashboard/doctor/DoctorAssignmentDashboard";
 import DoctorsAppointments from "./dashboard/doctor/DoctorsAppointments";
 import DoctorPasswordRequest from "./dashboard/doctor/pages/DoctorPasswordRequest";
 import DoctorDashboardHome from "./dashboard/doctor/DoctorDashboardHome";
-
+import DoctorSlotBooking from "./dashboard/doctor/DoctorSlotBooking";
 // ==============================================
 // MASTER ADMIN DASHBOARD
 // ==============================================
@@ -300,26 +293,19 @@ const App = () => {
             <Route path="user/:id/report" element={<DietReport />} />
             <Route path="DietitiansAppointments" element={<DietitiansAppointments />} />
             <Route path="DietPasswordRequest" element={<DietPasswordRequest />} />
+            <Route path="DietMealPlanAssign" element={<DietMealPlanAssign />} />
           </Route>
 
           {/* ==============================================
               DOCTOR DASHBOARD ROUTES
               ============================================== */}
           <Route path="/doctor" element={<DoctorDashboardLayout />}>
-            <Route index element={<Navigate to="doctor_profile" replace />} />
-            <Route path="doctor_profile" element={<DoctorProfile />} />
-            <Route path="DoctorAssignDecision" element={<DoctorAssignDecision />} />
-            <Route path="doctor_clients" element={<DoctorClientManagement />} />
-            <Route path="doctor_reports" element={<DoctorReport />} />
-            <Route path="user" element={<DoctorUserDetails />} />
-            <Route path="doctor_physioo" element={<DoctorPhysioo />} />
-            <Route path="user/:id/report" element={<DoctorReport />} />
+            <Route index element={<Navigate to="DoctorDashboardHome" replace />} />
             <Route path="DoctorsAppointments" element={<DoctorsAppointments />} />
-            <Route path="user-details/:userId" element={<DoctorUserDetails />} />
-            <Route path="DoctorUpcomingAppointments" element={<DoctorUpcomingAppointments />} />
             <Route path="DoctorAssignmentDashboard" element={<DoctorAssignmentDashboard />} />
             <Route path="DoctorPasswordRequest" element={<DoctorPasswordRequest />} />
             <Route path="DoctorDashboardHome" element={<DoctorDashboardHome />} />
+            <Route path="DoctorSlotBooking" element={<DoctorSlotBooking />} />
           </Route>
 
           {/* ==============================================

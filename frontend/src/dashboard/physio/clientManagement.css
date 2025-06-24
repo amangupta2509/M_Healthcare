@@ -113,7 +113,12 @@
   color: white;
   border-color: var(--brand-color);
 }
-
+.btn-active {
+  background-color: #cc5500 !important; /* Highlight color */
+  color: white !important;
+  cursor: default;
+  font-weight: bold;
+  border: 2px solid #cc5500;}
 /* Action Button Styles */
 .action-buttons-right {
   display: flex;
@@ -400,6 +405,7 @@
 }
 
 .form-group input,
+.form-group textarea,
 .form-group select {
   width: 100%;
   padding: 0.75rem;

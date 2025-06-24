@@ -1037,6 +1037,17 @@
       "notes": "Discuss anxiety support.",
       "status": "Pending",
       "meetingLink": ""
+    },
+    {
+      "id": "1",
+      "mrn": "MRN003",
+      "patientName": "Rahul Mehta",
+      "type": "Online",
+      "date": "2025-06-11",
+      "time": "2:00 PM",
+      "notes": "Discuss diet and mental well-being",
+      "status": "Approved",
+      "meetingLink": "https://zoom.us/j/123456789"
     }
   ],
   "doctorAppointments": [
@@ -1162,9 +1173,68 @@
         "XRay_Scan.png"
       ],
       "approvals": {
-        "nutrition": true,
+        "nutrition": false,
         "diet": true,
-        "physio": true
+        "physio": false
+      },
+      "assignedTests": [
+        {
+          "id": 1749453047745,
+          "testType": "Imaging",
+          "testName": "Knee MRI",
+          "priority": "normal",
+          "notes": "",
+          "scheduledDate": "2025-06-14",
+          "scheduledTime": "12:43",
+          "status": "scheduled",
+          "assignedDate": "2025-06-09",
+          "patientId": "MRN001"
+        }
+      ],
+      "counselorAssignment": {
+        "type": "Rehabilitation Counselor",
+        "note": "To support long-term joint recovery"
+      }
+    },
+    {
+      "id": "MRN003",
+      "clientName": "Rahul Mehta",
+      "referenceNumber": "REF-RAH-001",
+      "approvals": {
+        "physio": false,
+        "diet": false,
+        "nutrition": false
+      },
+      "lastVisit": {
+        "date": "2025-06-10",
+        "time": "10:00 AM",
+        "summary": "Follow-up on back pain",
+        "vitals": {
+          "BP": "120/80",
+          "Pulse": "70 bpm",
+          "Temp": "98.7°F"
+        },
+        "doctorNotes": "Needs physio and diet support.",
+        "recommendation": "Start Chart-2 and Chart-6 plans",
+        "prescription": "/prescriptions/MRN2025001_labreport.pdf"
+      },
+      "assignedTests": [
+        {
+          "id": 1749453047745,
+          "testType": "Imaging",
+          "testName": "Back X-Ray",
+          "priority": "normal",
+          "notes": "Lower back issues",
+          "scheduledDate": "2025-06-14",
+          "scheduledTime": "11:00",
+          "status": "scheduled",
+          "assignedDate": "2025-06-09",
+          "patientId": "MRN003"
+        }
+      ],
+      "counselorAssignment": {
+        "type": "Behavioral Health Counselor",
+        "note": "Supports emotional resilience during physical rehab"
       }
     },
     {
@@ -1173,7 +1243,16 @@
       "referenceNumber": "REF-RIY-002",
       "lastVisit": {
         "date": "2025-04-20",
-        "summary": "Diet follow-up"
+        "time": "11:15 AM",
+        "summary": "Diet follow-up",
+        "vitals": {
+          "BP": "110/70",
+          "Pulse": "75 bpm",
+          "Temp": "98.4°F"
+        },
+        "doctorNotes": "Patient shows good progress in weight management.",
+        "recommendation": "Continue Chart-2 diet and monitor sugar intake.qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+        "prescription": "/prescriptions/MRN002_dietplan.pdf"
       },
       "newVisit": {
         "date": "2025-06-11",
@@ -1186,7 +1265,8 @@
         "nutrition": true,
         "diet": true,
         "physio": true
-      }
+      },
+      "assignedTests": []
     }
   ],
   "passwordChangeRequests": [
@@ -1213,6 +1293,14 @@
       "reason": "hi hello bye bye-bye",
       "status": "Pending",
       "requestedAt": "2025-06-05T18:13:47.137Z"
+    },
+    {
+      "id": "d885",
+      "counselorName": "aman",
+      "email": "counselor@example.com",
+      "reason": "smamalsalmsalsa",
+      "status": "Pending",
+      "requestedAt": "2025-06-14T05:09:11.303Z"
     }
   ],
   "dashboardMetrics": {
@@ -1396,6 +1484,279 @@
       "time": "10:30 AM",
       "status": "Completed",
       "id": "227f"
+    }
+  ],
+  "testCategories": [
+    {
+      "type": "Blood Work",
+      "subTests": [
+        "Complete Blood Count",
+        "Blood Glucose",
+        "Lipid Profile",
+        "Liver Function Test",
+        "Kidney Function Test"
+      ],
+      "id": "be9d"
+    },
+    {
+      "type": "Imaging",
+      "subTests": [
+        "X-Ray",
+        "CT Scan",
+        "MRI",
+        "Ultrasound"
+      ],
+      "id": "b0d6"
+    },
+    {
+      "type": "Cardiology",
+      "subTests": [
+        "ECG",
+        "Echocardiogram",
+        "Stress Test"
+      ],
+      "id": "5a08"
+    },
+    {
+      "type": "Neurology",
+      "subTests": [
+        "EEG",
+        "Nerve Conduction Study",
+        "Brain MRI"
+      ],
+      "id": "d809"
+    },
+    {
+      "type": "Pathology",
+      "subTests": [
+        "Biopsy",
+        "Cytology",
+        "Histopathology"
+      ],
+      "id": "f6bc"
+    },
+    {
+      "type": "Radiology",
+      "subTests": [
+        "Mammogram",
+        "Fluoroscopy",
+        "PET Scan"
+      ],
+      "id": "e79e"
+    },
+    {
+      "type": "Other",
+      "subTests": [
+        "Custom Test 1",
+        "Custom Test 2"
+      ],
+      "id": "728c"
+    }
+  ],
+  "doctorSlots": [
+    {
+      "startDate": "2025-06-22",
+      "endDate": "2025-06-28",
+      "slots": [
+        {
+          "day": "Monday",
+          "available": true,
+          "timeBlocks": [
+            {
+              "start": "09:00",
+              "end": "11:00"
+            },
+            {
+              "start": "15:00",
+              "end": "17:00"
+            }
+          ]
+        },
+        {
+          "day": "Tuesday",
+          "available": false,
+          "timeBlocks": []
+        },
+        {
+          "day": "Wednesday",
+          "available": false,
+          "timeBlocks": []
+        },
+        {
+          "day": "Thursday",
+          "available": false,
+          "timeBlocks": []
+        },
+        {
+          "day": "Friday",
+          "available": true,
+          "timeBlocks": [
+            {
+              "start": "09:00",
+              "end": "10:00"
+            },
+            {
+              "start": "11:00",
+              "end": "14:00"
+            }
+          ]
+        },
+        {
+          "day": "Saturday",
+          "available": false,
+          "timeBlocks": []
+        },
+        {
+          "day": "Sunday",
+          "available": false,
+          "timeBlocks": []
+        }
+      ],
+      "id": "05fd"
+    }
+  ],
+  "mealclients": [
+    {
+      "mrn": "MRN123",
+      "name": "Aman Gupta",
+      "age": 38,
+      "height": "163 cm",
+      "weight": "62 kg",
+      "bmi": "23.3",
+      "goal": "Mild Deficit - 1700 kcal/day",
+      "modifiedBMI": {
+        "bmiCategory": "Normal",
+        "bmr": "1288 kcal/day",
+        "tdee": "2000 kcal/day",
+        "target": "1700 kcal/day",
+        "energy": "1700 kcal/day",
+        "protein": "110g",
+        "carbohydrate": "190g",
+        "fats": "30g"
+      }
+    }
+  ],
+  "assignedMeals": [
+    {
+      "id": 1,
+      "mrn": "MRN123",
+      "fromDateTime": "2025-06-25",
+      "toDateTime": "2025-07-10",
+      "bmiData": {
+        "bmiCategory": "Normal",
+        "bmr": "1288 kcal/day",
+        "tdee": "2000 kcal/day",
+        "target": "1700 kcal/day",
+        "energy": "1700 kcal/day",
+        "protein": "110g",
+        "carbohydrate": "190g",
+        "fats": "30g"
+      },
+      "meals": [
+        {
+          "meal": "Breakfast",
+          "calories": "350",
+          "protein": "20g",
+          "options": [
+            {
+              "meal": "Oats with banana",
+              "ingredients": "Oats, Banana, Milk",
+              "recipe": "Boil oats with milk and top with banana slices"
+            },
+            {
+              "meal": "Paneer toast",
+              "ingredients": "Whole wheat bread, paneer, spices",
+              "recipe": "Grill the paneer on bread with seasoning"
+            }
+          ]
+        },
+        {
+          "meal": "Lunch",
+          "calories": "600",
+          "protein": "35g",
+          "options": [
+            {
+              "meal": "Grilled Chicken Salad",
+              "ingredients": "Chicken, Lettuce, Cucumber, Olive oil",
+              "recipe": "Grill chicken and toss with veggies and dressing"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0b57",
+      "mrn": "MRN123",
+      "fromDateTime": "2025-06-29",
+      "toDateTime": "2025-07-12",
+      "bmiData": {
+        "bmiCategory": "12",
+        "bmr": "12",
+        "tdee": "12",
+        "target": "12",
+        "energy": "12",
+        "protein": "12",
+        "carbohydrate": "12",
+        "fats": "12"
+      },
+      "meals": [
+        {
+          "mealName": "Early Morning",
+          "mealTime": "16:35",
+          "calories": "12",
+          "protein": "12",
+          "options": [
+            {
+              "meal": "12121212121212121212",
+              "ingredients": "12121212121212121212121212121212121212",
+              "recipe": "12121212121212121212121212121212121212121212121212"
+            }
+          ],
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "counselorTypes": [
+    {
+      "id": "1",
+      "type": "Clinical Psychologist"
+    },
+    {
+      "id": "2",
+      "type": "Behavioral Health Counselor"
+    },
+    {
+      "id": "3",
+      "type": "Grief Counselor"
+    },
+    {
+      "id": "4",
+      "type": "Chronic Illness Counselor"
+    },
+    {
+      "id": "5",
+      "type": "Rehabilitation Counselor"
+    },
+    {
+      "id": "6",
+      "type": "Nutrition Counselor"
+    },
+    {
+      "id": "7",
+      "type": "Genetic Counselor"
+    },
+    {
+      "id": "8",
+      "type": "Palliative Care Counselor"
+    },
+    {
+      "id": "9",
+      "type": "Sleep Counselor"
+    },
+    {
+      "id": "10",
+      "type": "Wellness Coach"
     }
   ]
 }

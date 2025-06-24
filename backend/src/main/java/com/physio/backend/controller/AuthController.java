@@ -19,14 +19,15 @@ public class AuthController {
     public Object login(@RequestBody Map<String, String> credentials) {
         String email = credentials.get("email");
         String password = credentials.get("password");
+        String role = credentials.get("role"); // Read role from request
 
-        return userService.authenticate(email, password)
+        return userService.authenticate(email, password, role)
                 .map(user -> Map.of(
                         "id", user.getId(),
                         "name", user.getName(),
                         "email", user.getEmail(),
                         "role", user.getRole()
                 ))
-                .orElseGet(() -> Map.of("error", "Invalid credentials"));
+                .orElseGet(() -> Map.of("error", "Invalid credentials or role"));
     }
 }

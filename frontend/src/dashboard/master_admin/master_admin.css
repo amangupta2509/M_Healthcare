@@ -210,6 +210,21 @@
   max-height: 90vh;
   overflow-y: auto;
 }
+.modalslot-box {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 2rem;
+  border-radius: 12px;
+  border-color: 1px solid #cc5500;
+  width: 90%;
+  max-width: 1000px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+  z-index: 10000;
+
+  /* Add these for scroll */
+  max-height: 90vh;
+  overflow-y: auto;
+}
 /* Optional: Custom scrollbar styles */
 .modals-box::-webkit-scrollbar {
   width: 10px;

@@ -8,7 +8,7 @@ const DoctorNavbar = () => {
 
   return (
     <nav className="navbar">
-     <a href="../doctor/doctor_profile"> <div className="navbar-logo">Doctor</div></a>
+     <a href="../doctor/DoctorDashboardHome"> <div className="navbar-logo">Doctor</div></a>
       <button
         className="theme-toggle"
         onClick={toggleTheme}

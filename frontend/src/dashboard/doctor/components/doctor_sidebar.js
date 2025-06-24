@@ -18,6 +18,7 @@ import {
   Hospital,
   LayoutDashboard,
   Calendar,
+  KeyRoundIcon,
 } from "lucide-react";
 
 const DoctorSidebar = () => {
@@ -151,13 +152,16 @@ const DoctorSidebar = () => {
         <div className="sidebar-header">
           <div className="sidebar-profile">
             <img src={ProfileImage} alt="Profile" className="sidebar-avatar" />
-            <span className="sidebar-username">Doctor</span>
+            <a href="/doctor/DoctorDashboardHome">
+              {" "}
+              <span className="sidebar-username">Doctor</span>
+            </a>
           </div>
         </div>
 
         <nav className="sidebar-menu-wrapper">
           <ul className="sidebar-menu">
-            <li>
+            {/* <li>
               <NavLink to="/doctor/doctor_profile" className={navLinkClass}>
                 <Home
                   size={18}
@@ -167,29 +171,22 @@ const DoctorSidebar = () => {
                 />
                 <span>Dashboard</span>
               </NavLink>
-            </li>
+            </li> */}
             <li>
-              <NavLink to="/doctor/DoctorDashboardHome" className={navLinkClass}>
+              <NavLink
+                to="/doctor/DoctorDashboardHome"
+                className={navLinkClass}
+              >
                 <Home
                   size={18}
                   style={{
                     marginRight: !collapsed || isHovering ? "10px" : "0",
                   }}
                 />
-                <span>Doctor Dashboard Home</span>
+                <span>Dashboard Home</span>
               </NavLink>
             </li>
-            <li>
-              <NavLink to="/doctor/doctor_clients" className={navLinkClass}>
-                <Users
-                  size={18}
-                  style={{
-                    marginRight: !collapsed || isHovering ? "10px" : "0",
-                  }}
-                />
-                <span>Client Management</span>
-              </NavLink>
-            </li>
+
             <li>
               <NavLink
                 to="/doctor/DoctorsAppointments"
@@ -204,20 +201,7 @@ const DoctorSidebar = () => {
                 <span> Appointments</span>
               </NavLink>
             </li>
-            <li>
-              <NavLink
-                to="/doctor/DoctorAssignDecision"
-                className={navLinkClass}
-              >
-                <Hospital
-                  size={18}
-                  style={{
-                    marginRight: !collapsed || isHovering ? "10px" : "0",
-                  }}
-                />
-                <span>Assign Patient</span>
-              </NavLink>
-            </li>
+
             <li>
               <NavLink
                 to="/doctor/DoctorAssignmentDashboard"
@@ -234,30 +218,31 @@ const DoctorSidebar = () => {
             </li>
             <li>
               <NavLink
-                to="/doctor/DoctorUpcomingAppointments"
+                to="/doctor/DoctorSlotBooking"
                 className={navLinkClass}
               >
-                <BarChart2
+                <LayoutDashboard
                   size={18}
                   style={{
                     marginRight: !collapsed || isHovering ? "10px" : "0",
                   }}
                 />
-                <span>Report</span>
+                <span>Slot Booking</span>
               </NavLink>
             </li>
+
             <li>
               <NavLink
                 to="/doctor/DoctorPasswordRequest"
                 className={navLinkClass}
               >
-                <BarChart2
+                <KeyRoundIcon
                   size={18}
                   style={{
                     marginRight: !collapsed || isHovering ? "10px" : "0",
                   }}
                 />
-                <span>Password Request</span>
+                <span>Reset Password</span>
               </NavLink>
             </li>
 

@@ -30,20 +30,23 @@ const PhysiosAppointments = () => {
 
   const handleStatusToggle = (id) => {
     const current = appointments.find((a) => a.id === id);
+    if (!current) return;
+
     const nextStatus =
       current.status === "Pending"
         ? "Approved"
         : current.status === "Approved"
         ? "Completed"
         : "Pending";
+
     updateAppointment({ ...current, status: nextStatus });
     toast.info(`Status updated to: ${nextStatus}`);
   };
 
   const handleMeetingLinkChange = (id, link) => {
     const updated = appointments.find((a) => a.id === id);
-    updated.meetingLink = link;
-    updateAppointment(updated);
+    if (!updated) return;
+    updateAppointment({ ...updated, meetingLink: link });
   };
 
   const handleGenerateLink = (id) => {
@@ -54,44 +57,45 @@ const PhysiosAppointments = () => {
   };
 
   const handleDelete = (id) => {
-    const confirmToast = () => (
-      <div>
-        <p>Confirm delete?</p>
-        <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-          <button
-            className="btn btn-primary"
-            onClick={() => {
-              fetch(`${API_URL}/${id}`, { method: "DELETE" })
-                .then(() =>
-                  setAppointments((prev) => prev.filter((a) => a.id !== id))
-                )
-                .then(() => toast.error("Appointment deleted."))
-                .catch(() => toast.error("Failed to delete appointment"));
-              toast.dismiss();
-            }}
-          >
-            Confirm
-          </button>
-          <button
-            className="btn btn-primary"
-            onClick={() => {
-              toast.dismiss();
-              toast.info("Deletion cancelled.");
-            }}
-          >
-            Cancel
-          </button>
+    toast(
+      () => (
+        <div>
+          <p>Confirm delete?</p>
+          <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                fetch(`${API_URL}/${id}`, { method: "DELETE" })
+                  .then(() =>
+                    setAppointments((prev) => prev.filter((a) => a.id !== id))
+                  )
+                  .then(() => toast.error("Appointment deleted."))
+                  .catch(() => toast.error("Failed to delete appointment"));
+                toast.dismiss();
+              }}
+            >
+              Confirm
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                toast.dismiss();
+                toast.info("Deletion cancelled.");
+              }}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
-      </div>
+      ),
+      {
+        position: "top-center",
+        autoClose: false,
+        closeOnClick: false,
+        draggable: false,
+        closeButton: false,
+      }
     );
-
-    toast(confirmToast, {
-      position: "top-center",
-      autoClose: false,
-      closeOnClick: false,
-      draggable: false,
-      closeButton: false,
-    });
   };
 
   return (
@@ -130,15 +134,15 @@ const PhysiosAppointments = () => {
                           : "badge-blue"
                       }`}
                     >
-                      {a.appointmentType}
+                      {a.appointmentType || "N/A"}
                     </span>
                   </td>
-                  <td>{a.date}</td>
-                  <td>{a.time}</td>
+                  <td>{a.date || "-"}</td>
+                  <td>{a.time || "-"}</td>
                   <td>
                     <button
                       className="btn btn-primary"
-                      onClick={() => setSelectedNote(a.notes)}
+                      onClick={() => setSelectedNote(a.notes || "No notes")}
                     >
                       View
                     </button>
@@ -198,7 +202,7 @@ const PhysiosAppointments = () => {
                       onClick={() => handleStatusToggle(a.id)}
                       style={{ cursor: "pointer" }}
                     >
-                      {a.status}
+                      {a.status || "Pending"}
                     </span>
                   </td>
                   <td>

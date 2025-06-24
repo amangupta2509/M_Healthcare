@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Service
 public class PatientService {
@@ -51,6 +53,39 @@ public class PatientService {
             patient.setCharts(chartMap);
         }
 
+        if (updates.containsKey("lastVisitDate")) {
+            patient.setLastVisitDate(LocalDate.parse(updates.get("lastVisitDate").toString()));
+        }
+
+        if (updates.containsKey("lastVisitTime")) {
+            patient.setLastVisitTime(LocalTime.parse(updates.get("lastVisitTime").toString()));
+        }
+
+        if (updates.containsKey("summary")) {
+            patient.setSummary(updates.get("summary").toString());
+        }
+
+        if (updates.containsKey("doctorNotes")) {
+            patient.setDoctorNotes(updates.get("doctorNotes").toString());
+        }
+
+        if (updates.containsKey("recommendation")) {
+            patient.setRecommendation(updates.get("recommendation").toString());
+        }
+
+        if (updates.containsKey("prescription")) {
+            patient.setPrescription(updates.get("prescription").toString());
+        }
+
+        if (updates.containsKey("vitals")) {
+            Map<String, String> vitalsMap = new HashMap<>();
+            ((Map<?, ?>) updates.get("vitals")).forEach((k, v) ->
+                    vitalsMap.put(String.valueOf(k), String.valueOf(v))
+            );
+            patient.setVitals(vitalsMap);
+        }
+
         return repo.save(patient);
     }
+
 }

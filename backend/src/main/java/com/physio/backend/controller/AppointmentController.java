@@ -44,5 +44,4 @@ public class AppointmentController {
     public List<Appointment> getCompletedAppointments(@PathVariable String role) {
         return service.getCompletedByRole(role.toLowerCase());
     }
-
 }

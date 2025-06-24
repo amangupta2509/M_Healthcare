@@ -7,10 +7,12 @@ const Login = () => {
 
   const savedEmail = localStorage.getItem("savedEmail") || "";
   const savedPassword = localStorage.getItem("savedPassword") || "";
+  const savedRole = localStorage.getItem("savedRole") || "doctor"; // default role
 
   const [formData, setFormData] = useState({
     email: savedEmail,
     password: savedPassword,
+    role: savedRole,
   });
 
   const [rememberMe, setRememberMe] = useState(savedEmail !== "");
@@ -39,7 +41,8 @@ const Login = () => {
   }, [lockoutTime]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -75,9 +78,11 @@ const Login = () => {
       if (rememberMe) {
         localStorage.setItem("savedEmail", formData.email);
         localStorage.setItem("savedPassword", formData.password);
+        localStorage.setItem("savedRole", formData.role);
       } else {
         localStorage.removeItem("savedEmail");
         localStorage.removeItem("savedPassword");
+        localStorage.removeItem("savedRole");
       }
 
       localStorage.setItem("currentUser", JSON.stringify(data));
@@ -95,7 +100,7 @@ const Login = () => {
             navigate("/diet/diet_profile");
             break;
           case "doctor":
-            navigate("/doctor/doctor_profile");
+            navigate("/doctor/DoctorDashboardHome");
             break;
           case "masteradmin":
             navigate("/masteradmin");
@@ -106,7 +111,7 @@ const Login = () => {
           default:
             navigate("/unauthorized");
         }
-      }, 1500);
+      });
     } catch (error) {
       console.error("Login error:", error);
       setLoading(false);
@@ -160,6 +165,25 @@ const Login = () => {
             />
             <label htmlFor="password" className="floating-label">
               Password
+            </label>
+          </div>
+
+          <div className="form-group floating-label-content">
+            <select
+              id="role"
+              className="form-control floating-input"
+              value={formData.role}
+              onChange={handleChange}
+              required
+            >
+              <option value="doctor">Doctor</option>
+              <option value="physio">Physio</option>
+              <option value="dietitian">Dietitian</option>
+              <option value="counselor">Counselor</option>
+              <option value="masteradmin">Master Admin</option>
+            </select>
+            <label htmlFor="role" className="floating-label">
+              Select Role
             </label>
           </div>
 

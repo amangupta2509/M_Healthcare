@@ -43,7 +43,7 @@ const DietPasswordRequest = () => {
     <div className={`dashboard-main ${theme}`}>
       <ToastContainer position="top-center" autoClose={3000} />
       <h1>Password Change Request</h1>
-      <div className="card">
+      <div className="card" style={{border:"1px solid #cc5500"}}>
         <form onSubmit={handleSubmit} className="form">
           <div className="form-group">
             <label htmlFor="counselorName">Counselor Name:</label>
