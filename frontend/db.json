@@ -1758,5 +1758,100 @@
       "id": "10",
       "type": "Wellness Coach"
     }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Nutrition",
+      "subCategories": [
+        {
+          "name": "Vitamins",
+          "heading": "Essential Vitamins",
+          "groups": [
+            {
+              "name": "Group A",
+              "hasTraits": true,
+              "traits": [
+                {
+                  "label": "Vitamin A",
+                  "features": [
+                    {
+                      "label": "Improves Vision"
+                    }
+                  ]
+                }
+              ],
+              "directFeatures": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "b3ee",
+      "name": "slim",
+      "subCategories": [
+        {
+          "name": "diet",
+          "heading": "diet diet",
+          "groups": [
+            {
+              "name": "diet dietdiet diet",
+              "hasTraits": true,
+              "traits": [
+                {
+                  "label": "wer",
+                  "features": [
+                    {
+                      "label": "qwe"
+                    },
+                    {
+                      "label": "wqe"
+                    }
+                  ]
+                },
+                {
+                  "label": "wer",
+                  "features": [
+                    {
+                      "label": "eee"
+                    },
+                    {
+                      "label": "qwer"
+                    }
+                  ]
+                }
+              ],
+              "directFeatures": []
+            },
+            {
+              "name": "diet dietdiet dietdiet dietdiet diet",
+              "hasTraits": null,
+              "traits": [],
+              "directFeatures": []
+            }
+          ]
+        },
+        {
+          "name": "diet diet",
+          "heading": "diet dietdiet diet",
+          "groups": [
+            {
+              "name": "diet dietdiet dietdiet diet",
+              "hasTraits": null,
+              "traits": [],
+              "directFeatures": [
+                {
+                  "label": "diet dietdiet diet"
+                },
+                {
+                  "label": "diet dietdiet dietdiet dietdiet dietdiet dietdiet diet"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   ]
 }

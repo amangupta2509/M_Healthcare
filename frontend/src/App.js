@@ -61,9 +61,6 @@ import DietFooter from "./dashboard/diet/components/diet_footer";
 // Pages
 import DietProfile from "./dashboard/diet/diet_profile";
 import DietAssign from "./dashboard/diet/diet_assign";
-import DietClientManagement from "./dashboard/diet/diet_clientmanagement";
-import DietReport from "./dashboard/diet/diet_report";
-import DietUserDetails from "./dashboard/diet/diet_userdetails";
 import DietPhysioo from "./dashboard/diet/diet_physioo";
 import DietitiansAppointments from "./dashboard/diet/DietitiansAppointments";
 import DietPasswordRequest from "./dashboard/diet/pages/DietPasswordRequest";
@@ -100,7 +97,8 @@ import ActivityLogs from "./dashboard/master_admin/ActivityLogs";
 import SecurityControls from "./dashboard/master_admin/SecurityControls";
 import Services from "./dashboard/master_admin/Services";
 import AdminBlogSection from "./dashboard/master_admin/AdminBlogSection";
-
+import ReportTemplateBuilder from "./dashboard/master_admin/ReportTemplateBuilder";
+import CategoryBuilder from "./dashboard/master_admin/CategoryBuilder";
 // Appointment Pages
 import AppointmentsContainer from "./dashboard/master_admin/AppointmentsContainer";
 import CounselorAppointments from "./dashboard/master_admin/CounselorAppointments";
@@ -285,12 +283,7 @@ const App = () => {
           <Route path="/diet" element={<DietDashboardLayout />}>
             <Route path="diet_profile" element={<DietProfile />} />
             <Route path="diet_assign" element={<DietAssign />} />
-            <Route path="diet_clients" element={<DietClientManagement />} />
-            <Route path="diet_reports" element={<DietReport />} />
-            <Route path="user" element={<DietUserDetails />} />
             <Route path="diet_physio" element={<DietPhysioo />} />
-            <Route path="user-details/:userId" element={<DietUserDetails />} />
-            <Route path="user/:id/report" element={<DietReport />} />
             <Route path="DietitiansAppointments" element={<DietitiansAppointments />} />
             <Route path="DietPasswordRequest" element={<DietPasswordRequest />} />
             <Route path="DietMealPlanAssign" element={<DietMealPlanAssign />} />
@@ -330,6 +323,8 @@ const App = () => {
             <Route path="appointments/physio" element={<PhysioAppointments />} />
             <Route path="appointments/phlebotomist" element={<PhlebotomistAppointments />} />
             <Route path="AdminPasswordRequests" element={<AdminPasswordRequests />} />
+            <Route path="ReportTemplateBuilder" element={<ReportTemplateBuilder />} />
+            <Route path="CategoryBuilder" element={<CategoryBuilder />} />
           </Route>
 
           {/* ==============================================

@@ -160,12 +160,7 @@ const DietSidebar = () => {
                 <span>Dashboard</span>
               </NavLink>
             </li>
-            <li>
-              <NavLink to="/diet/diet_clients" className={navLinkClass}>
-                <Users size={18} style={{ marginRight: !collapsed || isHovering ? "10px" : "0" }} />
-                <span>Client Management</span>
-              </NavLink>
-            </li>
+           
             <li>
               <NavLink to="/diet/diet_assign" className={navLinkClass}>
                 <Hamburger size={18} style={{ marginRight: !collapsed || isHovering ? "10px" : "0" }} />
@@ -184,12 +179,7 @@ const DietSidebar = () => {
                 <span>DietMealPlanAssign</span>
               </NavLink>
             </li>
-            <li>
-              <NavLink to="/diet/diet_reports" className={navLinkClass}>
-                <BarChart2 size={18} style={{ marginRight: !collapsed || isHovering ? "10px" : "0" }} />
-                <span>Reports</span>
-              </NavLink>
-            </li>
+            
             <li>
               <NavLink to="/diet/DietPasswordRequest" className={navLinkClass}>
                 <Workflow size={18} style={{ marginRight: !collapsed || isHovering ? "10px" : "0" }} />
