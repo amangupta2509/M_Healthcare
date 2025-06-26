@@ -186,12 +186,6 @@ const MasterAdminSidebar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/masteradmin/ReportTemplateBuilder" className={navLinkClass}>
-                <BarChart2 size={18} style={{ marginRight: !collapsed || isHovering ? "10px" : "0" }} />
-                <span>ReportTemplateBuilder</span>
-              </NavLink>
-            </li>
-            <li>
               <NavLink to="/masteradmin/ActivityLogs" className={navLinkClass}>
                 <BookText size={18} style={{ marginRight: !collapsed || isHovering ? "10px" : "0" }} />
                 <span>Activity Logs</span>

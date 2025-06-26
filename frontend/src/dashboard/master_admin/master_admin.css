@@ -1018,4 +1018,30 @@ form.card .d-flex .btn-secondary:hover {
 .scrollable-notes-table::-webkit-scrollbar-track {
   background-color: transparent;
 }
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+.modalsc-box {
+  scrollbar-width: thin;
+  scrollbar-color: #cc5500 #f5f5f5; /* Firefox */
+}
+
+/* Chrome, Edge, Safari */
+.modalsc-box::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modalsc-box::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+.modalsc-box::-webkit-scrollbar-thumb {
+  background-color: #cc5500;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
 
