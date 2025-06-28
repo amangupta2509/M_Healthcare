@@ -180,9 +180,9 @@ const MasterAdminSidebar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/masteradmin/CategoryBuilder" className={navLinkClass}>
+              <NavLink to="/masteradmin/ReportBuilder" className={navLinkClass}>
                 <BarChart2 size={18} style={{ marginRight: !collapsed || isHovering ? "10px" : "0" }} />
-                <span>CategoryBuilder</span>
+                <span>Report Builder</span>
               </NavLink>
             </li>
             <li>

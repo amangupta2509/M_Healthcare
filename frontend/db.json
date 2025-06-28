@@ -1762,56 +1762,74 @@
   ],
   "categories": [
     {
-      "id": "e936",
-      "name": "fitKr",
+      "id": "abdf",
+      "name": "Fitkr",
       "subCategories": [
         {
           "name": "Diet",
-          "heading": "A right diet is the one that makes you feel happy, keeps you healthy, does not make you feel starved and prevents several health  issues. Information present in our genes can be used to fine tune our diet to make it personalised. Based on your genetic make up, we  share with you the diet pattern that you should be following for a healthy and happy lifestyle. ",
+          "heading": "A right diet is the one that makes you feel happy, keeps you healthy, does not make you feel starved and prevents several health  issues. Information present in our genes can be used to fine tune our diet to make it personalised. Based on your genetic make up, we  share with you the diet pattern that you should be following for a healthy and happy lifestyle.",
           "groups": [
             {
-              "name": "MACRONUTRIENTS",
+              "name": "MACRONUTRIENTS ",
               "hasTraits": true,
               "traits": [
                 {
-                  "label": "CARBOHYDRATE  SENSITIVITY",
-                  "features": [
+                  "name": "CARBOHYDRATE  SENSITIVITY ",
+                  "fields": [
                     {
-                      "label": "3"
+                      "key": "score",
+                      "value": "7",
+                      "type": "number"
                     },
                     {
-                      "label": "HIGH  Maintain carb intake <45%  For obesity & IR control"
+                      "key": "impact",
+                      "value": "HIGH  Maintain carb intake <45%  For obesity & IR control ",
+                      "type": "text"
                     },
                     {
-                      "label": "LOW  Maintain carb intake <60%  For obesity & IR control "
+                      "key": "impact",
+                      "value": "LOW  Maintain carb intake <60%  For obesity & IR control",
+                      "type": "text"
                     }
                   ]
                 },
                 {
-                  "label": "FAT SENSITIVITY",
-                  "features": [
+                  "name": "FAT SENSITIVITY ",
+                  "fields": [
                     {
-                      "label": "6"
+                      "key": "score",
+                      "value": "6",
+                      "type": "text"
                     },
                     {
-                      "label": "HIGH  Fat intake not to exceed  15% of total calories"
+                      "key": "impact",
+                      "value": "HIGH  Fat intake not to exceed  15% of total calories",
+                      "type": "text"
                     },
                     {
-                      "label": "LOW  Fat intake advised up to  25% of total calories"
+                      "key": "impact",
+                      "value": "LOW  Fat intake advised up to  25% of total calories ",
+                      "type": "text"
                     }
                   ]
                 },
                 {
-                  "label": "PROTEIN  REQUIREMENT ",
-                  "features": [
+                  "name": "PROTEIN  REQUIREMENT",
+                  "fields": [
                     {
-                      "label": "6"
+                      "key": "score",
+                      "value": "7",
+                      "type": "number"
                     },
                     {
-                      "label": "HIGH  Protein supplements  needed along with dietary  source "
+                      "key": "impact",
+                      "value": "HIGH  Protein supplements  needed along with dietary  source",
+                      "type": "text"
                     },
                     {
-                      "label": "NORMAL  Protein supplements not  needed, intake through  diet is enough "
+                      "key": "impact",
+                      "value": "NORMAL  Protein supplements not  needed, intake through  diet is enough",
+                      "type": "text"
                     }
                   ]
                 }
@@ -1819,17 +1837,26 @@
               "directFeatures": []
             },
             {
-              "name": "MEAL PATTERN",
+              "name": "MEAL PATTERN ",
               "hasTraits": true,
               "traits": [
                 {
-                  "label": "MEAL  FREQUENCY",
-                  "features": [
+                  "name": "MEAL  FREQUENCY ",
+                  "fields": [
                     {
-                      "label": "FREQUENT  4-5 small meals suggested  in a day"
+                      "key": "score",
+                      "value": "6",
+                      "type": "number"
                     },
                     {
-                      "label": "LESS FREQUENT  Less frequent meals, 2-3  meals are enough in a day"
+                      "key": "impact",
+                      "value": "FREQUENT  4-5 small meals suggested  in a day",
+                      "type": "text"
+                    },
+                    {
+                      "key": "impact",
+                      "value": "LESS FREQUENT  Less frequent meals, 2-3  meals are enough in a day",
+                      "type": "text"
                     }
                   ]
                 }
@@ -1837,85 +1864,107 @@
               "directFeatures": []
             },
             {
-              "name": "FOOD  SENSITIVITIES",
+              "name": "FOOD  SENSITIVITIES ",
               "hasTraits": true,
               "traits": [
                 {
-                  "label": "ALCOHOL  SENSITIVITY ",
-                  "features": [
+                  "name": "ALCOHOL  SENSITIVITY",
+                  "fields": [
                     {
-                      "label": "4"
+                      "key": "score",
+                      "value": "4",
+                      "type": "text"
                     },
                     {
-                      "label": "HIGH  High sensitivity, avoid  alcohol if possible,  especially the types of  beverages that trigger  intolerance reaction."
+                      "key": "impact",
+                      "value": "HIGH  High sensitivity, avoid  alcohol if possible,  especially the types of  beverages that trigger  intolerance reaction.",
+                      "type": "text"
                     },
                     {
-                      "label": "LOW  Low sensitivity, know  your alcohol intake limits,  consult doctor for your  upper limit of intake "
+                      "key": "impact",
+                      "value": "LOW  Low sensitivity, know  your alcohol intake limits,  consult doctor for your  upper limit of intake ",
+                      "type": "text"
                     }
                   ]
                 },
                 {
-                  "label": "CAFFEINE  SENSITIVITY ",
-                  "features": [
+                  "name": "CAFFEINE  SENSITIVITY",
+                  "fields": [
                     {
-                      "label": "6"
+                      "key": "score",
+                      "value": "6",
+                      "type": "number"
                     },
                     {
-                      "label": "HIGH  High sensitivity, do not  consume >4 cups/day"
+                      "key": "impact",
+                      "value": "HIGH  High sensitivity, do not  consume >4 cups/day",
+                      "type": "text"
                     },
                     {
-                      "label": "NORMAL  Caffeine up to 5 cups a  day can be consumed "
+                      "key": "impact",
+                      "value": "NORMAL  Caffeine up to 5 cups a  day can be consumed",
+                      "type": "text"
                     }
                   ]
                 },
                 {
-                  "label": "GLUTEN  SENSITIVITY",
-                  "features": [
+                  "name": "GLUTEN  SENSITIVITY ",
+                  "fields": [
                     {
-                      "label": "3"
+                      "key": "score",
+                      "value": "5",
+                      "type": "number"
                     },
                     {
-                      "label": "HIGH  Gluten intake needs to be  reduced/stopped"
+                      "key": "impact",
+                      "value": "HIGH  Gluten intake needs to be  reduced/stopped",
+                      "type": "text"
                     },
                     {
-                      "label": "LOW  Gluten to be avoided in  cases of gastric distress "
-                    }
-                  ]
-                },
-                {
-                  "label": "LACTOSE  SENSITIVITY",
-                  "features": [
-                    {
-                      "label": "10"
-                    },
-                    {
-                      "label": "HIGH  Milk & milk products need  to be avoided"
-                    },
-                    {
-                      "label": "LOW  Milk or milk products to  be avoided in gastric  distress "
-                    }
-                  ]
-                },
-                {
-                  "label": "SALT  SENSITIVITY ",
-                  "features": [
-                    {
-                      "label": "10"
-                    },
-                    {
-                      "label": "HIGH  Try to reduce overall salt  intake to up to 3-5 gm per  day"
-                    },
-                    {
-                      "label": "NORMAL  Consumption of salt up to  5 gm/day can be done"
+                      "key": "impact",
+                      "value": "LOW  Gluten to be avoided in  cases of gastric distress ",
+                      "type": "text"
                     }
                   ]
                 }
               ],
               "directFeatures": []
+            },
+            {
+              "name": "aman",
+              "hasTraits": false,
+              "traits": [
+                {
+                  "name": "CARBOHYDRATE  SENSITIVITY ",
+                  "fields": [
+                    {
+                      "key": "score",
+                      "value": "7",
+                      "type": "text"
+                    },
+                    {
+                      "key": "impact",
+                      "value": "HIGH  Maintain carb intake <45%  For obesity & IR control",
+                      "type": "text"
+                    }
+                  ]
+                }
+              ],
+              "directFeatures": [],
+              "fields": [
+                {
+                  "type": "text"
+                }
+              ]
             }
           ]
         }
       ]
+    },
+    {
+      "id": "ac94",
+      "name": "qqqqqqqqqqqqqq",
+      "subCategories": []
     }
   ]
 }

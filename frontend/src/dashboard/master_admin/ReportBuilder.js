@@ -1,4 +1,4 @@
-// CategoryBuilder.js
+// ReportBuilder.js
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -7,8 +7,9 @@ import "react-toastify/dist/ReactToastify.css";
 import "../master_admin/master_admin.css";
 import "../physio/assign.css";
 
-const CategoryBuilder = () => {
+const ReportBuilder = () => {
   const API_URL = "http://localhost:3001/categories";
+  const [dnlId, setDnlId] = useState("");
 
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
@@ -24,7 +25,9 @@ const CategoryBuilder = () => {
     useState(null);
   const [selectedGroupIndex, setSelectedGroupIndex] = useState(null);
 
-  const [newTrait, setNewTrait] = useState({ label: "" });
+  const [newTrait, setNewTrait] = useState({ name: "", fields: [] });
+  const [showAddTraitForm, setShowAddTraitForm] = useState(false);
+
   const [newTraitFeature, setNewTraitFeature] = useState({ label: "" });
   const [newFeature, setNewFeature] = useState({ label: "" });
 
@@ -41,6 +44,7 @@ const CategoryBuilder = () => {
   const [mrn, setMrn] = useState("");
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [isAssigned, setIsAssigned] = useState(false);
+  const [deleteLock, setDeleteLock] = useState(false);
 
   const [subCategoryAddedPopup, setSubCategoryAddedPopup] = useState(false);
   const [groupAddedPopup, setGroupAddedPopup] = useState(false);
@@ -81,18 +85,25 @@ const CategoryBuilder = () => {
       .get(`http://localhost:3001/patients?mrn=${mrn}`)
       .then((res) => {
         if (res.data.length > 0) {
-          setSelectedPatient(res.data[0]);
-          toast.success(`Patient ${res.data[0].name} found!`, {
+          const patient = res.data[0];
+
+          setSelectedPatient(patient);
+          setDnlId(patient.dnlId || ""); // NEW: Store dnlId from backend
+
+          toast.success(`Patient ${patient.name} found!`, {
             position: "top-center",
           });
         } else {
           setSelectedPatient(null);
+          setDnlId(""); // Clear dnlId if no patient found
           toast.error("No patient found with this MRN", {
             position: "top-center",
           });
         }
       })
       .catch(() => {
+        setSelectedPatient(null);
+        setDnlId(""); // Ensure clean state on error
         toast.error("Error fetching patient", {
           position: "top-center",
         });
@@ -115,6 +126,12 @@ const CategoryBuilder = () => {
       .catch(() =>
         toast.error("Failed to add category", { position: "top-center" })
       );
+  };
+  const addTraitField = () => {
+    setNewTrait({
+      ...newTrait,
+      fields: [...newTrait.fields, { key: "", value: "", type: "text" }],
+    });
   };
 
   const addSubCategory = () => {
@@ -172,27 +189,81 @@ const CategoryBuilder = () => {
         toast.error("Failed to save group", { position: "top-center" })
       );
   };
+  const removeTraitField = (index) => {
+    const updatedFields = newTrait.fields.filter((_, i) => i !== index);
+    setNewTrait({ ...newTrait, fields: updatedFields });
+  };
 
-  const addTrait = () => {
+  const handleSubmitTrait = () => {
+    if (!newTrait.name.trim() || newTrait.fields.length === 0) {
+      toast.error("Trait name and at least one field are required", {
+        position: "top-center",
+      });
+      return;
+    }
+
     const updated = [...categories];
+
     updated[selectedCategoryIndex].subCategories[
       selectedSubCategoryIndex
     ].groups[selectedGroupIndex].traits.push({
-      label: newTrait.label,
-      features: [],
+      name: newTrait.name,
+      fields: newTrait.fields,
     });
 
     const id = updated[selectedCategoryIndex].id;
+
     axios
       .put(`${API_URL}/${id}`, updated[selectedCategoryIndex])
       .then(() => {
         setCategories(updated);
-        setNewTrait({ label: "" });
+        setNewTrait({ name: "", fields: [] });
+        setShowAddTraitForm(false); // ✅ hide form after submit
         toast.success("Trait added and saved", { position: "top-center" });
       })
       .catch(() =>
         toast.error("Failed to save trait", { position: "top-center" })
       );
+  };
+
+  const exportJSON = () => {
+    const primaryCategory = categories[0]?.name || "Untitled";
+
+    // Transform all categories to backend format
+    const transformedCategories = categories.map(({ id, ...cat }) => ({
+      ...cat,
+      subCategories: cat.subCategories.map((sub) => ({
+        name: sub.name,
+        groups: sub.groups.map((grp) => ({
+          name: grp.name,
+          hasTraits: grp.hasTraits,
+          ...(grp.hasTraits
+            ? {
+                traits: grp.traits.map((trait) => ({
+                  name: trait.name,
+                  fields: trait.fields,
+                })),
+              }
+            : {
+                fields: grp.fields || [], // if no traits, use flat fields
+              }),
+        })),
+      })),
+    }));
+
+    const payload = {
+      dnlId: mrn,
+      reportName: `${primaryCategory} Comprehensive Report`,
+      categories: transformedCategories,
+    };
+
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {
+      type: "application/json",
+    });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `${dnlId || "report"}_report.json`;
+    link.click();
   };
 
   const addTraitFeature = (traitIndex) => {
@@ -219,13 +290,24 @@ const CategoryBuilder = () => {
         toast.error("Failed to save feature", { position: "top-center" })
       );
   };
+  const updateTraitField = (index, key, value) => {
+    const updatedFields = [...(newTrait.fields || [])];
+    updatedFields[index][key] = value;
+    setNewTrait({ ...newTrait, fields: updatedFields });
+  };
 
   const addDirectFeature = () => {
     const updated = [...categories];
-    updated[selectedCategoryIndex].subCategories[
-      selectedSubCategoryIndex
-    ].groups[selectedGroupIndex].directFeatures.push({
-      label: newFeature.label,
+    const group =
+      updated[selectedCategoryIndex].subCategories[selectedSubCategoryIndex]
+        .groups[selectedGroupIndex];
+
+    if (!group.fields) group.fields = [];
+
+    group.fields.push({
+      key: newFeature.key,
+      value: newFeature.value,
+      type: newFeature.type || "text",
     });
 
     const id = updated[selectedCategoryIndex].id;
@@ -233,11 +315,11 @@ const CategoryBuilder = () => {
       .put(`${API_URL}/${id}`, updated[selectedCategoryIndex])
       .then(() => {
         setCategories(updated);
-        setNewFeature({ label: "" });
-        toast.success("Feature added and saved", { position: "top-center" });
+        setNewFeature({ key: "", value: "", type: "text" });
+        toast.success("Field added and saved", { position: "top-center" });
       })
       .catch(() =>
-        toast.error("Failed to save feature", { position: "top-center" })
+        toast.error("Failed to save field", { position: "top-center" })
       );
   };
 
@@ -248,7 +330,42 @@ const CategoryBuilder = () => {
   };
 
   const handleSubmit = () => {
-    Promise.all(categories.map((cat, idx) => updateCategory(cat, idx)))
+    if (!dnlId || categories.length === 0) {
+      toast.error("Missing DNL ID or categories", { position: "top-center" });
+      return;
+    }
+
+    const primaryCategory = categories[0]?.name || "Untitled";
+
+    const transformedCategories = categories.map(({ id, ...cat }) => ({
+      ...cat,
+      subCategories: cat.subCategories.map((sub) => ({
+        name: sub.name,
+        groups: sub.groups.map((grp) => ({
+          name: grp.name,
+          hasTraits: grp.hasTraits,
+          ...(grp.hasTraits
+            ? {
+                traits: grp.traits.map((trait) => ({
+                  name: trait.name,
+                  fields: trait.fields,
+                })),
+              }
+            : {
+                fields: grp.fields || [],
+              }),
+        })),
+      })),
+    }));
+
+    const payload = {
+      dnlId: mrn,
+      reportName: `${primaryCategory} Comprehensive Report`,
+      categories: transformedCategories,
+    };
+
+    axios
+      .post("http://localhost:3001/reports", payload)
       .then(() => {
         toast.success("Report Template Created Successfully!", {
           position: "top-center",
@@ -268,7 +385,7 @@ const CategoryBuilder = () => {
   return (
     <div className="dashboard-main">
       <ToastContainer position="top-center" autoClose={3000} />
-      <h1 className="card-header">🧱 Category Builder</h1>
+      <h1 className="card-header">🧱 Report Builder</h1>
       <div className="card">
         <h2 className="card-header">🔍 Search Patient by MRN</h2>
         <div
@@ -435,7 +552,6 @@ const CategoryBuilder = () => {
                             className="btn btn-primary"
                             onClick={() => {
                               addSubCategory();
-                              setSubCategoryAddedPopup(true);
                               setShowSubCategoryCard(false);
                             }}
                           >
@@ -498,7 +614,6 @@ const CategoryBuilder = () => {
                           className="btn btn-primary"
                           onClick={() => {
                             addGroup();
-                            setGroupAddedPopup(true);
                             setShowGroupCard(false);
                           }}
                         >
@@ -571,52 +686,230 @@ const CategoryBuilder = () => {
                             </label>
                           </div>
 
+                          {/* ✅ GROUP HAS TRAITS */}
                           {categories[selectedCategoryIndex].subCategories[
                             selectedSubCategoryIndex
                           ].groups[selectedGroupIndex].hasTraits ? (
                             <div className="form-group">
-                              <label>Add Trait</label>
-                              <input
-                                type="text"
-                                value={newTrait.label}
-                                onChange={(e) =>
-                                  setNewTrait({ label: e.target.value })
-                                }
-                                placeholder="Trait label"
-                              />
+                              {/* Add Trait Toggle Button */}
                               <button
-                                className="btn btn-secondary"
-                                onClick={addTrait}
+                                className="btn btn-outline-primary"
+                                onClick={() =>
+                                  setShowAddTraitForm(!showAddTraitForm)
+                                }
                               >
-                                Add Trait
+                                {showAddTraitForm
+                                  ? "❌ Cancel Add Trait"
+                                  : "➕ Add Trait"}
                               </button>
 
+                              {/* Conditional Trait Form */}
+                              {showAddTraitForm && (
+                                <div
+                                  style={{
+                                    marginTop: "1rem",
+                                    border: "1px solid #ccc",
+                                    padding: "1rem",
+                                    borderRadius: "6px",
+                                  }}
+                                >
+                                  <label>Trait Name</label>
+                                  <input
+                                    type="text"
+                                    value={newTrait.name || ""}
+                                    onChange={(e) =>
+                                      setNewTrait({
+                                        ...newTrait,
+                                        name: e.target.value,
+                                      })
+                                    }
+                                    placeholder="Trait name"
+                                    style={{
+                                      width: "100%",
+                                      padding: "0.5rem",
+                                      marginTop: "0.5rem",
+                                      borderRadius: "4px",
+                                      border: "1px solid #ccc",
+                                    }}
+                                  />
+
+                                  <h5
+                                    style={{
+                                      marginTop: "1rem",
+                                      marginBottom: "0.5rem",
+                                    }}
+                                  >
+                                    Trait Fields:
+                                  </h5>
+
+                                  {newTrait.fields.length > 0 && (
+                                    <div
+                                      style={{
+                                        display: "grid",
+                                        gridTemplateColumns: "1fr 1fr 1fr auto",
+                                        backgroundColor: "#f8f9fa",
+                                        padding: "0.5rem",
+                                        fontWeight: "600",
+                                        color: "#cc5500",
+                                        borderBottom: "1px solid #ccc",
+                                      }}
+                                    >
+                                      <span>Key</span>
+                                      <span>Value</span>
+                                      <span>Type</span>
+                                      <span>Action</span>
+                                    </div>
+                                  )}
+
+                                  {newTrait.fields.map((field, index) => (
+                                    <div
+                                      key={index}
+                                      style={{
+                                        display: "grid",
+                                        gridTemplateColumns: "1fr 1fr 1fr auto",
+                                        gap: "0.5rem",
+                                        alignItems: "center",
+                                        borderBottom: "1px solid #eee",
+                                        padding: "0.5rem 0",
+                                      }}
+                                    >
+                                      <input
+                                        type="text"
+                                        placeholder="Key"
+                                        value={field.key}
+                                        onChange={(e) =>
+                                          updateTraitField(
+                                            index,
+                                            "key",
+                                            e.target.value
+                                          )
+                                        }
+                                        style={{
+                                          padding: "0.5rem",
+                                          border: "1px solid #ccc",
+                                          borderRadius: "4px",
+                                        }}
+                                      />
+                                      <input
+                                        type="text"
+                                        placeholder="Value"
+                                        value={field.value}
+                                        onChange={(e) =>
+                                          updateTraitField(
+                                            index,
+                                            "value",
+                                            e.target.value
+                                          )
+                                        }
+                                        style={{
+                                          padding: "0.5rem",
+                                          border: "1px solid #ccc",
+                                          borderRadius: "4px",
+                                        }}
+                                      />
+                                      <select
+                                        value={field.type}
+                                        onChange={(e) =>
+                                          updateTraitField(
+                                            index,
+                                            "type",
+                                            e.target.value
+                                          )
+                                        }
+                                        style={{
+                                          padding: "0.5rem",
+                                          border: "1px solid #ccc",
+                                          borderRadius: "4px",
+                                        }}
+                                      >
+                                        <option value="text">Text</option>
+                                        <option value="number">Number</option>
+                                        <option value="date">Date</option>
+                                      </select>
+                                      <button
+                                        className="btn btn-secondary"
+                                        type="button"
+                                        onClick={() => removeTraitField(index)}
+                                        style={{
+                                          padding: "0.5rem 1rem",
+                                          backgroundColor: "#cc5500",
+                                          color: "white",
+                                          border: "none",
+                                          borderRadius: "4px",
+                                          cursor: "pointer",
+                                        }}
+                                      >
+                                        ❌ Remove
+                                      </button>
+                                    </div>
+                                  ))}
+
+                                  <div
+                                    style={{
+                                      marginTop: "1rem",
+                                      display: "flex",
+                                      gap: "1rem",
+                                      flexWrap: "wrap",
+                                    }}
+                                  >
+                                    <button
+                                      className="btn btn-outline-secondary"
+                                      onClick={addTraitField}
+                                      style={{
+                                        padding: "0.5rem 1rem",
+                                        border: "1px solid #cc5500",
+                                        color: "#cc5500",
+                                        borderRadius: "4px",
+                                        backgroundColor: "transparent",
+                                        cursor: "pointer",
+                                      }}
+                                    >
+                                      ➕ Add Field
+                                    </button>
+
+                                    <button
+                                      className="btn btn-primary"
+                                      onClick={handleSubmitTrait}
+                                      style={{
+                                        padding: "0.5rem 1rem",
+                                        backgroundColor: "#cc5500",
+                                        color: "white",
+                                        border: "none",
+                                        borderRadius: "4px",
+                                        cursor: "pointer",
+                                      }}
+                                    >
+                                      ✅ Submit Trait
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Display Existing Traits Below */}
+                              <hr style={{ marginTop: "2rem" }} />
                               {categories[selectedCategoryIndex].subCategories[
                                 selectedSubCategoryIndex
                               ].groups[selectedGroupIndex].traits.map(
                                 (trait, i) => (
-                                  <div key={i} className="card">
-                                    <h4>{trait.label}</h4>
-                                    <input
-                                      type="text"
-                                      value={newTraitFeatures[i] || ""}
-                                      onChange={(e) =>
-                                        setNewTraitFeatures({
-                                          ...newTraitFeatures,
-                                          [i]: e.target.value,
-                                        })
-                                      }
-                                    />
-
-                                    <button
-                                      className="btn btn-primary"
-                                      onClick={() => addTraitFeature(i)}
-                                    >
-                                      Add Feature
-                                    </button>
+                                  <div
+                                    key={i}
+                                    className="card"
+                                    style={{
+                                      marginTop: "1rem",
+                                      padding: "1rem",
+                                      border: "1px solid #ddd",
+                                      borderRadius: "6px",
+                                    }}
+                                  >
+                                    <h4>{trait.name}</h4>
                                     <ul>
-                                      {trait.features?.map((f, idx) => (
-                                        <li key={idx}>{f.label}</li>
+                                      {trait.fields?.map((f, idx) => (
+                                        <li key={idx}>
+                                          <strong>{f.key}</strong>: {f.value}{" "}
+                                          <em style={{ color: "gray" }}>
+                                            ({f.type})
+                                          </em>
+                                        </li>
                                       ))}
                                     </ul>
                                   </div>
@@ -624,30 +917,66 @@ const CategoryBuilder = () => {
                               )}
                             </div>
                           ) : (
+                            /* ✅ GROUP HAS NO TRAITS — direct fields */
                             <div className="form-group">
-                              <label>Add Feature (No Traits)</label>
+                              <label>Field Key</label>
                               <input
                                 type="text"
-                                value={newFeature.label}
+                                value={newFeature.key || ""}
                                 onChange={(e) =>
-                                  setNewFeature({ label: e.target.value })
+                                  setNewFeature({
+                                    ...newFeature,
+                                    key: e.target.value,
+                                  })
                                 }
-                                placeholder="Feature label"
+                                placeholder="e.g., addiction_chance"
                               />
+                              <label>Field Value</label>
+                              <input
+                                type="text"
+                                value={newFeature.value || ""}
+                                onChange={(e) =>
+                                  setNewFeature({
+                                    ...newFeature,
+                                    value: e.target.value,
+                                  })
+                                }
+                                placeholder="e.g., high"
+                              />
+                              <label>Type</label>
+                              <select
+                                value={newFeature.type || "text"}
+                                onChange={(e) =>
+                                  setNewFeature({
+                                    ...newFeature,
+                                    type: e.target.value,
+                                  })
+                                }
+                              >
+                                <option value="text">Text</option>
+                                <option value="number">Number</option>
+                                <option value="boolean">Boolean</option>
+                              </select>
                               <button
                                 className="btn btn-primary"
+                                style={{ marginTop: "0.75rem" }}
                                 onClick={addDirectFeature}
                               >
-                                Add Feature
+                                Add Field
                               </button>
-                              <ul>
+                              <ul style={{ marginTop: "0.5rem" }}>
                                 {categories[
                                   selectedCategoryIndex
                                 ].subCategories[
                                   selectedSubCategoryIndex
-                                ].groups[selectedGroupIndex].directFeatures.map(
+                                ].groups[selectedGroupIndex].fields?.map(
                                   (f, i) => (
-                                    <li key={i}>{f.label}</li>
+                                    <li key={i}>
+                                      <strong>{f.key}</strong>: {f.value}{" "}
+                                      <em style={{ color: "gray" }}>
+                                        ({f.type})
+                                      </em>
+                                    </li>
                                   )
                                 )}
                               </ul>
@@ -662,8 +991,8 @@ const CategoryBuilder = () => {
                             <button
                               className="btn btn-success"
                               onClick={() => {
-                                setGroupFinalizedPopup(true); // Show confirmation
-                                setShowGroupDetailsCard(false); // Collapse the details section only
+                                setGroupFinalizedPopup(true);
+                                setShowGroupDetailsCard(false);
                               }}
                             >
                               ✅ Confirm This Group
@@ -685,6 +1014,7 @@ const CategoryBuilder = () => {
               )}
             </>
           )}
+          {/* === DYNAMIC RENDERING OF ALL SUBCATEGORIES === */}
 
           {/* === SUBMISSION VIEW AFTER SUBMIT === */}
           {isSubmitted && (
@@ -717,11 +1047,17 @@ const CategoryBuilder = () => {
             <h2 className="card-header">📦 Previously Added Categories</h2>
 
             {categories.length === 0 ? (
-              <p
-                style={{ padding: "1rem", color: "gray", fontStyle: "italic" }}
-              >
-                No categories added yet.
-              </p>
+              <center>
+                <p
+                  style={{
+                    padding: "1rem",
+                    color: "gray",
+                    fontStyle: "italic",
+                  }}
+                >
+                  No categories added yet.
+                </p>
+              </center>
             ) : (
               <div
                 style={{
@@ -762,6 +1098,9 @@ const CategoryBuilder = () => {
                       <button
                         className="btn btn-danger"
                         onClick={() => {
+                          if (deleteLock) return; // ⛔ prevent duplicate dialogs
+                          setDeleteLock(true); // ✅ lock delete popup
+
                           toast(
                             ({ closeToast }) => (
                               <div>
@@ -788,7 +1127,8 @@ const CategoryBuilder = () => {
                                               (_, i) => i !== index
                                             )
                                           );
-                                          toast.dismiss(); // Close the toast
+                                          setDeleteLock(false); // ✅ unlock on confirm
+                                          toast.dismiss();
                                           toast.error("Category deleted", {
                                             position: "top-center",
                                           });
@@ -800,6 +1140,7 @@ const CategoryBuilder = () => {
                                   <button
                                     className="btn btn-secondary"
                                     onClick={() => {
+                                      setDeleteLock(false); // ✅ unlock on cancel
                                       toast.dismiss();
                                       toast.info("Deletion cancelled", {
                                         position: "top-center",
@@ -830,39 +1171,6 @@ const CategoryBuilder = () => {
           </div>
 
           {/* === POPUPS === */}
-          {subCategoryAddedPopup && (
-            <div className="modal-overlay">
-              <div className="modalsc-box">
-                <h2>Sub-Category Added ✅</h2>
-                <p>Your sub-category has been successfully added.</p>
-                <div className="center-btn">
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => setSubCategoryAddedPopup(false)}
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {groupAddedPopup && (
-            <div className="modal-overlay">
-              <div className="modalsc-box">
-                <h2>Group Created ✅</h2>
-                <p>Your group has been successfully added.</p>
-                <div className="center-btn">
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => setGroupAddedPopup(false)}
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
 
           {groupFinalizedPopup && (
             <div className="modal-overlay">
@@ -905,35 +1213,66 @@ const CategoryBuilder = () => {
                         key={j}
                         style={{ marginLeft: "1rem", marginTop: "0.5rem" }}
                       >
-                        <h4>🧪 Group: {grp.name}</h4>
+                        <h4>🧪 Group: {grp?.name || "Unnamed Group"}</h4>
                         <p>
-                          <b>Has Traits:</b> {grp.hasTraits ? "Yes" : "No"}
+                          <b>Has Traits:</b> {grp?.hasTraits ? "Yes" : "No"}
                         </p>
 
-                        {grp.hasTraits ? (
+                        {grp?.hasTraits && Array.isArray(grp.traits) ? (
                           grp.traits.map((trait, tIdx) => (
-                            <div key={tIdx} style={{ marginLeft: "1rem" }}>
+                            <div
+                              key={tIdx}
+                              style={{
+                                marginLeft: "1rem",
+                                marginTop: "0.5rem",
+                              }}
+                            >
                               <p>
-                                <b>Trait:</b> {trait.label}
+                                <b>Trait:</b> {trait?.name || "Unnamed Trait"}
                               </p>
-                              <ul>
-                                {trait.features.map((f, fIdx) => (
-                                  <li key={fIdx}>🔹 {f.label}</li>
-                                ))}
-                              </ul>
+                              {Array.isArray(trait.fields) &&
+                              trait.fields.length > 0 ? (
+                                <ul>
+                                  {trait.fields.map((field, fIdx) => (
+                                    <li key={fIdx}>
+                                      <strong>{field.key || "key"}:</strong>{" "}
+                                      {field.value || "N/A"}{" "}
+                                      <em style={{ color: "gray" }}>
+                                        ({field.type || "text"})
+                                      </em>
+                                    </li>
+                                  ))}
+                                </ul>
+                              ) : (
+                                <p
+                                  style={{ marginLeft: "1rem", color: "#999" }}
+                                >
+                                  No fields
+                                </p>
+                              )}
                             </div>
                           ))
-                        ) : (
+                        ) : grp?.fields?.length > 0 ? (
                           <>
                             <p>
-                              <b>Features:</b>
+                              <b>Fields:</b>
                             </p>
                             <ul>
-                              {grp.directFeatures.map((f, fIdx) => (
-                                <li key={fIdx}>🔸 {f.label}</li>
+                              {grp.fields.map((field, fIdx) => (
+                                <li key={fIdx}>
+                                  <strong>{field.key || "key"}:</strong>{" "}
+                                  {field.value || "N/A"}{" "}
+                                  <em style={{ color: "gray" }}>
+                                    ({field.type || "text"})
+                                  </em>
+                                </li>
                               ))}
                             </ul>
                           </>
+                        ) : (
+                          <p style={{ marginLeft: "1rem", color: "#999" }}>
+                            No traits or fields available.
+                          </p>
                         )}
                       </div>
                     ))}
@@ -952,22 +1291,30 @@ const CategoryBuilder = () => {
             </div>
           )}
           {/* ✅ "Assign Report" button at the end */}
-          <div className="center-btn" style={{ marginTop: "2rem" }}>
-            <button
-              className="btn btn-success"
-              onClick={() => {
-                setIsAssigned(true);
-                toast.success("Report assigned and saved!", {
-                  position: "top-center",
-                });
-              }}
-            >
-              📝 Assign Report
+          <div className="center-btn" style={{ marginTop: "1rem" }}>
+            <button className="btn btn-secondary" onClick={exportJSON}>
+              📤 Export JSON
             </button>
+          </div>
+
+          <div className="center-btn" style={{ marginTop: "2rem" }}>
+            <center>
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  setIsAssigned(true);
+                  toast.success("Report assigned and saved!", {
+                    position: "top-center",
+                  });
+                }}
+              >
+                📝 Assign Report
+              </button>
+            </center>
           </div>
         </>
       )}
     </div>
   );
 };
-export default CategoryBuilder;
+export default ReportBuilder;

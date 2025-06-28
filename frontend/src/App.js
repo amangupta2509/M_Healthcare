@@ -97,7 +97,7 @@ import ActivityLogs from "./dashboard/master_admin/ActivityLogs";
 import SecurityControls from "./dashboard/master_admin/SecurityControls";
 import Services from "./dashboard/master_admin/Services";
 import AdminBlogSection from "./dashboard/master_admin/AdminBlogSection";
-import CategoryBuilder from "./dashboard/master_admin/CategoryBuilder";
+import ReportBuilder from "./dashboard/master_admin/ReportBuilder";
 // Appointment Pages
 import AppointmentsContainer from "./dashboard/master_admin/AppointmentsContainer";
 import CounselorAppointments from "./dashboard/master_admin/CounselorAppointments";
@@ -323,7 +323,7 @@ const App = () => {
             <Route path="appointments/phlebotomist" element={<PhlebotomistAppointments />} />
             <Route path="AdminPasswordRequests" element={<AdminPasswordRequests />} />
             
-            <Route path="CategoryBuilder" element={<CategoryBuilder />} />
+            <Route path="ReportBuilder" element={<ReportBuilder />} />
           </Route>
 
           {/* ==============================================
