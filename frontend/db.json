@@ -1965,6 +1965,24 @@
       "id": "ac94",
       "name": "qqqqqqqqqqqqqq",
       "subCategories": []
+    },
+    {
+      "id": "2c65",
+      "name": "xyz",
+      "subCategories": [
+        {
+          "name": "123",
+          "heading": "",
+          "groups": [
+            {
+              "name": "111111",
+              "hasTraits": null,
+              "traits": [],
+              "directFeatures": []
+            }
+          ]
+        }
+      ]
     }
   ]
 }

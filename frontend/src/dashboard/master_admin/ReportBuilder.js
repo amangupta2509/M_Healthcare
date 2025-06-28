@@ -130,7 +130,7 @@ const ReportBuilder = () => {
   const addTraitField = () => {
     setNewTrait({
       ...newTrait,
-      fields: [...newTrait.fields, { key: "", value: "", type: "text" }],
+      fields: [...newTrait.fields, { key: "", value: "" }],
     });
   };
 
@@ -225,7 +225,6 @@ const ReportBuilder = () => {
         toast.error("Failed to save trait", { position: "top-center" })
       );
   };
-
   const exportJSON = () => {
     const primaryCategory = categories[0]?.name || "Untitled";
 
@@ -241,11 +240,14 @@ const ReportBuilder = () => {
             ? {
                 traits: grp.traits.map((trait) => ({
                   name: trait.name,
-                  fields: trait.fields,
+                  fields: trait.fields, // Traits still include type
                 })),
               }
             : {
-                fields: grp.fields || [], // if no traits, use flat fields
+                fields: (grp.fields || []).map(({ key, value }) => ({
+                  key,
+                  value,
+                })), // ✅ Remove type from direct fields
               }),
         })),
       })),
@@ -307,7 +309,6 @@ const ReportBuilder = () => {
     group.fields.push({
       key: newFeature.key,
       value: newFeature.value,
-      type: newFeature.type || "text",
     });
 
     const id = updated[selectedCategoryIndex].id;
@@ -315,7 +316,7 @@ const ReportBuilder = () => {
       .put(`${API_URL}/${id}`, updated[selectedCategoryIndex])
       .then(() => {
         setCategories(updated);
-        setNewFeature({ key: "", value: "", type: "text" });
+        setNewFeature({ key: "", value: "" });
         toast.success("Field added and saved", { position: "top-center" });
       })
       .catch(() =>
@@ -807,25 +808,6 @@ const ReportBuilder = () => {
                                           borderRadius: "4px",
                                         }}
                                       />
-                                      <select
-                                        value={field.type}
-                                        onChange={(e) =>
-                                          updateTraitField(
-                                            index,
-                                            "type",
-                                            e.target.value
-                                          )
-                                        }
-                                        style={{
-                                          padding: "0.5rem",
-                                          border: "1px solid #ccc",
-                                          borderRadius: "4px",
-                                        }}
-                                      >
-                                        <option value="text">Text</option>
-                                        <option value="number">Number</option>
-                                        <option value="date">Date</option>
-                                      </select>
                                       <button
                                         className="btn btn-secondary"
                                         type="button"
@@ -943,20 +925,7 @@ const ReportBuilder = () => {
                                 }
                                 placeholder="e.g., high"
                               />
-                              <label>Type</label>
-                              <select
-                                value={newFeature.type || "text"}
-                                onChange={(e) =>
-                                  setNewFeature({
-                                    ...newFeature,
-                                    type: e.target.value,
-                                  })
-                                }
-                              >
-                                <option value="text">Text</option>
-                                <option value="number">Number</option>
-                                <option value="boolean">Boolean</option>
-                              </select>
+
                               <button
                                 className="btn btn-primary"
                                 style={{ marginTop: "0.75rem" }}
@@ -1261,10 +1230,8 @@ const ReportBuilder = () => {
                               {grp.fields.map((field, fIdx) => (
                                 <li key={fIdx}>
                                   <strong>{field.key || "key"}:</strong>{" "}
-                                  {field.value || "N/A"}{" "}
-                                  <em style={{ color: "gray" }}>
-                                    ({field.type || "text"})
-                                  </em>
+                                  {field.value || "N/A"}
+                                  {/* ✅ Removed (type) display here */}
                                 </li>
                               ))}
                             </ul>
