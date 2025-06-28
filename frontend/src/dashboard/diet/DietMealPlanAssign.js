@@ -1,6 +1,6 @@
 // File: src/dashboard/diet/diet_mealplan_assign.js
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "../physio/assign.css";
 import "../master_admin/master_admin.css";
 import { toast, ToastContainer } from "react-toastify";
@@ -33,7 +33,9 @@ const DietMealPlanAssign = () => {
     meal: "",
     ingredients: "",
     recipe: "",
+    cookingVideo: "", // ✅ New field
   });
+
   const [editIndex, setEditIndex] = useState({ row: null, opt: null });
   const [approvedDate, setApprovedDate] = useState("");
   const [pdfUrl, setPdfUrl] = useState(null);
@@ -45,15 +47,9 @@ const DietMealPlanAssign = () => {
   const [selectedPlanToView, setSelectedPlanToView] = useState(null);
   const [dietHistory, setDietHistory] = useState([]);
   const bmiCardRef = useRef(null);
-
-  const availableMeals = [
-    "Early Morning",
-    "Breakfast",
-    "Mid-Morning Snack",
-    "Lunch",
-    "Evening Snack",
-    "Dinner",
-  ];
+  const [availableMeals, setAvailableMeals] = useState([]);
+  const [dietaryGuidelines, setDietaryGuidelines] = useState([]);
+  const [assignedPlans, setAssignedPlans] = useState([]); // ✅ Add this
 
   const [bmiData, setBmiData] = useState({
     bmiCategory: "",
@@ -79,7 +75,6 @@ const DietMealPlanAssign = () => {
     updated[index].enabled = !updated[index].enabled;
     setEnergyProteinDistribution(updated);
   };
-
   const handleSearch = async () => {
     if (!mrn.trim()) {
       toast.error("Please enter a valid MRN number");
@@ -95,6 +90,14 @@ const DietMealPlanAssign = () => {
       if (data.length > 0) {
         const client = data[0];
         setClientData(client);
+
+        // ✅ Fetch previously assigned meals for this MRN
+        const assignedRes = await fetch(
+          `http://localhost:5000/assignedMeals?mrn=${mrn}`
+        );
+        const assignedData = await assignedRes.json();
+        setAssignedPlans(assignedData); // ✅ Now this will populate "Previous Assigned Charts"
+
         setTimeout(() => {
           if (bmiCardRef.current) {
             bmiCardRef.current.scrollIntoView({
@@ -104,9 +107,9 @@ const DietMealPlanAssign = () => {
             bmiCardRef.current.classList.add("bmi-highlight");
             setTimeout(() => {
               bmiCardRef.current.classList.remove("bmi-highlight");
-            }, 3000); // highlight for 3 seconds
+            }, 3000);
           }
-        }, 400); // slight delay to ensure DOM is ready
+        }, 400);
 
         setBmiData({
           bmiCategory: "",
@@ -118,6 +121,7 @@ const DietMealPlanAssign = () => {
           carbohydrate: "",
           fats: "",
         });
+
         setEnergyProteinDistribution((prev) =>
           prev.map((item) => ({
             ...item,
@@ -129,10 +133,12 @@ const DietMealPlanAssign = () => {
       } else {
         toast.error("No client found with this MRN");
         setClientData(null);
+        setAssignedPlans([]); // ❗ Clear any old data if no client found
         setBmiData({});
       }
     } catch (error) {
       toast.error("Failed to fetch data");
+      console.error("Search error:", error);
     }
   };
 
@@ -309,25 +315,6 @@ const DietMealPlanAssign = () => {
     setShowBmiPopup(false);
   };
 
-  const dietaryGuidelines = [
-    {
-      type: "Water Intake",
-      description: "Drink at least 2.5 to 3 liters of water every day.",
-    },
-    {
-      type: "Meal Timing",
-      description: "Maintain consistent meal timings for better metabolism.",
-    },
-    {
-      type: "Sleep",
-      description:
-        "Sleep for 7–8 hours to support overall health and recovery.",
-    },
-    {
-      type: "Portion Control",
-      description: "Eat mindfully and avoid overeating during meals.",
-    },
-  ];
   const button = document.querySelector("#complete-btn");
   if (button) {
     button.classList.add("shake");
@@ -444,13 +431,15 @@ const DietMealPlanAssign = () => {
             opt.meal || "-",
             opt.ingredients || "-",
             opt.recipe || "-",
+            opt.cookingVideo || "-",
           ]);
         });
       });
 
     autoTable(pdf, {
       startY: optionY + 2,
-      head: [["Meal Time", "Option", "Meal", "Ingredients", "Recipe"]],
+      head: [["Meal Time", "Option", "Meal", "Ingredients", "Recipe", "Video"]],
+
       body: optionTableRows,
       theme: "striped",
       styles: { fontSize: 9, cellPadding: 2, valign: "top" },
@@ -461,6 +450,7 @@ const DietMealPlanAssign = () => {
         2: { cellWidth: 35 },
         3: { cellWidth: 50 },
         4: { cellWidth: 50 },
+        5: { cellWidth: 50 },
       },
     });
 
@@ -489,6 +479,24 @@ const DietMealPlanAssign = () => {
     pdf.save(`DietPlan_${mrn}.pdf`);
     toast.success("PDF successfully generated and downloaded!");
   };
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const [mealsRes, guidelinesRes] = await Promise.all([
+          fetch("http://localhost:3001/mealTimes"),
+          fetch("http://localhost:3001/dietGuidelines"),
+        ]);
+        const meals = await mealsRes.json();
+        const guidelines = await guidelinesRes.json();
+        setAvailableMeals(meals);
+        setDietaryGuidelines(guidelines);
+      } catch (err) {
+        toast.error("Failed to load initial data");
+      }
+    };
+
+    fetchInitialData();
+  }, []);
 
   return (
     <div className="dashboard-main">
@@ -944,8 +952,8 @@ const DietMealPlanAssign = () => {
         <div className="card mt-3 p-3">
           <h4 className="text-center mb-3">Previous Plans</h4>
           <div className="row">
-            {dietHistory.map((plan, idx) => (
-              <div className="col-md-4 mb-4" key={idx}>
+            {assignedPlans.map((plan, idx) => (
+              <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={idx}>
                 <div className="card h-100">
                   <div className="card-body">
                     <p>
@@ -967,6 +975,7 @@ const DietMealPlanAssign = () => {
               </div>
             ))}
           </div>
+
           <div className="text-end">
             <button
               className="btn btn-primary"
@@ -1128,6 +1137,16 @@ const DietMealPlanAssign = () => {
             </p>
             <p>
               <strong>Recipe:</strong> {showViewPopup.option.recipe}
+            </p>
+            <p>
+              <strong>Video:</strong>{" "}
+              <a
+                href={showViewPopup.option.cookingVideo}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Watch Video
+              </a>
             </p>
           </div>
         </div>
@@ -1357,7 +1376,7 @@ const DietMealPlanAssign = () => {
                 value={newOption.ingredients}
                 onChange={handleOptionChange}
                 className="form-control"
-                style={{ height: "195px" }}
+                style={{ height: "160px" }}
                 required
               />
             </div>
@@ -1369,8 +1388,21 @@ const DietMealPlanAssign = () => {
                 value={newOption.recipe}
                 onChange={handleOptionChange}
                 className="form-control"
-                style={{ height: "195px" }}
+                style={{ height: "160px" }}
                 required
+              />
+            </div>
+            <div className="form-group">
+              <label>Cooking Video Link</label>
+              <input
+                type="text"
+                name="cookingVideo"
+                value={newOption.cookingVideo}
+                onChange={(e) =>
+                  setNewOption({ ...newOption, cookingVideo: e.target.value })
+                }
+                className="form-control"
+                placeholder="https://youtube.com/..."
               />
             </div>
 
@@ -1637,6 +1669,19 @@ const DietMealPlanAssign = () => {
                             <em>Ingredients:</em> {opt.ingredients}
                             <br />
                             <em>Recipe:</em> {opt.recipe}
+                            {opt.cookingVideo && (
+                              <>
+                                <br />
+                                <em>Video:</em>{" "}
+                                <a
+                                  href={opt.cookingVideo}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  Watch
+                                </a>
+                              </>
+                            )}
                           </td>
                         </tr>
                       ))}

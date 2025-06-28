@@ -1984,5 +1984,32 @@
         }
       ]
     }
-  ]
+  ],
+  "mealTimes": [
+  "Early Morning",
+  "Breakfast",
+  "Mid-Morning Snack",
+  "Lunch",
+  "Evening Snack",
+  "Dinner"
+]
+,"dietGuidelines": [
+  {
+    "type": "Water Intake",
+    "description": "Drink at least 2.5 to 3 liters of water every day."
+  },
+  {
+    "type": "Meal Timing",
+    "description": "Maintain consistent meal timings for better metabolism."
+  },
+  {
+    "type": "Sleep",
+    "description": "Sleep for 7–8 hours to support overall health and recovery."
+  },
+  {
+    "type": "Portion Control",
+    "description": "Eat mindfully and avoid overeating during meals."
+  }
+]
+
 }
