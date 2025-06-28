@@ -611,7 +611,23 @@ const DietMealPlanAssign = () => {
 
           <div className="card mt-4">
             <h2 className="card-header">Daily Energy & Protein Distribution</h2>
-
+ {/* Warning */}
+            {(!fromDateTime || !toDateTime) && (
+              <div
+                style={{
+                  textAlign: "center",
+                  marginTop: "1rem",
+                  padding: "1rem",
+                  backgroundColor: "#fff3cd",
+                  color: "#856404",
+                  border: "1px solid #ffeeba",
+                  borderRadius: "5px",
+                }}
+              >
+                Please select a <strong>From</strong> and <strong>To</strong>{" "}
+                date range to activate the distribution section.
+              </div>
+            )}
             {/* Date Range Pickers */}
             <div
               className="d-flex gap-4 flex-wrap mb-3"
@@ -734,23 +750,7 @@ const DietMealPlanAssign = () => {
               ))}
             </div>
 
-            {/* Warning */}
-            {(!fromDateTime || !toDateTime) && (
-              <div
-                style={{
-                  textAlign: "center",
-                  marginTop: "1rem",
-                  padding: "1rem",
-                  backgroundColor: "#fff3cd",
-                  color: "#856404",
-                  border: "1px solid #ffeeba",
-                  borderRadius: "5px",
-                }}
-              >
-                Please select a <strong>From</strong> and <strong>To</strong>{" "}
-                date range to activate the distribution section.
-              </div>
-            )}
+           
 
             {/* Conditionally Render Table */}
             {fromDateTime && toDateTime && selectedMeals.length > 0 && (

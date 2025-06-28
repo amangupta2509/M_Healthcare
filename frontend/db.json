@@ -1762,15 +1762,15 @@
   ],
   "categories": [
     {
-      "id": "abdf",
-      "name": "Fitkr",
+      "id": "4d39",
+      "name": "fitKr",
       "subCategories": [
         {
           "name": "Diet",
           "heading": "A right diet is the one that makes you feel happy, keeps you healthy, does not make you feel starved and prevents several health  issues. Information present in our genes can be used to fine tune our diet to make it personalised. Based on your genetic make up, we  share with you the diet pattern that you should be following for a healthy and happy lifestyle.",
           "groups": [
             {
-              "name": "MACRONUTRIENTS ",
+              "name": "MACRONUTRIENTS",
               "hasTraits": true,
               "traits": [
                 {
@@ -1778,58 +1778,49 @@
                   "fields": [
                     {
                       "key": "score",
-                      "value": "7",
-                      "type": "number"
+                      "value": "7"
                     },
                     {
                       "key": "impact",
-                      "value": "HIGH  Maintain carb intake <45%  For obesity & IR control ",
-                      "type": "text"
+                      "value": "HIGH  Maintain carb intake <45%  For obesity & IR control "
                     },
                     {
                       "key": "impact",
-                      "value": "LOW  Maintain carb intake <60%  For obesity & IR control",
-                      "type": "text"
+                      "value": "LOW  Maintain carb intake <60%  For obesity & IR control "
                     }
                   ]
                 },
                 {
-                  "name": "FAT SENSITIVITY ",
+                  "name": "FAT SENSITIVITY",
                   "fields": [
                     {
                       "key": "score",
-                      "value": "6",
-                      "type": "text"
+                      "value": "3"
                     },
                     {
                       "key": "impact",
-                      "value": "HIGH  Fat intake not to exceed  15% of total calories",
-                      "type": "text"
+                      "value": "HIGH  Maintain carb intake <45%  For obesity & IR control "
                     },
                     {
                       "key": "impact",
-                      "value": "LOW  Fat intake advised up to  25% of total calories ",
-                      "type": "text"
+                      "value": "LOW  Maintain carb intake <60%  For obesity & IR control "
                     }
                   ]
                 },
                 {
-                  "name": "PROTEIN  REQUIREMENT",
+                  "name": "PROTEIN  REQUIREMENT ",
                   "fields": [
                     {
                       "key": "score",
-                      "value": "7",
-                      "type": "number"
+                      "value": "6"
                     },
                     {
                       "key": "impact",
-                      "value": "HIGH  Protein supplements  needed along with dietary  source",
-                      "type": "text"
+                      "value": "HIGH  Maintain carb intake <45%  For obesity & IR control "
                     },
                     {
                       "key": "impact",
-                      "value": "NORMAL  Protein supplements not  needed, intake through  diet is enough",
-                      "type": "text"
+                      "value": "LOW  Maintain carb intake <60%  For obesity & IR control "
                     }
                   ]
                 }
@@ -1837,26 +1828,23 @@
               "directFeatures": []
             },
             {
-              "name": "MEAL PATTERN ",
+              "name": "MEAL PATTERN",
               "hasTraits": true,
               "traits": [
                 {
-                  "name": "MEAL  FREQUENCY ",
+                  "name": "  MEAL  FREQUENCY ",
                   "fields": [
                     {
                       "key": "score",
-                      "value": "6",
-                      "type": "number"
+                      "value": "6"
                     },
                     {
                       "key": "impact",
-                      "value": "FREQUENT  4-5 small meals suggested  in a day",
-                      "type": "text"
+                      "value": "FREQUENT  4-5 small meals suggested  in a day"
                     },
                     {
                       "key": "impact",
-                      "value": "LESS FREQUENT  Less frequent meals, 2-3  meals are enough in a day",
-                      "type": "text"
+                      "value": "FREQUENT  4-5 small meals suggested  in a day"
                     }
                   ]
                 }
@@ -1864,46 +1852,40 @@
               "directFeatures": []
             },
             {
-              "name": "FOOD  SENSITIVITIES ",
+              "name": "FOOD  SENSITIVITIES",
               "hasTraits": true,
               "traits": [
                 {
-                  "name": "ALCOHOL  SENSITIVITY",
+                  "name": "LCOHOL  SENSITIVITY",
                   "fields": [
                     {
                       "key": "score",
-                      "value": "4",
-                      "type": "text"
+                      "value": "7"
                     },
                     {
                       "key": "impact",
-                      "value": "HIGH  High sensitivity, avoid  alcohol if possible,  especially the types of  beverages that trigger  intolerance reaction.",
-                      "type": "text"
+                      "value": "HIGH  High sensitivity, avoid  alcohol if possible,  especially the types of  beverages that trigger  intolerance reaction."
                     },
                     {
                       "key": "impact",
-                      "value": "LOW  Low sensitivity, know  your alcohol intake limits,  consult doctor for your  upper limit of intake ",
-                      "type": "text"
+                      "value": "LOW  Low sensitivity, know  your alcohol intake limits,  consult doctor for your  upper limit of intake"
                     }
                   ]
                 },
                 {
-                  "name": "CAFFEINE  SENSITIVITY",
+                  "name": "CAFFEINE  SENSITIVITY ",
                   "fields": [
                     {
                       "key": "score",
-                      "value": "6",
-                      "type": "number"
+                      "value": "7"
                     },
                     {
                       "key": "impact",
-                      "value": "HIGH  High sensitivity, do not  consume >4 cups/day",
-                      "type": "text"
+                      "value": "HIGH  High sensitivity, do not  consume >4 cups/day"
                     },
                     {
                       "key": "impact",
-                      "value": "NORMAL  Caffeine up to 5 cups a  day can be consumed",
-                      "type": "text"
+                      "value": "NORMAL  Caffeine up to 5 cups a  day can be consumed "
                     }
                   ]
                 },
@@ -1911,73 +1893,20 @@
                   "name": "GLUTEN  SENSITIVITY ",
                   "fields": [
                     {
-                      "key": "score",
-                      "value": "5",
-                      "type": "number"
+                      "key": "score ",
+                      "value": "12"
                     },
                     {
                       "key": "impact",
-                      "value": "HIGH  Gluten intake needs to be  reduced/stopped",
-                      "type": "text"
+                      "value": "HIGH  Gluten intake needs to be  reduced/stopped "
                     },
                     {
                       "key": "impact",
-                      "value": "LOW  Gluten to be avoided in  cases of gastric distress ",
-                      "type": "text"
+                      "value": "HIGH  Gluten intake needs to be  reduced/stopped "
                     }
                   ]
                 }
               ],
-              "directFeatures": []
-            },
-            {
-              "name": "aman",
-              "hasTraits": false,
-              "traits": [
-                {
-                  "name": "CARBOHYDRATE  SENSITIVITY ",
-                  "fields": [
-                    {
-                      "key": "score",
-                      "value": "7",
-                      "type": "text"
-                    },
-                    {
-                      "key": "impact",
-                      "value": "HIGH  Maintain carb intake <45%  For obesity & IR control",
-                      "type": "text"
-                    }
-                  ]
-                }
-              ],
-              "directFeatures": [],
-              "fields": [
-                {
-                  "type": "text"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "ac94",
-      "name": "qqqqqqqqqqqqqq",
-      "subCategories": []
-    },
-    {
-      "id": "2c65",
-      "name": "xyz",
-      "subCategories": [
-        {
-          "name": "123",
-          "heading": "",
-          "groups": [
-            {
-              "name": "111111",
-              "hasTraits": null,
-              "traits": [],
               "directFeatures": []
             }
           ]
@@ -1986,30 +1915,29 @@
     }
   ],
   "mealTimes": [
-  "Early Morning",
-  "Breakfast",
-  "Mid-Morning Snack",
-  "Lunch",
-  "Evening Snack",
-  "Dinner"
-]
-,"dietGuidelines": [
-  {
-    "type": "Water Intake",
-    "description": "Drink at least 2.5 to 3 liters of water every day."
-  },
-  {
-    "type": "Meal Timing",
-    "description": "Maintain consistent meal timings for better metabolism."
-  },
-  {
-    "type": "Sleep",
-    "description": "Sleep for 7–8 hours to support overall health and recovery."
-  },
-  {
-    "type": "Portion Control",
-    "description": "Eat mindfully and avoid overeating during meals."
-  }
-]
-
+    "Early Morning",
+    "Breakfast",
+    "Mid-Morning Snack",
+    "Lunch",
+    "Evening Snack",
+    "Dinner"
+  ],
+  "dietGuidelines": [
+    {
+      "type": "Water Intake",
+      "description": "Drink at least 2.5 to 3 liters of water every day."
+    },
+    {
+      "type": "Meal Timing",
+      "description": "Maintain consistent meal timings for better metabolism."
+    },
+    {
+      "type": "Sleep",
+      "description": "Sleep for 7–8 hours to support overall health and recovery."
+    },
+    {
+      "type": "Portion Control",
+      "description": "Eat mindfully and avoid overeating during meals."
+    }
+  ]
 }
