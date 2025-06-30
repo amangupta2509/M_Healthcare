@@ -49,6 +49,7 @@ import UserDetails from "./dashboard/physio/userDetails";
 import Physioo from "./dashboard/physio/physioo";
 import PhysiosAppointments from "./dashboard/physio/PhysiosAppointments";
 import PhysioPasswordRequest from "./dashboard/physio/pages/PhysioPasswordRequest";
+import PhysioPlanAssign from "./dashboard/physio/PhysioPlanAssign";
 
 // ==============================================
 // DIET DASHBOARD
@@ -98,6 +99,7 @@ import SecurityControls from "./dashboard/master_admin/SecurityControls";
 import Services from "./dashboard/master_admin/Services";
 import AdminBlogSection from "./dashboard/master_admin/AdminBlogSection";
 import ReportBuilder from "./dashboard/master_admin/ReportBuilder";
+import TemplateDemo from "./dashboard/master_admin/TemplateDemo";
 // Appointment Pages
 import AppointmentsContainer from "./dashboard/master_admin/AppointmentsContainer";
 import CounselorAppointments from "./dashboard/master_admin/CounselorAppointments";
@@ -274,6 +276,7 @@ const App = () => {
             <Route path="/user/:id/report" element={<Report />} />
             <Route path="/PhysiosAppointments" element={<PhysiosAppointments />} />
             <Route path="/PhysioPasswordRequest" element={<PhysioPasswordRequest />} />
+            <Route path="/PhysioPlanAssign" element={<PhysioPlanAssign />} />
           </Route>
 
           {/* ==============================================
@@ -324,6 +327,7 @@ const App = () => {
             <Route path="AdminPasswordRequests" element={<AdminPasswordRequests />} />
             
             <Route path="ReportBuilder" element={<ReportBuilder />} />
+            <Route path="TemplateDemo" element={<TemplateDemo />} />
           </Route>
 
           {/* ==============================================

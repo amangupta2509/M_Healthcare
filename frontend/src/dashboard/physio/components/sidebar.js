@@ -243,6 +243,17 @@ const Sidebar = () => {
               </NavLink>
             </li>
             <li>
+              <NavLink to="/PhysioPlanAssign" className={navLinkClass}>
+                <Workflow
+                  size={18}
+                  style={{
+                    marginRight: !collapsed || isHovering ? "10px" : "0",
+                  }}
+                />
+                <span>PhysioPlanAssign</span>
+              </NavLink>
+            </li>
+            <li>
               <NavLink to="/PhysioPasswordRequest" className={navLinkClass}>
                 <Workflow
                   size={18}

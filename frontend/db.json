@@ -1885,5 +1885,16 @@
       "type": "Portion Control",
       "description": "Eat mindfully and avoid overeating during meals."
     }
-  ]
+  ],
+  "physioClients": [
+  {
+    "mrn": "MRN123",
+    "name": "Alex Sharma",
+    "age": 45,
+    "gender": "Male",
+    "weight": "75kg",
+    "condition": "Post ACL Surgery Rehab"
+  }
+]
+
 }
