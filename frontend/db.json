@@ -311,7 +311,10 @@
     "professionalInfo": {
       "specialization": "Orthopedic",
       "experience": "5 years",
-      "certifications": ["Physiotherapy License", "CPR Certification"]
+      "certifications": [
+        "Physiotherapy License",
+        "CPR Certification"
+      ]
     },
     "performanceData": {
       "totalPatients": 200,
@@ -319,7 +322,12 @@
       "successRate": "95%"
     },
     "weeklyMetrics": {
-      "patientsPerWeek": [50, 45, 60, 70]
+      "patientsPerWeek": [
+        50,
+        45,
+        60,
+        70
+      ]
     },
     "appointments": [
       {
@@ -510,7 +518,23 @@
           null,
           null
         ],
-        "feedback": ["", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+        "feedback": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
       }
     }
   ],
@@ -541,7 +565,22 @@
           null,
           null
         ],
-        "feedback": ["", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+        "feedback": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
       }
     }
   ],
@@ -552,7 +591,10 @@
       "mrn": "MRN123456",
       "reportPdfUrl": "/pdfs/MRN123456_labreport.pdf",
       "appointmentDate": "2025-05-30",
-      "samples": ["Blood", "Saliva"]
+      "samples": [
+        "Blood",
+        "Saliva"
+      ]
     },
     {
       "id": "2",
@@ -560,7 +602,9 @@
       "mrn": "MRNOO1",
       "reportPdfUrl": "/pdfs/MRNOO1_labreport.pdf",
       "appointmentDate": "2025-05-30",
-      "samples": ["Urine"]
+      "samples": [
+        "Urine"
+      ]
     }
   ],
   "samples": [
@@ -1124,7 +1168,10 @@
         "date": "2025-06-10",
         "time": "09:00 AM"
       },
-      "documents": ["Knee_Report.pdf", "XRay_Scan.png"],
+      "documents": [
+        "Knee_Report.pdf",
+        "XRay_Scan.png"
+      ],
       "approvals": {
         "nutrition": false,
         "diet": true,
@@ -1211,7 +1258,9 @@
         "date": "2025-06-11",
         "time": "11:00 AM"
       },
-      "documents": ["Diet_Summary.pdf"],
+      "documents": [
+        "Diet_Summary.pdf"
+      ],
       "approvals": {
         "nutrition": true,
         "diet": true,
@@ -1451,32 +1500,56 @@
     },
     {
       "type": "Imaging",
-      "subTests": ["X-Ray", "CT Scan", "MRI", "Ultrasound"],
+      "subTests": [
+        "X-Ray",
+        "CT Scan",
+        "MRI",
+        "Ultrasound"
+      ],
       "id": "b0d6"
     },
     {
       "type": "Cardiology",
-      "subTests": ["ECG", "Echocardiogram", "Stress Test"],
+      "subTests": [
+        "ECG",
+        "Echocardiogram",
+        "Stress Test"
+      ],
       "id": "5a08"
     },
     {
       "type": "Neurology",
-      "subTests": ["EEG", "Nerve Conduction Study", "Brain MRI"],
+      "subTests": [
+        "EEG",
+        "Nerve Conduction Study",
+        "Brain MRI"
+      ],
       "id": "d809"
     },
     {
       "type": "Pathology",
-      "subTests": ["Biopsy", "Cytology", "Histopathology"],
+      "subTests": [
+        "Biopsy",
+        "Cytology",
+        "Histopathology"
+      ],
       "id": "f6bc"
     },
     {
       "type": "Radiology",
-      "subTests": ["Mammogram", "Fluoroscopy", "PET Scan"],
+      "subTests": [
+        "Mammogram",
+        "Fluoroscopy",
+        "PET Scan"
+      ],
       "id": "e79e"
     },
     {
       "type": "Other",
-      "subTests": ["Custom Test 1", "Custom Test 2"],
+      "subTests": [
+        "Custom Test 1",
+        "Custom Test 2"
+      ],
       "id": "728c"
     }
   ],
@@ -1859,62 +1932,46 @@
       ]
     }
   ],
-  "mealTimes": [
-    "Early Morning",
-    "Breakfast",
-    "Mid-Morning Snack",
-    "Lunch",
-    "Evening Snack",
-    "Dinner"
-  ],
-
   "dietGuidelines": [
     {
       "type": "Water Intake",
-      "description": "Drink at least 2.5 to 3 liters of water every day."
+      "description": "Drink at least 2.5 to 3 liters of water every day.",
+      "id": "3572"
     },
     {
       "type": "Meal Timing",
-      "description": "Maintain consistent meal timings for better metabolism."
+      "description": "Maintain consistent meal timings for better metabolism.",
+      "id": "fbaf"
     },
     {
       "type": "Sleep",
-      "description": "Sleep for 7–8 hours to support overall health and recovery."
+      "description": "Sleep for 7–8 hours to support overall health and recovery.",
+      "id": "516a"
     },
     {
       "type": "Portion Control",
-      "description": "Eat mindfully and avoid overeating during meals."
+      "description": "Eat mindfully and avoid overeating during meals.",
+      "id": "b609"
     }
   ],
-   "physioClients": [
+  "physioClients": [
     {
       "mrn": "MRN123",
       "name": "Alex Sharma",
       "age": 45,
       "gender": "Male",
       "weight": "75kg",
-      "condition": "Post ACL Surgery Rehab"
+      "condition": "Post ACL Surgery Rehab",
+      "id": "ffb9"
     }
   ],
   "physioAssignedPlans": [
     {
-      "id": 1,
+      "id": "1",
       "mrn": "MRN123",
-      "from": "2025-07-01",
-      "to": "2025-07-10",
-      "assignedDates": [
-        {
-          "date": "2025-07-03",
-          "exercises": [
-            {
-              "type": "Yoga",
-              "name": "Nadi shodhana",
-              "rounds": "3",
-              "breaths": "5"
-            }
-          ]
-        }
-      ]
+      "from": "2025-07-03",
+      "to": "2025-07-07",
+      "assignedDates": []
     }
   ]
 }

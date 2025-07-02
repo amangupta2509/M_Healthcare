@@ -77,27 +77,30 @@ const PhysioPlanAssign = () => {
     };
 
     try {
+      console.log("🔍 Checking if plan exists for:", mrn);
       const res = await axios.get(
         `http://localhost:3001/physioAssignedPlans?mrn=${mrn}`
       );
+
       const existing = res.data[0];
+      console.log("📦 Server returned:", existing);
 
       if (existing?.id) {
-        // ✅ Update using ID
+        // ✅ Update existing plan
         await axios.put(
           `http://localhost:3001/physioAssignedPlans/${existing.id}`,
           { id: existing.id, ...jsonForThisUser }
         );
+        jsonForThisUser.id = existing.id;
+        console.log("✅ Plan updated successfully");
       } else {
-        // ✅ Create new plan (id will be auto-generated)
-        // Else block for new record
+        // ✅ Create new plan
         const createRes = await axios.post(
           `http://localhost:3001/physioAssignedPlans`,
           jsonForThisUser
         );
-
-        // ✅ Store the generated ID for later use
         jsonForThisUser.id = createRes.data.id;
+        console.log("✅ Plan created with ID:", createRes.data.id);
       }
 
       setPhysioAssignedPlans((prev) => ({
@@ -106,45 +109,80 @@ const PhysioPlanAssign = () => {
       }));
 
       setAssignmentConfirmed(true);
-      toast.success("Assignment confirmed and saved to server!");
+      toast.success("✅ Assignment confirmed and saved!");
     } catch (error) {
-      console.error("Assignment Save Error:", error);
-      toast.error("Failed to confirm assignment");
+      console.error("❌ Assignment Save Error:", error);
+      toast.error("🚫 Failed to confirm assignment");
     }
   };
+  const deleteAssignedDate = (dateToDelete) => {
+    showDeleteConfirmation(dateToDelete, async () => {
+      const current = physioAssignedPlans[mrn];
+      const updated = {
+        ...current,
+        assignedDates: current.assignedDates.filter(
+          (d) => d.date !== dateToDelete
+        ),
+      };
 
-  const deleteAssignedDate = async (dateToDelete) => {
-    const current = physioAssignedPlans[mrn];
-    if (!current?.id || !current?.assignedDates) {
-      toast.error("Missing data or ID");
-      return;
-    }
+      try {
+        const res = await axios.get(
+          `http://localhost:3001/physioAssignedPlans?mrn=${mrn}`
+        );
+        if (res.data.length > 0) {
+          await axios.put(
+            `http://localhost:3001/physioAssignedPlans/${res.data[0].id}`,
+            updated
+          );
+        }
 
-    const updated = {
-      ...current,
-      assignedDates: current.assignedDates.filter(
-        (d) => d.date !== dateToDelete
+        setPhysioAssignedPlans((prev) => ({
+          ...prev,
+          [mrn]: updated,
+        }));
+
+        toast.success(" Plan deleted successfully!");
+      } catch (err) {
+        console.error(err);
+        toast.error("❌ Failed to delete plan");
+      }
+    });
+  };
+  const showDeleteConfirmation = (dateToDelete, onConfirm) => {
+    const toastId = toast(
+      ({ closeToast }) => (
+        <div style={{ textAlign: "center" }}>
+          <p>
+            Are you sure you want to delete the plan for <b>{dateToDelete}</b>?
+          </p>
+          <div
+            style={{ display: "flex", justifyContent: "center", gap: "1rem" }}
+          >
+            <button
+              className="btn btn-sm btn-danger"
+              onClick={() => {
+                toast.dismiss(toastId);
+                onConfirm(); // ✅ call the delete function
+              }}
+            >
+              Yes, Delete
+            </button>
+            <button
+              className="btn btn-sm btn-secondary"
+              onClick={() => toast.dismiss(toastId)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
       ),
-    };
-
-    try {
-      await axios.put(
-        `http://localhost:3001/physioAssignedPlans/${current.id}`,
-        updated
-      );
-
-      setPhysioAssignedPlans((prev) => ({
-        ...prev,
-        [mrn]: updated,
-      }));
-
-      toast.success("Assignment date deleted");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to delete assignment date");
-    }
+      {
+        autoClose: false,
+        closeOnClick: false,
+        closeButton: false,
+      }
+    );
   };
-
   const generateDatesBetween = (start, end) => {
     const dateArray = [];
     let current = new Date(start);
@@ -541,12 +579,31 @@ const PhysioPlanAssign = () => {
                                 </button>
                                 <button
                                   className="btn btn-primary"
-                                  onClick={() =>
+                                  onClick={() => {
+                                    const dateEntry = assignedDates.find(
+                                      (entry) => entry.date === item.date
+                                    );
+
+                                    // ✅ Load exercises into modal
+                                    setAssignedExercises(
+                                      dateEntry?.exercises || []
+                                    );
+
+                                    // ✅ Preload plan type from the first exercise
+                                    if (dateEntry?.exercises?.length) {
+                                      setSelectedType(
+                                        dateEntry.exercises[0].type
+                                      );
+                                    } else {
+                                      setSelectedType("");
+                                    }
+
+                                    // ✅ Open modal
                                     setShowAssignModal({
                                       visible: true,
                                       date: item.date,
-                                    })
-                                  }
+                                    });
+                                  }}
                                 >
                                   Edit
                                 </button>
@@ -572,19 +629,24 @@ const PhysioPlanAssign = () => {
                 </div>
               )}
               {assignedDates.length > 0 && (
-                <button className="btn btn-primary" onClick={confirmAssignment}>
-                  ✅ Confirm Assignment
-                </button>
-              )}
-              {physioAssignedPlans[mrn] && (
-                <button
-                  className="btn btn-primary"
-                  onClick={() => setShowPreviousCard(true)}
-                >
-                  📁 View Previous Assigned Plan
-                </button>
+                <center>
+                  <button
+                    className="btn btn-primary"
+                    onClick={confirmAssignment}
+                  >
+                    Confirm Assignment
+                  </button>
+                </center>
               )}
             </div>
+          )}
+          {physioAssignedPlans[mrn] && (
+            <button
+              className="btn btn-primary"
+              onClick={() => setShowPreviousCard(true)}
+            >
+              📁 View Previous Assigned Plan
+            </button>
           )}
         </>
       )}
@@ -805,34 +867,48 @@ const PhysioPlanAssign = () => {
             <center>
               <button
                 className="btn btn-primary"
-                onClick={() => {
+                onClick={async () => {
                   if (!assignedExercises.length) {
                     toast.error("Please add at least one exercise");
                     return;
                   }
 
-                  // Avoid duplicate assignment for the same date
-                  setAssignedDates((prev) => {
-                    const withoutCurrent = prev.filter(
-                      (entry) => entry.date !== showAssignModal.date
-                    );
-                    return [
-                      ...withoutCurrent,
-                      {
-                        date: showAssignModal.date,
-                        exercises: assignedExercises,
-                      },
-                    ];
-                  });
-
-                  toast.success("Plan assigned successfully!");
-                  console.log(
-                    "Plan for",
-                    showAssignModal.date,
-                    assignedExercises
+                  // Step 1: Create updated assignedDates list
+                  const updatedAssignedDates = assignedDates.filter(
+                    (entry) => entry.date !== showAssignModal.date
                   );
 
-                  // Reset
+                  updatedAssignedDates.push({
+                    date: showAssignModal.date,
+                    exercises: assignedExercises,
+                  });
+
+                  // Step 2: Create final updated plan object
+                  const updatedPlan = {
+                    ...physioAssignedPlans[mrn],
+                    assignedDates: updatedAssignedDates,
+                  };
+
+                  try {
+                    await axios.put(
+                      `http://localhost:3001/physioAssignedPlans/${updatedPlan.id}`,
+                      updatedPlan
+                    );
+
+                    // Step 3: Reflect changes in frontend state
+                    setAssignedDates(updatedAssignedDates);
+                    setPhysioAssignedPlans((prev) => ({
+                      ...prev,
+                      [mrn]: updatedPlan,
+                    }));
+
+                    toast.success("✅ Plan updated successfully!");
+                  } catch (err) {
+                    console.error("❌ Edit save failed:", err);
+                    toast.error("❌ Failed to update plan");
+                  }
+
+                  // Step 4: Reset modal UI
                   setShowAssignModal({ visible: false, date: null });
                   setAssignedExercises([]);
                   setSelectedType("");
@@ -871,12 +947,13 @@ const PhysioPlanAssign = () => {
             style={{
               backgroundColor: "var(--bg-primary)",
               padding: "2rem",
-              borderRadius: "8px",
+              borderRadius: "10px",
               width: "90%",
-              maxWidth: "600px",
+              maxWidth: "700px",
               maxHeight: "90vh",
               overflowY: "auto",
               position: "relative",
+              boxShadow: "0 4px 16px rgba(0,0,0,0.2)",
             }}
           >
             <button
@@ -892,7 +969,7 @@ const PhysioPlanAssign = () => {
                 border: "none",
                 padding: "0.5rem 1rem",
                 fontWeight: "bold",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 color: "white",
                 cursor: "pointer",
               }}
@@ -900,51 +977,48 @@ const PhysioPlanAssign = () => {
               Close
             </button>
 
-            <h4 className="mb-3">Assigned Plan for {showViewPopup.date}</h4>
+            <h3 className="mb-4 text-center">
+              Assigned Plan for {showViewPopup.date}
+            </h3>
 
             <div
-              className="selected-meals"
               style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "10px",
-                paddingTop: "5px",
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+                gap: "1.2rem",
               }}
             >
               {showViewPopup.data.map((exercise, index) => (
                 <div
                   key={index}
                   style={{
-                    position: "relative",
-                    display: "inline-block",
+                    padding: "1rem",
+                    border: "1px solid #cc5500",
+                    borderRadius: "10px",
+                    backgroundColor: "var(--bg-secondary, #fff)",
+                    color: "var(--text-primary)",
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                    fontSize: "0.95rem",
                   }}
                 >
+                  <strong style={{ fontSize: "1.05rem", display: "block" }}>
+                    {exercise.name}
+                  </strong>
                   <div
-                    className="selected-meal-btn"
                     style={{
-                      padding: "10px 14px",
-                      fontSize: "0.95rem",
-                      backgroundColor: "transparent",
-                      border: "1px solid #cc5500",
-                      borderRadius: "10px",
-                      color: "var(--text-white)",
-                      fontWeight: "bold",
+                      marginTop: "0.4rem",
+                      color: "var(--text-secondary)",
                     }}
                   >
-                    <div>
-                      <strong>{exercise.name}</strong>
-                    </div>
-                    <div style={{ fontSize: "0.85rem" }}>
-                      {exercise.type === "Yoga"
-                        ? `${exercise.rounds || "-"} rounds × ${
-                            exercise.breaths || "-"
-                          } breaths`
-                        : `${exercise.sets || "-"} sets × ${
-                            exercise.reps || "-"
-                          } reps${
-                            exercise.weight ? ` (${exercise.weight}kg)` : ""
-                          }`}
-                    </div>
+                    {exercise.type === "Yoga"
+                      ? `${exercise.rounds || "-"} rounds × ${
+                          exercise.breaths || "-"
+                        } breaths`
+                      : `${exercise.sets || "-"} sets × ${
+                          exercise.reps || "-"
+                        } reps${
+                          exercise.weight ? ` (${exercise.weight}kg)` : ""
+                        }`}
                   </div>
                 </div>
               ))}
@@ -952,13 +1026,14 @@ const PhysioPlanAssign = () => {
           </div>
         </div>
       )}
+
       {showPreviousCard && (
         <div
           className="card"
           style={{ border: "1px solid #cc5500", marginBottom: "1rem" }}
         >
           <div className="card-header d-flex justify-content-between align-items-center">
-            <h4>Previous Assigned Plan for {mrn}</h4>
+            <h2>Previous Assigned Plan for {mrn}</h2>
           </div>
           <div
             className="card-body"
@@ -1005,15 +1080,34 @@ const PhysioPlanAssign = () => {
                   <button
                     className="btn btn-sm btn-outline-primary"
                     onClick={() => {
-                      setSelectedDate(entry.date);
+                      const dateEntry = assignedDates.find(
+                        (d) => d.date === entry.date
+                      );
+
+                      // ✅ Preload exercises if available
+                      setAssignedExercises(
+                        dateEntry?.exercises || entry.exercises || []
+                      );
+
                       setShowAssignModal({
                         visible: true,
                         date: entry.date,
                       });
+
+                      // Optional: preload type based on first exercise
+                      if (
+                        (dateEntry?.exercises || entry.exercises || []).length >
+                        0
+                      ) {
+                        const first = (dateEntry?.exercises ||
+                          entry.exercises)[0];
+                        setSelectedType(first.type);
+                      }
                     }}
                   >
                     Edit
                   </button>
+
                   <button
                     className="btn btn-sm btn-outline-danger"
                     onClick={() => deleteAssignedDate(entry.date)}
