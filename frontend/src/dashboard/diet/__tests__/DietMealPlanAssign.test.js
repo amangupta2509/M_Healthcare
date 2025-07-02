@@ -143,30 +143,40 @@ test("shows and validates BMI popup", async () => {
   expect(await screen.findByText(/All BMI fields are required/i)).toBeInTheDocument();
 });
 
-
 test("selects date range and meal time", async () => {
-  await customRender();
+  render(
+    <>
+      <ToastContainer />
+      <DietMealPlanAssign />
+    </>
+  );
 
   fireEvent.change(screen.getByPlaceholderText("Enter MRN Number"), {
     target: { value: "MRN123" },
   });
   fireEvent.click(screen.getByText("Search"));
 
+  // Wait until client loads
   await waitFor(() => {
-    expect(screen.getByText(/Muscle Gain/)).toBeInTheDocument();
+    expect(screen.getByText(/Muscle Gain/i)).toBeInTheDocument();
   });
 
+  // Wait until the meal options render
+  await waitFor(() =>
+    expect(screen.getByRole("option", { name: "Breakfast" })).toBeInTheDocument()
+  );
+
+  // Set dates
   const dateInputs = screen.getAllByPlaceholderText(/DD-MM-YYYY/i);
   fireEvent.change(dateInputs[0], { target: { value: "2025-07-01" } });
   fireEvent.change(dateInputs[1], { target: { value: "2025-07-15" } });
 
-  // Wait for the dropdown to load
-  const select = await screen.findByRole("combobox");
+  // Select meal
+  const select = screen.getByRole("combobox");
   fireEvent.change(select, { target: { value: "Breakfast" } });
+
   expect(select.value).toBe("Breakfast");
 });
-
-
 
   test("shows buttons for Generate PDF and Complete Assignment", async () => {
     await customRender();
@@ -183,3 +193,4 @@ test("selects date range and meal time", async () => {
     expect(screen.getByText(/Complete Assignment/i)).toBeInTheDocument();
   });
 });
+// Note: The test for PDF generation is not included as it requires additional setup for the PDF library.
