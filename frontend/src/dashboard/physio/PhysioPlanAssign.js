@@ -966,6 +966,6 @@ const PhysioPlanAssign = () => {
       )}
     </div>
   );
-};
+};   
 
 export default PhysioPlanAssign;
