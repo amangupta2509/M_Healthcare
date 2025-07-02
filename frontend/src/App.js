@@ -42,11 +42,9 @@ import Footer from "./dashboard/physio/components/Footer";
 
 // Pages
 import Profile from "./dashboard/physio/profile";
-import Assign from "./dashboard/physio/assign";
-import ClientManagement from "./dashboard/physio/clientManagement";
-import Report from "./dashboard/physio/report";
+
 import UserDetails from "./dashboard/physio/userDetails";
-import Physioo from "./dashboard/physio/physioo";
+
 import PhysiosAppointments from "./dashboard/physio/PhysiosAppointments";
 import PhysioPasswordRequest from "./dashboard/physio/pages/PhysioPasswordRequest";
 import PhysioPlanAssign from "./dashboard/physio/PhysioPlanAssign";
@@ -267,15 +265,18 @@ const App = () => {
           <Route element={<PhysioDashboardLayout />}>
             <Route path="/" element={<Navigate to="/profile" replace />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/assign" element={<Assign />} />
-            <Route path="/clients" element={<ClientManagement />} />
-            <Route path="/reports" element={<Report />} />
             <Route path="/user" element={<UserDetails />} />
-            <Route path="/physio" element={<Physioo />} />
+
             <Route path="/user-details/:userId" element={<UserDetails />} />
-            <Route path="/user/:id/report" element={<Report />} />
-            <Route path="/PhysiosAppointments" element={<PhysiosAppointments />} />
-            <Route path="/PhysioPasswordRequest" element={<PhysioPasswordRequest />} />
+
+            <Route
+              path="/PhysiosAppointments"
+              element={<PhysiosAppointments />}
+            />
+            <Route
+              path="/PhysioPasswordRequest"
+              element={<PhysioPasswordRequest />}
+            />
             <Route path="/PhysioPlanAssign" element={<PhysioPlanAssign />} />
           </Route>
 
@@ -286,8 +287,14 @@ const App = () => {
             <Route path="diet_profile" element={<DietProfile />} />
             <Route path="diet_assign" element={<DietAssign />} />
             <Route path="diet_physio" element={<DietPhysioo />} />
-            <Route path="DietitiansAppointments" element={<DietitiansAppointments />} />
-            <Route path="DietPasswordRequest" element={<DietPasswordRequest />} />
+            <Route
+              path="DietitiansAppointments"
+              element={<DietitiansAppointments />}
+            />
+            <Route
+              path="DietPasswordRequest"
+              element={<DietPasswordRequest />}
+            />
             <Route path="DietMealPlanAssign" element={<DietMealPlanAssign />} />
           </Route>
 
@@ -295,11 +302,26 @@ const App = () => {
               DOCTOR DASHBOARD ROUTES
               ============================================== */}
           <Route path="/doctor" element={<DoctorDashboardLayout />}>
-            <Route index element={<Navigate to="DoctorDashboardHome" replace />} />
-            <Route path="DoctorsAppointments" element={<DoctorsAppointments />} />
-            <Route path="DoctorAssignmentDashboard" element={<DoctorAssignmentDashboard />} />
-            <Route path="DoctorPasswordRequest" element={<DoctorPasswordRequest />} />
-            <Route path="DoctorDashboardHome" element={<DoctorDashboardHome />} />
+            <Route
+              index
+              element={<Navigate to="DoctorDashboardHome" replace />}
+            />
+            <Route
+              path="DoctorsAppointments"
+              element={<DoctorsAppointments />}
+            />
+            <Route
+              path="DoctorAssignmentDashboard"
+              element={<DoctorAssignmentDashboard />}
+            />
+            <Route
+              path="DoctorPasswordRequest"
+              element={<DoctorPasswordRequest />}
+            />
+            <Route
+              path="DoctorDashboardHome"
+              element={<DoctorDashboardHome />}
+            />
             <Route path="DoctorSlotBooking" element={<DoctorSlotBooking />} />
           </Route>
 
@@ -316,16 +338,34 @@ const App = () => {
             <Route path="SecurityControls" element={<SecurityControls />} />
             <Route path="Services" element={<Services />} />
             <Route path="AdminBlogSection" element={<AdminBlogSection />} />
-          
+
             {/* Appointment Management Routes */}
             <Route path="appointments" element={<AppointmentsContainer />} />
-            <Route path="appointments/counselor" element={<CounselorAppointments />} />
-            <Route path="appointments/doctor" element={<DoctorAppointments />} />
-            <Route path="appointments/dietitian" element={<DietitianAppointments />} />
-            <Route path="appointments/physio" element={<PhysioAppointments />} />
-            <Route path="appointments/phlebotomist" element={<PhlebotomistAppointments />} />
-            <Route path="AdminPasswordRequests" element={<AdminPasswordRequests />} />
-            
+            <Route
+              path="appointments/counselor"
+              element={<CounselorAppointments />}
+            />
+            <Route
+              path="appointments/doctor"
+              element={<DoctorAppointments />}
+            />
+            <Route
+              path="appointments/dietitian"
+              element={<DietitianAppointments />}
+            />
+            <Route
+              path="appointments/physio"
+              element={<PhysioAppointments />}
+            />
+            <Route
+              path="appointments/phlebotomist"
+              element={<PhlebotomistAppointments />}
+            />
+            <Route
+              path="AdminPasswordRequests"
+              element={<AdminPasswordRequests />}
+            />
+
             <Route path="ReportBuilder" element={<ReportBuilder />} />
             <Route path="TemplateDemo" element={<TemplateDemo />} />
           </Route>
@@ -335,9 +375,18 @@ const App = () => {
               ============================================== */}
           <Route path="/counselor" element={<CounselorDashboardLayout />}>
             <Route index element={<CounselorDashboard />} />
-            <Route path="CounselorsAppointments" element={<CounselorsAppointments />} />
-            <Route path="CounselorCompletedAppointments" element={<CounselorCompletedAppointments />} />
-            <Route path="CounselorPasswordRequest" element={<CounselorPasswordRequest />} />
+            <Route
+              path="CounselorsAppointments"
+              element={<CounselorsAppointments />}
+            />
+            <Route
+              path="CounselorCompletedAppointments"
+              element={<CounselorCompletedAppointments />}
+            />
+            <Route
+              path="CounselorPasswordRequest"
+              element={<CounselorPasswordRequest />}
+            />
           </Route>
         </Routes>
       </ThemeProvider>

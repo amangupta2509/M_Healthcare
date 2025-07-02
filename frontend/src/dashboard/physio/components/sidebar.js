@@ -186,17 +186,7 @@ const Sidebar = () => {
                 <span>Dashboard</span>
               </NavLink>
             </li>
-            <li>
-              <NavLink to="/clients" className={navLinkClass}>
-                <Users
-                  size={18}
-                  style={{
-                    marginRight: !collapsed || isHovering ? "10px" : "0",
-                  }}
-                />
-                <span>Client Management</span>
-              </NavLink>
-            </li>
+           
             <li>
               <NavLink to="/PhysiosAppointments" className={navLinkClass}>
                 <Users
@@ -208,40 +198,9 @@ const Sidebar = () => {
                 <span>Appointments</span>
               </NavLink>
             </li>
-            <li>
-              <NavLink to="/assign" className={navLinkClass}>
-                <Dumbbell
-                  size={18}
-                  style={{
-                    marginRight: !collapsed || isHovering ? "10px" : "0",
-                  }}
-                />
-                <span>Assign Exercise</span>
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/reports" className={navLinkClass}>
-                <BarChart2
-                  size={18}
-                  style={{
-                    marginRight: !collapsed || isHovering ? "10px" : "0",
-                  }}
-                />
-                <span>Reports</span>
-              </NavLink>
-            </li>
+           
 
-            <li>
-              <NavLink to="/physio" className={navLinkClass}>
-                <Workflow
-                  size={18}
-                  style={{
-                    marginRight: !collapsed || isHovering ? "10px" : "0",
-                  }}
-                />
-                <span>Physio</span>
-              </NavLink>
-            </li>
+            
             <li>
               <NavLink to="/PhysioPlanAssign" className={navLinkClass}>
                 <Workflow

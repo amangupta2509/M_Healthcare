@@ -1867,7 +1867,7 @@
     "Evening Snack",
     "Dinner"
   ],
- 
+
   "dietGuidelines": [
     {
       "type": "Water Intake",
@@ -1886,15 +1886,35 @@
       "description": "Eat mindfully and avoid overeating during meals."
     }
   ],
-  "physioClients": [
-  {
-    "mrn": "MRN123",
-    "name": "Alex Sharma",
-    "age": 45,
-    "gender": "Male",
-    "weight": "75kg",
-    "condition": "Post ACL Surgery Rehab"
-  }
-]
-
+   "physioClients": [
+    {
+      "mrn": "MRN123",
+      "name": "Alex Sharma",
+      "age": 45,
+      "gender": "Male",
+      "weight": "75kg",
+      "condition": "Post ACL Surgery Rehab"
+    }
+  ],
+  "physioAssignedPlans": [
+    {
+      "id": 1,
+      "mrn": "MRN123",
+      "from": "2025-07-01",
+      "to": "2025-07-10",
+      "assignedDates": [
+        {
+          "date": "2025-07-03",
+          "exercises": [
+            {
+              "type": "Yoga",
+              "name": "Nadi shodhana",
+              "rounds": "3",
+              "breaths": "5"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

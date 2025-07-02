@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "../physio/assign.css"; // Reuse existing physio styles
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const PhysioPlanAssign = () => {
   const [mrn, setMrn] = useState("");
@@ -54,6 +55,95 @@ const PhysioPlanAssign = () => {
       "Dumbbell row",
     ],
   };
+  const confirmAssignment = async () => {
+    if (!fromDateTime || !toDateTime || !mrn) {
+      toast.error("Missing From/To date or MRN");
+      return;
+    }
+
+    if (
+      !assignedDates?.length ||
+      !assignedDates.some((d) => d.exercises?.length)
+    ) {
+      toast.error("Please assign at least one exercise");
+      return;
+    }
+
+    const jsonForThisUser = {
+      mrn,
+      from: fromDateTime,
+      to: toDateTime,
+      assignedDates,
+    };
+
+    try {
+      const res = await axios.get(
+        `http://localhost:3001/physioAssignedPlans?mrn=${mrn}`
+      );
+      const existing = res.data[0];
+
+      if (existing?.id) {
+        // ✅ Update using ID
+        await axios.put(
+          `http://localhost:3001/physioAssignedPlans/${existing.id}`,
+          { id: existing.id, ...jsonForThisUser }
+        );
+      } else {
+        // ✅ Create new plan (id will be auto-generated)
+        // Else block for new record
+        const createRes = await axios.post(
+          `http://localhost:3001/physioAssignedPlans`,
+          jsonForThisUser
+        );
+
+        // ✅ Store the generated ID for later use
+        jsonForThisUser.id = createRes.data.id;
+      }
+
+      setPhysioAssignedPlans((prev) => ({
+        ...prev,
+        [mrn]: { ...jsonForThisUser },
+      }));
+
+      setAssignmentConfirmed(true);
+      toast.success("Assignment confirmed and saved to server!");
+    } catch (error) {
+      console.error("Assignment Save Error:", error);
+      toast.error("Failed to confirm assignment");
+    }
+  };
+
+  const deleteAssignedDate = async (dateToDelete) => {
+    const current = physioAssignedPlans[mrn];
+    if (!current?.id || !current?.assignedDates) {
+      toast.error("Missing data or ID");
+      return;
+    }
+
+    const updated = {
+      ...current,
+      assignedDates: current.assignedDates.filter(
+        (d) => d.date !== dateToDelete
+      ),
+    };
+
+    try {
+      await axios.put(
+        `http://localhost:3001/physioAssignedPlans/${current.id}`,
+        updated
+      );
+
+      setPhysioAssignedPlans((prev) => ({
+        ...prev,
+        [mrn]: updated,
+      }));
+
+      toast.success("Assignment date deleted");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete assignment date");
+    }
+  };
 
   const generateDatesBetween = (start, end) => {
     const dateArray = [];
@@ -84,27 +174,27 @@ const PhysioPlanAssign = () => {
   };
 
   const handleSearch = async () => {
-    if (!mrn.trim()) {
-      toast.error("Please enter a valid MRN number");
-      return;
-    }
-
     try {
-      const response = await fetch(
+      const clientRes = await axios.get(
         `http://localhost:3001/physioClients?mrn=${mrn}`
       );
-      const data = await response.json();
+      const planRes = await axios.get(
+        `http://localhost:3001/physioAssignedPlans?mrn=${mrn}`
+      );
 
-      if (data.length > 0) {
-        setClientData(data[0]);
-        toast.success("Client found!");
-      } else {
-        setClientData(null);
-        toast.error("No client found with this MRN");
+      if (clientRes.data.length > 0) {
+        setClientData(clientRes.data[0]);
       }
-    } catch (err) {
-      console.error("Fetch error:", err);
-      toast.error("Failed to fetch data");
+
+      if (planRes.data.length > 0) {
+        setPhysioAssignedPlans((prev) => ({
+          ...prev,
+          [mrn]: planRes.data[0], // ✅ includes id now
+        }));
+      }
+    } catch (error) {
+      toast.error("Error fetching client or assignment data");
+      console.error(error);
     }
   };
 
@@ -438,7 +528,7 @@ const PhysioPlanAssign = () => {
                             {item.exercises && item.exercises.length > 0 ? (
                               <>
                                 <button
-                                  className="btn btn-sm btn-outline-success me-2"
+                                  className="btn btn-primary"
                                   onClick={() =>
                                     setShowViewPopup({
                                       visible: true,
@@ -450,7 +540,7 @@ const PhysioPlanAssign = () => {
                                   View
                                 </button>
                                 <button
-                                  className="btn btn-sm btn-outline-primary"
+                                  className="btn btn-primary"
                                   onClick={() =>
                                     setShowAssignModal({
                                       visible: true,
@@ -482,35 +572,13 @@ const PhysioPlanAssign = () => {
                 </div>
               )}
               {assignedDates.length > 0 && (
-                <button
-                  className="btn btn-success mt-4"
-                  onClick={() => {
-                    if (!fromDateTime || !toDateTime || !mrn) {
-                      toast.error("Missing From/To date or MRN");
-                      return;
-                    }
-
-                    const jsonForThisUser = {
-                      from: fromDateTime,
-                      to: toDateTime,
-                      assignedDates,
-                    };
-
-                    setPhysioAssignedPlans((prev) => ({
-                      ...prev,
-                      [mrn]: jsonForThisUser,
-                    }));
-
-                    setAssignmentConfirmed(true); // ✅ Hide everything else
-                    toast.success("Assignment confirmed and saved!");
-                  }}
-                >
+                <button className="btn btn-primary" onClick={confirmAssignment}>
                   ✅ Confirm Assignment
                 </button>
               )}
               {physioAssignedPlans[mrn] && (
                 <button
-                  className="btn btn-outline-info mb-3"
+                  className="btn btn-primary"
                   onClick={() => setShowPreviousCard(true)}
                 >
                   📁 View Previous Assigned Plan
@@ -552,7 +620,7 @@ const PhysioPlanAssign = () => {
             }}
           >
             <button
-              className="close-btn"
+              className="btn btn-primary"
               onClick={() => setShowAssignModal({ visible: false, date: null })}
               style={{
                 position: "absolute",
@@ -678,7 +746,7 @@ const PhysioPlanAssign = () => {
                 )}
 
                 <button
-                  className="btn btn-primary mt-3"
+                  className="btn btn-primary"
                   onClick={() => {
                     if (!selectedExercise) return;
                     setAssignedExercises((prev) => [
@@ -736,7 +804,7 @@ const PhysioPlanAssign = () => {
             {/* Submit Button */}
             <center>
               <button
-                className="btn btn-success mt-3"
+                className="btn btn-primary"
                 onClick={() => {
                   if (!assignedExercises.length) {
                     toast.error("Please add at least one exercise");
@@ -812,7 +880,7 @@ const PhysioPlanAssign = () => {
             }}
           >
             <button
-              className="close-btn"
+              className="btn btn-primary"
               onClick={() =>
                 setShowViewPopup({ visible: false, data: [], date: "" })
               }
@@ -891,81 +959,84 @@ const PhysioPlanAssign = () => {
         >
           <div className="card-header d-flex justify-content-between align-items-center">
             <h4>Previous Assigned Plan for {mrn}</h4>
-            <button
-              className="btn btn-danger btn-sm"
-              onClick={() => setShowPreviousCard(false)}
-            >
-              Close
-            </button>
           </div>
           <div
             className="card-body"
-            style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gap: "1.5rem",
+            }}
           >
             {physioAssignedPlans[mrn].assignedDates.map((entry, idx) => (
               <div
                 key={idx}
                 className="card"
-                style={{ width: "250px", border: "1px solid #cc5500" }}
+                style={{
+                  border: "1px solid #cc5500",
+                  padding: "1rem",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                }}
               >
-                <div className="card-body">
+                <div>
                   <h6>
                     <strong>Date:</strong> {entry.date}
                   </h6>
                   <p>
                     <strong>Exercises:</strong> {entry.exercises.length}
                   </p>
-                  <div className="d-flex justify-content-between mt-2">
-                    <button
-                      className="btn btn-sm btn-outline-success"
-                      onClick={() =>
-                        setShowViewPopup({
-                          visible: true,
-                          date: entry.date,
-                          data: entry.exercises,
-                        })
-                      }
-                    >
-                      View
-                    </button>
-                    <button
-                      className="btn btn-sm btn-outline-primary"
-                      onClick={() => {
-                        setSelectedDate(entry.date);
-                        setShowAssignModal({
-                          visible: true,
-                          date: entry.date,
-                        });
-                      }}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="btn btn-sm btn-outline-danger"
-                      onClick={() => {
-                        const updated = physioAssignedPlans[
-                          mrn
-                        ].assignedDates.filter((d) => d.date !== entry.date);
-                        setPhysioAssignedPlans((prev) => ({
-                          ...prev,
-                          [mrn]: {
-                            ...prev[mrn],
-                            assignedDates: updated,
-                          },
-                        }));
-                      }}
-                    >
-                      Delete
-                    </button>
-                  </div>
+                </div>
+
+                <div className="d-flex justify-content-between mt-2">
+                  <button
+                    className="btn btn-sm btn-outline-success"
+                    onClick={() =>
+                      setShowViewPopup({
+                        visible: true,
+                        date: entry.date,
+                        data: entry.exercises,
+                      })
+                    }
+                  >
+                    View
+                  </button>
+                  <button
+                    className="btn btn-sm btn-outline-primary"
+                    onClick={() => {
+                      setSelectedDate(entry.date);
+                      setShowAssignModal({
+                        visible: true,
+                        date: entry.date,
+                      });
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="btn btn-sm btn-outline-danger"
+                    onClick={() => deleteAssignedDate(entry.date)}
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
             ))}
           </div>
+
+          <center>
+            <button
+              className="btn btn-primary"
+              onClick={() => setShowPreviousCard(false)}
+            >
+              Close
+            </button>
+          </center>
         </div>
       )}
     </div>
   );
-};   
+};
 
 export default PhysioPlanAssign;
