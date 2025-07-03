@@ -5,6 +5,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "../physio/assign.css"; // Reuse existing physio styles
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import "../master_admin/master_admin.css";
+import "../physio/clientManagement.css";
 
 const PhysioPlanAssign = () => {
   const [mrn, setMrn] = useState("");
@@ -547,9 +549,9 @@ const PhysioPlanAssign = () => {
               )}
 
               {(assignedDates.length > 0 || selectedDate) && (
-                <div className="mt-4" ref={scrollToRef}>
+                <div className="appointments-table" ref={scrollToRef}>
                   <h4>Assigned Dates</h4>
-                  <table className="table table-bordered">
+                  <table className="table-responsive">
                     <thead>
                       <tr>
                         <th>Sr No.</th>
@@ -830,9 +832,9 @@ const PhysioPlanAssign = () => {
 
             {/* Assigned Exercises Preview */}
             {assignedExercises.length > 0 && (
-              <div className="mt-4">
+              <div className="appointments-table">
                 <h5>Assigned Exercises</h5>
-                <table className="table table-bordered">
+                <table className="table-responsive">
                   <thead>
                     <tr>
                       <th>Type</th>

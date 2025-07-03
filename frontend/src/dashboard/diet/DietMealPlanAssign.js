@@ -841,7 +841,7 @@ const DietMealPlanAssign = () => {
                   }
 
                   .meal-table thead {
-                    background: linear-gradient(135deg, #cc5500, #e06600);
+                    background: linear-gradient(135deg, #cc5500, #cc5500);
                     color: "var(--text-white)";
                   }
 
@@ -892,7 +892,7 @@ const DietMealPlanAssign = () => {
 
                   .meal-input:focus {
                     outline: none;
-                    border-color: #e06600;
+                    border-color: #cc5500;
                     box-shadow: 0 0 0 3px rgba(204, 85, 0, 0.1);
                   }
 
