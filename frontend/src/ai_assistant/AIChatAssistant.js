@@ -1,12 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Upload, Send, RefreshCcw, X, Eye, Moon, Sun, Sparkles } from "lucide-react";
+import {
+  Upload,
+  Send,
+  RefreshCcw,
+  X,
+  Eye,
+  Moon,
+  Sun,
+  Sparkles,
+} from "lucide-react";
 import "./AIChatAssistant.css";
 
 const AIChatAssistant = () => {
   const [theme, setTheme] = useState("light");
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([
-    { type: "bot", text: "👋 Hello! I'm your AI assistant. How can I help you today?" }
+    {
+      type: "bot",
+      text: "👋 Hello! I'm your AI assistant. How can I help you today?",
+    },
   ]);
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -22,7 +34,7 @@ const AIChatAssistant = () => {
   }, [messages, theme]);
 
   const toggleTheme = () => {
-    setTheme(prev => prev === "light" ? "dark" : "light");
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
   const handleSend = () => {
@@ -38,7 +50,9 @@ const AIChatAssistant = () => {
     setTimeout(() => {
       const botMsg = {
         type: "bot",
-        text: `I understand you said: "${input || '[file uploaded]'}". This is a mock response for demonstration.`
+        text: `I understand you said: "${
+          input || "[file uploaded]"
+        }". This is a mock response for demonstration.`,
       };
       setMessages((prev) => [...prev, botMsg]);
       setLoading(false);
@@ -75,13 +89,21 @@ const AIChatAssistant = () => {
         <div className="file-preview-content">
           <div className="file-preview-header">
             <h3 className="file-preview-title">{file.name}</h3>
-            <button className="file-preview-close" onClick={() => setPreviewFile(null)}>
+            <button
+              className="file-preview-close"
+              onClick={() => setPreviewFile(null)}
+            >
               <X size={20} />
             </button>
           </div>
           <div className="file-preview-body">
             {isPDF ? (
-              <embed src={fileUrl} type="application/pdf" width="100%" height="600px" />
+              <embed
+                src={fileUrl}
+                type="application/pdf"
+                width="100%"
+                height="600px"
+              />
             ) : isImage ? (
               <img src={fileUrl} alt="preview" className="file-preview-image" />
             ) : (
@@ -96,7 +118,13 @@ const AIChatAssistant = () => {
   };
 
   return (
-    <div className={`ai-container`} onDrop={handleDrop} onDragOver={handleDrag} onDragEnter={handleDrag} onDragLeave={handleDrag}>
+    <div
+      className={`ai-container`}
+      onDrop={handleDrop}
+      onDragOver={handleDrag}
+      onDragEnter={handleDrag}
+      onDragLeave={handleDrag}
+    >
       <div className="ai-main-card">
         {/* Header */}
         <div className="ai-header">
@@ -105,8 +133,8 @@ const AIChatAssistant = () => {
               <Sparkles size={20} color="#fff" />
             </div>
             <div className="ai-header-text">
-              <h1>AI Assistant</h1>
-              <p>Powered by advanced AI</p>
+              <h1> Assistant</h1>
+              <p>Powered by dnalyst</p>
             </div>
           </div>
           <button className="theme-toggle" onClick={toggleTheme}>
@@ -123,14 +151,15 @@ const AIChatAssistant = () => {
               </div>
               <div className={`chat-bubble ${msg.type}`}>
                 {msg.file && (
-                  <div className="file-card">
+                  <div
+                    className="file-card"
+                    onClick={() => setPreviewFile(msg.file)}
+                    role="button"
+                    tabIndex={0}
+                  >
                     <div className="file-info">
-                      <div className="file-icon">📎</div>
                       <span className="file-name">{msg.file.name}</span>
                     </div>
-                    <button className="preview-btn" onClick={() => setPreviewFile(msg.file)}>
-                      <Eye size={16} />
-                    </button>
                   </div>
                 )}
                 {msg.text}
@@ -165,7 +194,11 @@ const AIChatAssistant = () => {
 
           <div className="input-controls">
             <label className="file-upload-btn">
-              <input type="file" style={{ display: "none" }} onChange={(e) => setFile(e.target.files[0])} />
+              <input
+                type="file"
+                style={{ display: "none" }}
+                onChange={(e) => setFile(e.target.files[0])}
+              />
               <Upload size={20} />
             </label>
 
@@ -178,11 +211,19 @@ const AIChatAssistant = () => {
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
             />
 
-            <button className="action-btn" onClick={handleRegenerate} disabled={!lastPrompt}>
+            <button
+              className="action-btn"
+              onClick={handleRegenerate}
+              disabled={!lastPrompt}
+            >
               <RefreshCcw size={20} />
             </button>
 
-            <button className="action-btn send-btn" onClick={handleSend} disabled={!input.trim() && !file}>
+            <button
+              className="action-btn send-btn"
+              onClick={handleSend}
+              disabled={!input.trim() && !file}
+            >
               <Send size={20} />
             </button>
           </div>

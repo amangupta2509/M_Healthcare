@@ -1,54 +1,55 @@
 /* AIChatAssistant.css - Clean Modern UI */
 
 :root {
-  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --accent-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --primary-gradient: linear-gradient(135deg, #cc5500 0%, #ff7f24 100%);
+  --accent-gradient: linear-gradient(135deg, #cc5500 0%, #e67300 100%);
+  --success-gradient: linear-gradient(135deg, #ffa94d 0%, #ffc166 100%);
   
-  /* Light theme */
   --bg-primary: #ffffff;
-  --bg-secondary: #f8fafc;
-  --bg-tertiary: #f1f5f9;
-  --bg-hover: #e2e8f0;
-  --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+  --bg-secondary: #f8f4ef;
+  --bg-tertiary: #f6eee6;
+  --bg-hover: #f0e0d3;
+  --bg-gradient: linear-gradient(135deg, #fff7f0 0%, #ffeedd 100%);
   
-  --text-primary: #1e293b;
-  --text-secondary: #64748b;
-  --text-muted: #94a3b8;
+  --text-primary: #331a00;
+  --text-secondary: #804000;
+  --text-muted: #b36b00;
   
-  --border-color: #e2e8f0;
-  --border-hover: #cbd5e1;
+  --border-color: #e2cbb3;
+  --border-hover: #d9b385;
   
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  
+  --shadow-sm: 0 1px 2px 0 rgba(204, 85, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(204, 85, 0, 0.2), 0 2px 4px -1px rgba(204, 85, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(204, 85, 0, 0.2), 0 4px 6px -2px rgba(204, 85, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(204, 85, 0, 0.2), 0 10px 10px -5px rgba(204, 85, 0, 0.1);
+
   --radius-sm: 0.5rem;
   --radius-md: 0.75rem;
   --radius-lg: 1rem;
   --radius-xl: 1.5rem;
 }
 
+
 [data-theme="dark"] {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-tertiary: #334155;
-  --bg-hover: #475569;
-  --bg-gradient: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  --bg-primary: #1a1108;
+  --bg-secondary: #331a00;
+  --bg-tertiary: #4d2600;
+  --bg-hover: #663300;
+  --bg-gradient: linear-gradient(135deg, #331a00 0%, #4d2600 100%);
   
-  --text-primary: #f1f5f9;
-  --text-secondary: #cbd5e1;
-  --text-muted: #64748b;
+  --text-primary: #ffeedd;
+  --text-secondary: #ffcc99;
+  --text-muted: #e67300;
   
-  --border-color: #334155;
-  --border-hover: #475569;
+  --border-color: #4d2600;
+  --border-hover: #663300;
   
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 2px 0 rgba(204, 85, 0, 0.4);
+  --shadow-md: 0 4px 6px -1px rgba(204, 85, 0, 0.5), 0 2px 4px -1px rgba(204, 85, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(204, 85, 0, 0.5), 0 4px 6px -2px rgba(204, 85, 0, 0.4);
+  --shadow-xl: 0 20px 25px -5px rgba(204, 85, 0, 0.5), 0 10px 10px -5px rgba(204, 85, 0, 0.4);
 }
+
 
 * {
   box-sizing: border-box;
@@ -57,8 +58,8 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -241,6 +242,7 @@ body {
 
 /* File Card Styles */
 .file-card {
+  cursor: pointer;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--radius-md);
@@ -248,7 +250,7 @@ body {
   margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 0.5rem;
   backdrop-filter: blur(5px);
   transition: all 0.2s ease;
 }
@@ -256,12 +258,15 @@ body {
 .file-card:hover {
   background: rgba(255, 255, 255, 0.15);
   transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .file-info {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  max-width: 200px; /* or whatever width you want */
+  overflow: hidden;
 }
 
 .file-icon {
@@ -276,9 +281,10 @@ body {
 }
 
 .file-name {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: inherit;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .preview-btn {
@@ -312,9 +318,15 @@ body {
   animation: bounce 1.4s infinite ease-in-out;
 }
 
-.loading-dot:nth-child(1) { animation-delay: -0.32s; }
-.loading-dot:nth-child(2) { animation-delay: -0.16s; }
-.loading-dot:nth-child(3) { animation-delay: 0s; }
+.loading-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+.loading-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+.loading-dot:nth-child(3) {
+  animation-delay: 0s;
+}
 
 /* Input Area Styles */
 .ai-input-area {
@@ -338,7 +350,9 @@ body {
 .file-upload-info {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
+  max-width: 200px;
+  overflow: hidden;
 }
 
 .file-upload-icon {
@@ -354,9 +368,10 @@ body {
 }
 
 .file-upload-name {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--text-primary);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .file-remove-btn {
@@ -413,9 +428,10 @@ body {
 }
 
 .message-input:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #cc5500;
+  box-shadow: 0 0 0 3px rgba(204, 85, 0, 0.2);
 }
+
 
 .message-input::placeholder {
   color: var(--text-muted);
@@ -534,9 +550,11 @@ body {
 }
 
 .file-preview-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .file-preview-close {
@@ -586,7 +604,9 @@ body {
 }
 
 @keyframes bounce {
-  0%, 80%, 100% {
+  0%,
+  80%,
+  100% {
     transform: translateY(0);
   }
   40% {
@@ -609,34 +629,34 @@ body {
     margin: 1rem;
     padding: 0.5rem;
   }
-  
+
   .ai-header {
     padding: 1rem;
   }
-  
+
   .ai-header-text h1 {
     font-size: 1.25rem;
   }
-  
+
   .ai-chat-window {
     height: 400px;
     padding: 1rem;
   }
-  
+
   .chat-bubble {
     max-width: 85%;
     padding: 0.75rem 1rem;
   }
-  
+
   .ai-input-area {
     padding: 1rem;
   }
-  
+
   .input-controls {
     flex-wrap: wrap;
     gap: 0.5rem;
   }
-  
+
   .message-input {
     min-width: 200px;
   }
@@ -646,27 +666,27 @@ body {
   .ai-header-content {
     gap: 0.75rem;
   }
-  
+
   .ai-logo {
     width: 2.5rem;
     height: 2.5rem;
     font-size: 1.25rem;
   }
-  
+
   .ai-header-text h1 {
     font-size: 1.125rem;
   }
-  
+
   .chat-bubble {
     max-width: 90%;
     padding: 0.75rem;
     font-size: 0.9rem;
   }
-  
+
   .input-controls {
     flex-direction: column;
   }
-  
+
   .message-input {
     min-width: auto;
   }
