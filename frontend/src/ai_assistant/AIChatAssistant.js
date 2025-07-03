@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
+import ReactMarkdown from "react-markdown";
+
 import {
   Upload,
   Send,
@@ -58,7 +60,16 @@ const AIChatAssistant = () => {
       setLoading(false);
     }, 1000);
   };
-
+  const BotMessageCard = ({ title, content }) => {
+    return (
+      <div className="bot-card">
+        <div className="bot-card-header">{title}</div>
+        <div className="bot-card-body">
+          <ReactMarkdown>{content}</ReactMarkdown>
+        </div>
+      </div>
+    );
+  };
   const handleRegenerate = () => {
     if (!lastPrompt) return;
     setInput(lastPrompt);
@@ -70,6 +81,12 @@ const AIChatAssistant = () => {
     e.stopPropagation();
     setDragActive(false);
     if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
   };
 
   const handleDrag = (e) => {
@@ -162,7 +179,15 @@ const AIChatAssistant = () => {
                     </div>
                   </div>
                 )}
-                {msg.text}
+                <ReactMarkdown
+                  components={{
+                    p: ({ node, ...props }) => (
+                      <p className="bot-markdown" {...props} />
+                    ),
+                  }}
+                >
+                  {msg.text}
+                </ReactMarkdown>
               </div>
             </div>
           ))}
@@ -202,13 +227,12 @@ const AIChatAssistant = () => {
               <Upload size={20} />
             </label>
 
-            <input
-              type="text"
+            <textarea
               className="message-input"
               placeholder="Type your message..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSend()}
+              onKeyDown={handleKeyDown}
             />
 
             <button
