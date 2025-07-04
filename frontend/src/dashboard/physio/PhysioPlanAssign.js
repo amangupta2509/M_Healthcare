@@ -1037,6 +1037,7 @@ const PhysioPlanAssign = () => {
           <div className="card-header d-flex justify-content-between align-items-center">
             <h2>Previous Assigned Plan for {mrn}</h2>
           </div>
+
           <div
             className="card-body"
             style={{
@@ -1045,22 +1046,26 @@ const PhysioPlanAssign = () => {
               gap: "1.5rem",
             }}
           >
-            {physioAssignedPlans[mrn].assignedDates.map((entry, idx) => (
+            {physioAssignedPlans[mrn]?.assignedDates.map((entry, idx) => (
               <div
                 key={idx}
                 className="card"
                 style={{
                   border: "1px solid #cc5500",
+                  borderRadius: "8px",
                   padding: "1rem",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
+                  backgroundColor: "var(--bg-primary)",
+                  color: "var(--text-primary)",
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
                 }}
               >
                 <div>
-                  <h6>
-                    <strong>Date:</strong> {entry.date}
-                  </h6>
+                  <h5 style={{ color: "#cc5500", marginBottom: "0.5rem" }}>
+                    📅 {entry.date}
+                  </h5>
                   <p>
                     <strong>Exercises:</strong> {entry.exercises.length}
                   </p>
@@ -1079,27 +1084,20 @@ const PhysioPlanAssign = () => {
                   >
                     View
                   </button>
+
                   <button
                     className="btn btn-sm btn-outline-primary"
                     onClick={() => {
                       const dateEntry = assignedDates.find(
                         (d) => d.date === entry.date
                       );
-
-                      // ✅ Preload exercises if available
                       setAssignedExercises(
                         dateEntry?.exercises || entry.exercises || []
                       );
+                      setShowAssignModal({ visible: true, date: entry.date });
 
-                      setShowAssignModal({
-                        visible: true,
-                        date: entry.date,
-                      });
-
-                      // Optional: preload type based on first exercise
                       if (
-                        (dateEntry?.exercises || entry.exercises || []).length >
-                        0
+                        (dateEntry?.exercises || entry.exercises).length > 0
                       ) {
                         const first = (dateEntry?.exercises ||
                           entry.exercises)[0];
@@ -1123,7 +1121,7 @@ const PhysioPlanAssign = () => {
 
           <center>
             <button
-              className="btn btn-primary"
+              className="btn btn-primary mt-3"
               onClick={() => setShowPreviousCard(false)}
             >
               Close

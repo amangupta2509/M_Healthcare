@@ -740,13 +740,12 @@ const DietMealPlanAssign = () => {
                 }}
               >
                 <option value="">-- Choose Meal --</option>
-                {availableMeals.map((meal, i) => (
-                  <option key={i} value={meal}>
-                    {meal}
+                {availableMeals.map((meal) => (
+                  <option key={meal.id} value={meal.name}>
+                    {meal.name}
                   </option>
                 ))}
               </select>
-
               {/* Render selected meals as buttons with '×' to remove */}
               <div
                 className="selected-meals"
@@ -935,79 +934,164 @@ const DietMealPlanAssign = () => {
                     padding-top: 12px;
                   }
 
+                  /* Card Layout for Mobile */
+                  .meal-cards {
+                    display: none;
+                    flex-direction: column;
+                    gap: 1rem;
+                    padding: 1rem;
+                  }
+
+                  .meal-card {
+                    background: var(--bg-primary);
+                    border: 2px solid #cc5500;
+                    border-radius: 8px;
+                    padding: 1rem;
+                    box-shadow: 0 2px 4px rgba(204, 85, 0, 0.1);
+                  }
+
+                  .meal-card-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 1rem;
+                    padding-bottom: 0.5rem;
+                    border-bottom: 1px solid #e9ecef;
+                  }
+
+                  .meal-card-title {
+                    font-weight: bold;
+                    color: var(--text-primary);
+                    font-size: 1.1rem;
+                  }
+
+                  .meal-card-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 1rem;
+                    margin-bottom: 1rem;
+                  }
+
+                  .meal-card-field {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.25rem;
+                  }
+
+                  .meal-card-label {
+                    font-weight: 600;
+                    color: #cc5500;
+                    font-size: 0.85rem;
+                  }
+
+                  .meal-card-input {
+                    padding: 8px;
+                    border-radius: 6px;
+                    border: 2px solid #cc5500;
+                    font-size: 0.9rem;
+                    background-color: #fff;
+                    color: #333;
+                    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+                  }
+
+                  .meal-card-input:focus {
+                    outline: none;
+                    border-color: #cc5500;
+                    box-shadow: 0 0 0 3px rgba(204, 85, 0, 0.1);
+                  }
+
+                  .meal-card-actions {
+                    display: flex;
+                    gap: 0.5rem;
+                    justify-content: flex-end;
+                  }
+
+                  .meal-card-btn {
+                    padding: 8px 16px;
+                    border-radius: 6px;
+                    background: linear-gradient(135deg, #cc5500, #e06600);
+                    border: none;
+                    color: white;
+                    font-weight: bold;
+                    font-size: 0.85rem;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    box-shadow: 0 2px 4px rgba(204, 85, 0, 0.2);
+                  }
+
+                  .meal-card-btn:hover {
+                    background: linear-gradient(135deg, #b84d00, #cc5500);
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 8px rgba(204, 85, 0, 0.3);
+                  }
+
+                  .meal-card-btn:disabled {
+                    background: #ccc;
+                    color: #666;
+                    cursor: not-allowed;
+                    transform: none;
+                    box-shadow: none;
+                  }
+
                   /* Mobile First Responsive Design */
                   @media (max-width: 768px) {
                     .meal-table-container {
                       margin: 1rem 0;
-                      border-radius: 0;
+                      border-radius: 8px;
                       box-shadow: none;
-                      border-top: 1px solid #e9ecef;
-                      border-bottom: 1px solid #e9ecef;
+                      background: transparent;
+                      overflow: visible;
                     }
 
                     .meal-table {
-                      min-width: 600px;
+                      display: none;
                     }
 
-                    .meal-table th,
-                    .meal-table td {
-                      padding: 8px 4px;
-                      font-size: 0.8rem;
+                    .meal-cards {
+                      display: flex;
                     }
 
-                    .meal-input {
-                      min-width: 70px;
-                      max-width: 90px;
-                      padding: 6px;
-                      font-size: 0.8rem;
+                    .meal-card-grid {
+                      grid-template-columns: 1fr;
+                      gap: 0.75rem;
                     }
 
-                    .meal-btn {
-                      padding: 6px 8px;
-                      font-size: 0.75rem;
+                    .meal-card {
+                      padding: 0.75rem;
                     }
 
-                    .meal-name {
-                      font-size: 0.85rem;
+                    .meal-card-actions {
+                      flex-direction: column;
+                      gap: 0.5rem;
+                    }
+
+                    .meal-card-btn {
+                      width: 100%;
                     }
                   }
 
                   @media (max-width: 480px) {
-                    .date-range-container {
-                      flex-direction: column;
-                      gap: 0.5rem !important;
+                    .meal-cards {
+                      padding: 0.5rem;
+                      gap: 0.75rem;
                     }
 
-                    .meal-table {
-                      min-width: 550px;
+                    .meal-card {
+                      padding: 0.5rem;
                     }
 
-                    .meal-table th,
-                    .meal-table td {
-                      padding: 6px 3px;
-                      font-size: 0.75rem;
+                    .meal-card-title {
+                      font-size: 1rem;
                     }
 
-                    .meal-input {
-                      min-width: 60px;
-                      max-width: 80px;
-                      padding: 5px;
-                      font-size: 0.75rem;
+                    .meal-card-input {
+                      padding: 6px;
+                      font-size: 0.85rem;
                     }
 
-                    .meal-btn {
-                      padding: 5px 6px;
-                      font-size: 0.7rem;
-                    }
-
-                    .meal-name {
+                    .meal-card-btn {
+                      padding: 6px 12px;
                       font-size: 0.8rem;
-                    }
-
-                    .meal-tag {
-                      padding: 6px 10px !important;
-                      font-size: 0.8rem !important;
-                      margin: 2px !important;
                     }
                   }
 
@@ -1029,6 +1113,7 @@ const DietMealPlanAssign = () => {
                   }
                 `}</style>
 
+                {/* Table Layout for Desktop */}
                 <table className="meal-table">
                   <thead>
                     <tr>
@@ -1114,7 +1199,7 @@ const DietMealPlanAssign = () => {
                             className="meal-btn"
                             onClick={() => handleAddOptionClick(index)}
                           >
-                             Add
+                            Add
                           </button>
                         </td>
 
@@ -1133,6 +1218,99 @@ const DietMealPlanAssign = () => {
                     ))}
                   </tbody>
                 </table>
+
+                {/* Card Layout for Mobile */}
+                <div className="meal-cards">
+                  {energyProteinDistribution.map((row, index) => (
+                    <div key={index} className="meal-card">
+                      <div className="meal-card-header">
+                        <div className="meal-card-title">{row.mealName}</div>
+                      </div>
+
+                      <div className="meal-card-grid">
+                        <div className="meal-card-field">
+                          <label className="meal-card-label">Time</label>
+                          <input
+                            type="time"
+                            className="meal-card-input"
+                            value={row.mealTime}
+                            onChange={(e) =>
+                              handleEnergyProteinChange(
+                                index,
+                                "mealTime",
+                                e.target.value
+                              )
+                            }
+                          />
+                        </div>
+
+                        <div className="meal-card-field">
+                          <label className="meal-card-label">Calories</label>
+                          <input
+                            className="meal-card-input"
+                            type={
+                              focusedCaloriesIndex === index || row.calories
+                                ? "number"
+                                : "text"
+                            }
+                            placeholder="kcal"
+                            value={row.calories}
+                            onChange={(e) =>
+                              handleEnergyProteinChange(
+                                index,
+                                "calories",
+                                e.target.value
+                              )
+                            }
+                            onFocus={() => setFocusedCaloriesIndex(index)}
+                            onBlur={() => setFocusedCaloriesIndex(null)}
+                          />
+                        </div>
+
+                        <div className="meal-card-field">
+                          <label className="meal-card-label">Protein</label>
+                          <input
+                            className="meal-card-input"
+                            type={
+                              focusedProteinIndex === index || row.protein
+                                ? "number"
+                                : "text"
+                            }
+                            placeholder="g"
+                            value={row.protein}
+                            onChange={(e) =>
+                              handleEnergyProteinChange(
+                                index,
+                                "protein",
+                                e.target.value
+                              )
+                            }
+                            onFocus={() => setFocusedProteinIndex(index)}
+                            onBlur={() => setFocusedProteinIndex(null)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="meal-card-actions">
+                        <button
+                          className="meal-card-btn"
+                          onClick={() => handleAddOptionClick(index)}
+                        >
+                          Add Option
+                        </button>
+                        <button
+                          className="meal-card-btn"
+                          onClick={() =>
+                            setShowOptionGridPopup({ visible: true, index })
+                          }
+                          disabled={row.options.length === 0}
+                        >
+                          View Options ({row.options.length})
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
