@@ -1,7 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 
-import { Upload, Send, RefreshCcw, X, Moon, Sun, Sparkles,Brush } from "lucide-react";
+import {
+  Upload,
+  Send,
+  RefreshCcw,
+  X,
+  Moon,
+  Sun,
+  Sparkles,
+  Brush,
+} from "lucide-react";
 import "./AIChatAssistant.css";
 
 const AIChatAssistant = () => {
@@ -180,15 +189,15 @@ const AIChatAssistant = () => {
             </div>
           </div>
           <div style={{ display: "flex", gap: "0.5rem" }}>
-            <button className="theme-toggle" onClick={toggleTheme}>
-              {theme === "dark" ? <Sun /> : <Moon />}
-            </button>
             <button
               className="theme-toggle"
               onClick={clearChat}
               title="Clear Chat"
             >
               <Brush size={20} />
+            </button>
+            <button className="theme-toggle" onClick={toggleTheme}>
+              {theme === "dark" ? <Sun /> : <Moon />}
             </button>
           </div>
         </div>
