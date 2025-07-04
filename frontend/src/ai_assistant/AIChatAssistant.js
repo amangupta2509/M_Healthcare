@@ -1,16 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 
-import {
-  Upload,
-  Send,
-  RefreshCcw,
-  X,
-  Eye,
-  Moon,
-  Sun,
-  Sparkles,
-} from "lucide-react";
+import { Upload, Send, RefreshCcw, X, Moon, Sun, Sparkles,Brush } from "lucide-react";
 import "./AIChatAssistant.css";
 
 const AIChatAssistant = () => {
@@ -27,8 +18,11 @@ const AIChatAssistant = () => {
   const [dragActive, setDragActive] = useState(false);
   const [lastPrompt, setLastPrompt] = useState("");
   const [previewFile, setPreviewFile] = useState(null);
+  const [error, setError] = useState("");
 
   const chatEndRef = useRef(null);
+
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -39,9 +33,32 @@ const AIChatAssistant = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
-  const handleSend = () => {
-    if (!input.trim() && !file) return;
+  const isValidFile = (file) => {
+    return (
+      file &&
+      ["application/pdf", "image/jpeg", "image/png"].includes(file.type) &&
+      file.size <= MAX_FILE_SIZE
+    );
+  };
 
+  const handleFileChange = (file) => {
+    if (!isValidFile(file)) {
+      setError("Only PDF/JPG/PNG files under 5MB are allowed.");
+      setTimeout(() => setError(""), 3000);
+      return;
+    }
+    setError("");
+    setFile(file);
+  };
+
+  const handleSend = () => {
+    if (!input.trim() && !file) {
+      setError("Please enter a message or upload a valid file.");
+      setTimeout(() => setError(""), 3000);
+      return;
+    }
+
+    setError("");
     const newMessage = { type: "user", text: input, file };
     setMessages((prev) => [...prev, newMessage]);
     setLastPrompt(input);
@@ -60,16 +77,7 @@ const AIChatAssistant = () => {
       setLoading(false);
     }, 1000);
   };
-  const BotMessageCard = ({ title, content }) => {
-    return (
-      <div className="bot-card">
-        <div className="bot-card-header">{title}</div>
-        <div className="bot-card-body">
-          <ReactMarkdown>{content}</ReactMarkdown>
-        </div>
-      </div>
-    );
-  };
+
   const handleRegenerate = () => {
     if (!lastPrompt) return;
     setInput(lastPrompt);
@@ -80,8 +88,11 @@ const AIChatAssistant = () => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
+    if (e.dataTransfer.files[0]) {
+      handleFileChange(e.dataTransfer.files[0]);
+    }
   };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -134,6 +145,20 @@ const AIChatAssistant = () => {
     );
   };
 
+  const clearChat = () => {
+    setMessages([
+      {
+        type: "bot",
+        text: "👋 Hello! I'm your AI assistant. How can I help you today?",
+      },
+    ]);
+    setError("");
+    setInput("");
+    setFile(null);
+    setLoading(false);
+    setLastPrompt("");
+  };
+
   return (
     <div
       className={`ai-container`}
@@ -150,13 +175,22 @@ const AIChatAssistant = () => {
               <Sparkles size={20} color="#fff" />
             </div>
             <div className="ai-header-text">
-              <h1> Assistant</h1>
+              <h1>Assistant</h1>
               <p>Powered by dnalyst</p>
             </div>
           </div>
-          <button className="theme-toggle" onClick={toggleTheme}>
-            {theme === "dark" ? <Sun /> : <Moon />}
-          </button>
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            <button className="theme-toggle" onClick={toggleTheme}>
+              {theme === "dark" ? <Sun /> : <Moon />}
+            </button>
+            <button
+              className="theme-toggle"
+              onClick={clearChat}
+              title="Clear Chat"
+            >
+              <Brush size={20} />
+            </button>
+          </div>
         </div>
 
         {/* Chat Window */}
@@ -199,7 +233,6 @@ const AIChatAssistant = () => {
               <div className="loading-dot"></div>
             </div>
           )}
-
           <div ref={chatEndRef} />
         </div>
 
@@ -217,12 +250,18 @@ const AIChatAssistant = () => {
             </div>
           )}
 
+          {error && (
+            <div key={error} className="error-message">
+              {error}
+            </div>
+          )}
+
           <div className="input-controls">
             <label className="file-upload-btn">
               <input
                 type="file"
                 style={{ display: "none" }}
-                onChange={(e) => setFile(e.target.files[0])}
+                onChange={(e) => handleFileChange(e.target.files[0])}
               />
               <Upload size={20} />
             </label>
