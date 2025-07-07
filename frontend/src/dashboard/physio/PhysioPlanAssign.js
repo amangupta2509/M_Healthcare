@@ -23,7 +23,29 @@ const PhysioPlanAssign = () => {
   const [showPreviousCard, setShowPreviousCard] = useState(false);
 
   const scrollToRef = useRef(null);
+  const deleteBatch = async (batchId) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:3001/physioAssignedPlans?mrn=${mrn}`
+      );
+      const batchToDelete = res.data.find((b) => b.batchId === batchId);
 
+      if (batchToDelete?.id) {
+        await axios.delete(
+          `http://localhost:3001/physioAssignedPlans/${batchToDelete.id}`
+        );
+        setPhysioAssignedPlans((prev) => ({
+          ...prev,
+          [mrn]: prev[mrn].filter((b) => b.batchId !== batchId),
+        }));
+        toast.success("Batch deleted successfully!");
+      }
+    } catch (err) {
+      console.error("❌ Delete batch failed", err);
+      toast.error("Failed to delete batch.");
+    }
+  };
+        
   const [showViewPopup, setShowViewPopup] = useState({
     visible: false,
     date: "",
@@ -57,6 +79,13 @@ const PhysioPlanAssign = () => {
       "Dumbbell row",
     ],
   };
+  const jsonForThisUser = {
+    mrn,
+    batchId: Date.now(), // Unique identifier for this plan group
+    from: fromDateTime,
+    to: toDateTime,
+    assignedDates,
+  };
   const confirmAssignment = async () => {
     if (!fromDateTime || !toDateTime || !mrn) {
       toast.error("Missing From/To date or MRN");
@@ -71,52 +100,39 @@ const PhysioPlanAssign = () => {
       return;
     }
 
-    const jsonForThisUser = {
-      mrn,
-      from: fromDateTime,
-      to: toDateTime,
-      assignedDates,
-    };
-
     try {
-      console.log("🔍 Checking if plan exists for:", mrn);
-      const res = await axios.get(
-        `http://localhost:3001/physioAssignedPlans?mrn=${mrn}`
+      // ✅ Always create a new batch (no overwrite logic)
+      const createRes = await axios.post(
+        `http://localhost:3001/physioAssignedPlans`,
+        jsonForThisUser
       );
 
-      const existing = res.data[0];
-      console.log("📦 Server returned:", existing);
+      jsonForThisUser.id = createRes.data.id;
 
-      if (existing?.id) {
-        // ✅ Update existing plan
-        await axios.put(
-          `http://localhost:3001/physioAssignedPlans/${existing.id}`,
-          { id: existing.id, ...jsonForThisUser }
-        );
-        jsonForThisUser.id = existing.id;
-        console.log("✅ Plan updated successfully");
-      } else {
-        // ✅ Create new plan
-        const createRes = await axios.post(
-          `http://localhost:3001/physioAssignedPlans`,
-          jsonForThisUser
-        );
-        jsonForThisUser.id = createRes.data.id;
-        console.log("✅ Plan created with ID:", createRes.data.id);
-      }
-
-      setPhysioAssignedPlans((prev) => ({
-        ...prev,
-        [mrn]: { ...jsonForThisUser },
-      }));
+      // ✅ Safe append to array-based state
+      setPhysioAssignedPlans((prev) => {
+        const existingPlans = Array.isArray(prev[mrn]) ? prev[mrn] : [];
+        return {
+          ...prev,
+          [mrn]: [...existingPlans, jsonForThisUser],
+        };
+      });
 
       setAssignmentConfirmed(true);
       toast.success("✅ Assignment confirmed and saved!");
+
+      // 🔄 Optional reset if you want to clear form after submission:
+      setAssignedDates([]);
+      setSelectedDates([]);
+      setSelectedDate("");
+      setFromDateTime("");
+      setToDateTime("");
     } catch (error) {
       console.error("❌ Assignment Save Error:", error);
       toast.error("🚫 Failed to confirm assignment");
     }
   };
+
   const deleteAssignedDate = (dateToDelete) => {
     showDeleteConfirmation(dateToDelete, async () => {
       const current = physioAssignedPlans[mrn];
@@ -221,6 +237,12 @@ const PhysioPlanAssign = () => {
       const planRes = await axios.get(
         `http://localhost:3001/physioAssignedPlans?mrn=${mrn}`
       );
+      if (planRes.data.length > 0) {
+        setPhysioAssignedPlans((prev) => ({
+          ...prev,
+          [mrn]: planRes.data, // array of batches
+        }));
+      }
 
       if (clientRes.data.length > 0) {
         setClientData(clientRes.data[0]);
@@ -928,7 +950,12 @@ const PhysioPlanAssign = () => {
         <div
           className="popup-overlay"
           onClick={() =>
-            setShowViewPopup({ visible: false, data: [], date: "" })
+            setShowViewPopup({
+              visible: false,
+              data: [],
+              date: "",
+              isBatch: false,
+            })
           }
           style={{
             position: "fixed",
@@ -961,7 +988,12 @@ const PhysioPlanAssign = () => {
             <button
               className="btn btn-primary"
               onClick={() =>
-                setShowViewPopup({ visible: false, data: [], date: "" })
+                setShowViewPopup({
+                  visible: false,
+                  data: [],
+                  date: "",
+                  isBatch: false,
+                })
               }
               style={{
                 position: "absolute",
@@ -983,48 +1015,113 @@ const PhysioPlanAssign = () => {
               Assigned Plan for {showViewPopup.date}
             </h3>
 
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-                gap: "1.2rem",
-              }}
-            >
-              {showViewPopup.data.map((exercise, index) => (
-                <div
-                  key={index}
-                  style={{
-                    padding: "1rem",
-                    border: "1px solid #cc5500",
-                    borderRadius: "10px",
-                    backgroundColor: "var(--bg-secondary, #fff)",
-                    color: "var(--text-primary)",
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                    fontSize: "0.95rem",
-                  }}
-                >
-                  <strong style={{ fontSize: "1.05rem", display: "block" }}>
-                    {exercise.name}
-                  </strong>
+            {showViewPopup.isBatch ? (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1.5rem",
+                }}
+              >
+                {showViewPopup.data.map((day, idx) => (
                   <div
+                    key={idx}
                     style={{
-                      marginTop: "0.4rem",
-                      color: "var(--text-secondary)",
+                      border: "1px solid #cc5500",
+                      borderRadius: "10px",
+                      padding: "1rem",
+                      backgroundColor: "var(--bg-secondary, #fff)",
+                      color: "var(--text-primary)",
                     }}
                   >
-                    {exercise.type === "Yoga"
-                      ? `${exercise.rounds || "-"} rounds × ${
-                          exercise.breaths || "-"
-                        } breaths`
-                      : `${exercise.sets || "-"} sets × ${
-                          exercise.reps || "-"
-                        } reps${
-                          exercise.weight ? ` (${exercise.weight}kg)` : ""
-                        }`}
+                    <h5 style={{ color: "#cc5500", marginBottom: "0.75rem" }}>
+                      📅 {day.date}
+                    </h5>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns:
+                          "repeat(auto-fill, minmax(220px, 1fr))",
+                        gap: "1rem",
+                      }}
+                    >
+                      {day.exercises.map((exercise, exIdx) => (
+                        <div
+                          key={exIdx}
+                          style={{
+                            padding: "0.8rem",
+                            border: "1px solid #ccc",
+                            borderRadius: "8px",
+                            backgroundColor: "#fdfdfd",
+                            boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                            fontSize: "0.9rem",
+                          }}
+                        >
+                          <strong>{exercise.name}</strong>
+                          <div style={{ marginTop: "0.3rem", color: "#555" }}>
+                            {exercise.type === "Yoga"
+                              ? `${exercise.rounds || "-"} rounds × ${
+                                  exercise.breaths || "-"
+                                } breaths`
+                              : `${exercise.sets || "-"} sets × ${
+                                  exercise.reps || "-"
+                                } reps${
+                                  exercise.weight
+                                    ? ` (${exercise.weight}kg)`
+                                    : ""
+                                }`}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              // 🔁 Original single-date view (unchanged)
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+                  gap: "1.2rem",
+                }}
+              >
+                {showViewPopup.data.map((exercise, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      padding: "1rem",
+                      border: "1px solid #cc5500",
+                      borderRadius: "10px",
+                      backgroundColor: "var(--bg-secondary, #fff)",
+                      color: "var(--text-primary)",
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                      fontSize: "0.95rem",
+                    }}
+                  >
+                    <strong style={{ fontSize: "1.05rem", display: "block" }}>
+                      {exercise.name}
+                    </strong>
+                    <div
+                      style={{
+                        marginTop: "0.4rem",
+                        color: "var(--text-secondary)",
+                      }}
+                    >
+                      {exercise.type === "Yoga"
+                        ? `${exercise.rounds || "-"} rounds × ${
+                            exercise.breaths || "-"
+                          } breaths`
+                        : `${exercise.sets || "-"} sets × ${
+                            exercise.reps || "-"
+                          } reps${
+                            exercise.weight ? ` (${exercise.weight}kg)` : ""
+                          }`}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -1035,7 +1132,7 @@ const PhysioPlanAssign = () => {
           style={{ border: "1px solid #cc5500", marginBottom: "1rem" }}
         >
           <div className="card-header d-flex justify-content-between align-items-center">
-            <h2>Previous Assigned Plan for {mrn}</h2>
+            <h2>Previous Assigned Plans for {mrn}</h2>
           </div>
 
           <div
@@ -1046,77 +1143,55 @@ const PhysioPlanAssign = () => {
               gap: "1.5rem",
             }}
           >
-            {physioAssignedPlans[mrn]?.assignedDates.map((entry, idx) => (
-              <div
-                key={idx}
-                className="card"
-                style={{
-                  border: "1px solid #cc5500",
-                  borderRadius: "8px",
-                  padding: "1rem",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                  backgroundColor: "var(--bg-primary)",
-                  color: "var(--text-primary)",
-                  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                }}
-              >
-                <div>
-                  <h5 style={{ color: "#cc5500", marginBottom: "0.5rem" }}>
-                    📅 {entry.date}
+            {Array.isArray(physioAssignedPlans[mrn]) &&
+              physioAssignedPlans[mrn].map((batch, batchIdx) => (
+                <div
+                  key={batch.batchId || batchIdx}
+                  className="card"
+                  style={{
+                    border: "1px solid #cc5500",
+                    borderRadius: "8px",
+                    padding: "1rem",
+                    backgroundColor: "var(--bg-primary)",
+                    color: "var(--text-primary)",
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                  }}
+                >
+                  <h5 style={{ color: "#cc5500", marginBottom: "0.75rem" }}>
+                    🗂️ Plan Group {batchIdx + 1}
                   </h5>
                   <p>
-                    <strong>Exercises:</strong> {entry.exercises.length}
+                    <strong>From:</strong> {batch.from}
+                    <br />
+                    <strong>To:</strong> {batch.to}
+                    <br />
+                    <strong>Total Dates:</strong> {batch.assignedDates.length}
                   </p>
-                </div>
 
-                <div className="d-flex justify-content-between mt-2">
-                  <button
-                    className="btn btn-sm btn-outline-success"
-                    onClick={() =>
-                      setShowViewPopup({
-                        visible: true,
-                        date: entry.date,
-                        data: entry.exercises,
-                      })
-                    }
-                  >
-                    View
-                  </button>
-
-                  <button
-                    className="btn btn-sm btn-outline-primary"
-                    onClick={() => {
-                      const dateEntry = assignedDates.find(
-                        (d) => d.date === entry.date
-                      );
-                      setAssignedExercises(
-                        dateEntry?.exercises || entry.exercises || []
-                      );
-                      setShowAssignModal({ visible: true, date: entry.date });
-
-                      if (
-                        (dateEntry?.exercises || entry.exercises).length > 0
-                      ) {
-                        const first = (dateEntry?.exercises ||
-                          entry.exercises)[0];
-                        setSelectedType(first.type);
+                  <div className="d-flex justify-content-between mt-3">
+                    <button
+                      className="btn btn-sm btn-outline-success"
+                      onClick={() =>
+                        setShowViewPopup({
+                          visible: true,
+                          date: `Plan Group ${batchIdx + 1}`,
+                          data: batch.assignedDates,
+                          isBatch: true,
+                        })
                       }
-                    }}
-                  >
-                    Edit
-                  </button>
+                    >
+                      View
+                    </button>
 
-                  <button
-                    className="btn btn-sm btn-outline-danger"
-                    onClick={() => deleteAssignedDate(entry.date)}
-                  >
-                    Delete
-                  </button>
+                    <button
+                      className="btn btn-sm btn-outline-danger"
+                      onClick={() => deleteBatch(batch.batchId)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
 
           <center>

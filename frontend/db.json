@@ -311,7 +311,10 @@
     "professionalInfo": {
       "specialization": "Orthopedic",
       "experience": "5 years",
-      "certifications": ["Physiotherapy License", "CPR Certification"]
+      "certifications": [
+        "Physiotherapy License",
+        "CPR Certification"
+      ]
     },
     "performanceData": {
       "totalPatients": 200,
@@ -319,7 +322,12 @@
       "successRate": "95%"
     },
     "weeklyMetrics": {
-      "patientsPerWeek": [50, 45, 60, 70]
+      "patientsPerWeek": [
+        50,
+        45,
+        60,
+        70
+      ]
     },
     "appointments": [
       {
@@ -510,7 +518,23 @@
           null,
           null
         ],
-        "feedback": ["", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+        "feedback": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
       }
     }
   ],
@@ -541,7 +565,22 @@
           null,
           null
         ],
-        "feedback": ["", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+        "feedback": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
       }
     }
   ],
@@ -552,7 +591,10 @@
       "mrn": "MRN123456",
       "reportPdfUrl": "/pdfs/MRN123456_labreport.pdf",
       "appointmentDate": "2025-05-30",
-      "samples": ["Blood", "Saliva"]
+      "samples": [
+        "Blood",
+        "Saliva"
+      ]
     },
     {
       "id": "2",
@@ -560,7 +602,9 @@
       "mrn": "MRNOO1",
       "reportPdfUrl": "/pdfs/MRNOO1_labreport.pdf",
       "appointmentDate": "2025-05-30",
-      "samples": ["Urine"]
+      "samples": [
+        "Urine"
+      ]
     }
   ],
   "samples": [
@@ -1039,7 +1083,7 @@
       "date": "2025-06-03",
       "time": "08:30 AM",
       "notes": "Diet consultation for weight loss.",
-      "status": "Pending",
+      "status": "Completed",
       "meetingLink": "https://zoom.us/j/806924971"
     },
     {
@@ -1104,7 +1148,7 @@
   ],
   "patients_detailed": [
     {
-      "id": "MRN001",
+      "id": "MRN123",
       "clientName": "Amit Singh",
       "referenceNumber": "REF-AMT-001",
       "lastVisit": {
@@ -1124,7 +1168,10 @@
         "date": "2025-06-10",
         "time": "09:00 AM"
       },
-      "documents": ["Knee_Report.pdf", "XRay_Scan.png"],
+      "documents": [
+        "Knee_Report.pdf",
+        "XRay_Scan.png"
+      ],
       "approvals": {
         "nutrition": false,
         "diet": true,
@@ -1211,7 +1258,9 @@
         "date": "2025-06-11",
         "time": "11:00 AM"
       },
-      "documents": ["Diet_Summary.pdf"],
+      "documents": [
+        "Diet_Summary.pdf"
+      ],
       "approvals": {
         "nutrition": true,
         "diet": true,
@@ -1451,32 +1500,56 @@
     },
     {
       "type": "Imaging",
-      "subTests": ["X-Ray", "CT Scan", "MRI", "Ultrasound"],
+      "subTests": [
+        "X-Ray",
+        "CT Scan",
+        "MRI",
+        "Ultrasound"
+      ],
       "id": "b0d6"
     },
     {
       "type": "Cardiology",
-      "subTests": ["ECG", "Echocardiogram", "Stress Test"],
+      "subTests": [
+        "ECG",
+        "Echocardiogram",
+        "Stress Test"
+      ],
       "id": "5a08"
     },
     {
       "type": "Neurology",
-      "subTests": ["EEG", "Nerve Conduction Study", "Brain MRI"],
+      "subTests": [
+        "EEG",
+        "Nerve Conduction Study",
+        "Brain MRI"
+      ],
       "id": "d809"
     },
     {
       "type": "Pathology",
-      "subTests": ["Biopsy", "Cytology", "Histopathology"],
+      "subTests": [
+        "Biopsy",
+        "Cytology",
+        "Histopathology"
+      ],
       "id": "f6bc"
     },
     {
       "type": "Radiology",
-      "subTests": ["Mammogram", "Fluoroscopy", "PET Scan"],
+      "subTests": [
+        "Mammogram",
+        "Fluoroscopy",
+        "PET Scan"
+      ],
       "id": "e79e"
     },
     {
       "type": "Other",
-      "subTests": ["Custom Test 1", "Custom Test 2"],
+      "subTests": [
+        "Custom Test 1",
+        "Custom Test 2"
+      ],
       "id": "728c"
     }
   ],
@@ -1860,12 +1933,30 @@
     }
   ],
   "mealTimes": [
-    { "id": 1, "name": "Early Morning" },
-    { "id": 2, "name": "Breakfast" },
-    { "id": 3, "name": "Mid-Morning Snack" },
-    { "id": 4, "name": "Lunch" },
-    { "id": 5, "name": "Evening Snack" },
-    { "id": 6, "name": "Dinner" }
+    {
+      "id": "1",
+      "name": "Early Morning"
+    },
+    {
+      "id": "2",
+      "name": "Breakfast"
+    },
+    {
+      "id": "3",
+      "name": "Mid-Morning Snack"
+    },
+    {
+      "id": "4",
+      "name": "Lunch"
+    },
+    {
+      "id": "5",
+      "name": "Evening Snack"
+    },
+    {
+      "id": "6",
+      "name": "Dinner"
+    }
   ],
   "dietGuidelines": [
     {
@@ -1902,36 +1993,164 @@
   ],
   "physioAssignedPlans": [
     {
-      "id": "1",
       "mrn": "MRN123",
+      "batchId": 1234567890,
       "from": "2025-07-17",
-      "to": "2025-07-25",
+      "to": "2025-07-18",
       "assignedDates": [
         {
-          "date": "2025-07-17",
+          "date": "2025-07-05",
           "exercises": [
             {
               "type": "Yoga",
               "name": "Ujjay breathing",
               "breaths": "12",
-              "rounds": "2121"
+              "rounds": "12"
+            }
+          ]
+        }
+      ],
+      "id": "c73d"
+    },
+    {
+      "mrn": "MRN123",
+      "batchId": 1234567891,
+      "from": "2025-08-01",
+      "to": "2025-08-03",
+      "assignedDates": [],
+      "id": "116f"
+    },
+    {
+      "id": "162b",
+      "mrn": "MRN123",
+      "batchId": 1751689150887,
+      "from": "2025-07-26",
+      "to": "2025-07-27",
+      "assignedDates": [
+        {
+          "date": "2025-07-26",
+          "exercises": [
+            {
+              "type": "Yoga",
+              "name": "Ujjay breathing",
+              "breaths": "34",
+              "rounds": "55"
             }
           ]
         },
         {
-          "date": "2025-07-18",
+          "date": "2025-07-27",
           "exercises": [
             {
               "type": "Yoga",
-              "name": "Nadi shodhana",
-              "breaths": "45",
-              "rounds": "54"
-            },
+              "name": "Bhramari",
+              "breaths": "678",
+              "rounds": "2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cdf1",
+      "mrn": "MRN123",
+      "batchId": 1751689210860,
+      "from": "2025-07-12",
+      "to": "2025-07-12",
+      "assignedDates": [
+        {
+          "date": "2025-07-12",
+          "exercises": [
+            {
+              "type": "Yoga",
+              "name": "Ujjay breathing",
+              "breaths": "12",
+              "rounds": "12"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c6fb",
+      "mrn": "MRN123",
+      "batchId": 1751689825651,
+      "from": "2025-07-12",
+      "to": "2025-07-31",
+      "assignedDates": [
+        {
+          "date": "2025-07-31",
+          "exercises": [
             {
               "type": "Yoga",
               "name": "Ujjay breathing",
               "breaths": "12",
               "rounds": "21"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "f30b",
+      "mrn": "MRN123",
+      "batchId": 1751689934442,
+      "from": "2025-07-06",
+      "to": "2025-07-23",
+      "assignedDates": [
+        {
+          "date": "2025-07-07",
+          "exercises": [
+            {
+              "type": "Yoga",
+              "name": "Ujjay breathing",
+              "breaths": "11111",
+              "rounds": "111111111111"
+            },
+            {
+              "type": "Resistance",
+              "name": "Goblet squat",
+              "sets": "1",
+              "reps": "1",
+              "weight": "1"
+            }
+          ]
+        },
+        {
+          "date": "2025-07-12",
+          "exercises": [
+            {
+              "type": "Resistance",
+              "name": "Kettle bell swing",
+              "weight": "1",
+              "reps": "1",
+              "sets": "1"
+            },
+            {
+              "type": "Yoga",
+              "name": "Diaphragmatic breathing",
+              "breaths": "12",
+              "rounds": "21"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "b8cc",
+      "mrn": "MRN123",
+      "batchId": 1751690229615,
+      "from": "2025-07-05",
+      "to": "2025-07-06",
+      "assignedDates": [
+        {
+          "date": "2025-07-05",
+          "exercises": [
+            {
+              "type": "Yoga",
+              "name": "Ujjay breathing",
+              "breaths": "12",
+              "rounds": "12"
             }
           ]
         }
