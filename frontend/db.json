@@ -1173,7 +1173,7 @@
         "XRay_Scan.png"
       ],
       "approvals": {
-        "nutrition": false,
+        "nutrition": true,
         "diet": true,
         "physio": false
       },

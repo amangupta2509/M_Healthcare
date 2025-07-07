@@ -32,7 +32,7 @@ import Forgot from "./auth/forgotpassword";
 // ==============================================
 import Unauthorized from "./pages/Unauthorized";
 import { AIChatAssistant } from "./ai_assistant";
-
+import AIChatAssistantForDiet from "./ai_assistant/AIChatAssistantForDiet";
 // ==============================================
 // PHYSIO DASHBOARD
 // ==============================================
@@ -260,7 +260,7 @@ return (
             ============================================== */}
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/ai" element={<AIChatAssistant />} />{/* ✅ AI Route Added */}
-
+        <Route path="diet_ai_assistant" element={<AIChatAssistantForDiet />} />
         {/* ==============================================
             PHYSIO DASHBOARD ROUTES
             ============================================== */}

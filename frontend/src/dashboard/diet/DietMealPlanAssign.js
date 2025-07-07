@@ -9,6 +9,7 @@ import autoTable from "jspdf-autotable";
 import html2canvas from "html2canvas";
 import logo from "../../image/logo.png";
 import signature from "../../image/signature.png";
+import { Link } from "react-router-dom";
 
 const DietMealPlanAssign = () => {
   const [mrn, setMrn] = useState("");
@@ -1425,17 +1426,9 @@ const DietMealPlanAssign = () => {
                   based on the client's profile and goals.
                 </p>
 
-                <button
-                  className="btn btn-primary"
-                  onClick={() => {
-                    toast.info(
-                      "⚙️ AI diet chart generation logic to be implemented..."
-                    );
-                    // TODO: Call AI generation function here
-                  }}
-                >
-                  Generate with AI 🤖
-                </button>
+                <Link to="/diet_ai_assistant" className="btn btn-primary">
+                  Launch AI Diet Assistant 🤖
+                </Link>
 
                 {/* 📝 Placeholder: show AI-generated content once logic is ready */}
                 <div style={{ marginTop: "1.5rem" }}>
