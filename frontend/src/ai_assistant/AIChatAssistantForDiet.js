@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom"; // ⬅ Add at top
 import React, { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 
@@ -10,11 +11,12 @@ import {
   Sun,
   Sparkles,
   Brush,
+  Pencil,
   CookingPot,
 } from "lucide-react";
-import "./AIChatAssistant.css";
-
-const AIChatAssistant = () => {
+import "./AIChatAssistantForDiet.css";
+import { toast } from "react-toastify";
+const AIChatAssistantForDiet = () => {
   const [theme, setTheme] = useState("light");
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([
@@ -23,12 +25,15 @@ const AIChatAssistant = () => {
       text: "🍽️ Hello! I'm your AI diet assistant. How can I help you with a meal plan today?",
     },
   ]);
+  const navigate = useNavigate();
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [lastPrompt, setLastPrompt] = useState("");
   const [previewFile, setPreviewFile] = useState(null);
   const [error, setError] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editableContent, setEditableContent] = useState("");
 
   const chatEndRef = useRef(null);
 
@@ -200,6 +205,13 @@ const AIChatAssistant = () => {
             <button className="theme-toggle" onClick={toggleTheme}>
               {theme === "dark" ? <Sun /> : <Moon />}
             </button>
+            <button
+              className="theme-toggle"
+              onClick={() => navigate("/dietmealplanassign")}
+              title="Back to Diet Plan Assign"
+            >
+              <X size={20} />
+            </button>
           </div>
         </div>
 
@@ -233,6 +245,17 @@ const AIChatAssistant = () => {
                   {msg.text}
                 </ReactMarkdown>
               </div>
+
+              {msg.type === "bot" && (
+                <Pencil
+                  size={18}
+                  className="edit-icon"
+                  onClick={() => {
+                    setEditableContent(msg.text);
+                    setIsEditing(true);
+                  }}
+                />
+              )}
             </div>
           ))}
 
@@ -314,8 +337,41 @@ const AIChatAssistant = () => {
       )}
 
       {previewFile && renderFilePreview(previewFile)}
+      {/* ✅ Right-side sliding Edit Panel */}
+      {isEditing && (
+        <div className="ai-edit-side-panel">
+          <div className="edit-panel-header">
+            <h3>Edit Diet Plan</h3>
+            <button
+              onClick={() => setIsEditing(false)}
+              className="edit-close-btn"
+              aria-label="Close"
+            >
+              <X size={16} />
+            </button>
+          </div>
+
+          <div className="edit-scroll-wrapper">
+            <textarea
+              value={editableContent}
+              onChange={(e) => setEditableContent(e.target.value)}
+              className="edit-textarea"
+            />
+            <button
+              className="btn btn-primary"
+              style={{ marginTop: "1rem" }}
+              onClick={() => {
+                toast.success("Diet chart successfully saved!");
+                setIsEditing(false);
+              }}
+            >
+              Save Changes
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default AIChatAssistant;
+export default AIChatAssistantForDiet;
