@@ -207,7 +207,7 @@ const AIChatAssistantForDiet = () => {
             </button>
             <button
               className="theme-toggle"
-              onClick={() => navigate("/dietmealplanassign")}
+              onClick={() => navigate("/diet/DietMealPlanAssign")}
               title="Back to Diet Plan Assign"
             >
               <X size={20} />
@@ -358,11 +358,18 @@ const AIChatAssistantForDiet = () => {
               className="edit-textarea"
             />
             <button
-              className="btn btn-primary"
+              className="btn btn-success"
               style={{ marginTop: "1rem" }}
               onClick={() => {
                 toast.success("Diet chart successfully saved!");
                 setIsEditing(false);
+
+                // Redirect with data
+                navigate("/diet/DietMealPlanAssign", {
+                  state: {
+                    aiGeneratedText: editableContent,
+                  },
+                });
               }}
             >
               Save Changes

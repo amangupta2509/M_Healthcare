@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import "../physio/assign.css";
 import "../master_admin/master_admin.css";
 import { toast, ToastContainer } from "react-toastify";
@@ -52,6 +53,8 @@ const DietMealPlanAssign = () => {
   const [focusedCaloriesIndex, setFocusedCaloriesIndex] = useState(null);
   const [focusedProteinIndex, setFocusedProteinIndex] = useState(null);
   const [dietMode, setDietMode] = useState("manual"); // "manual" | "ai"
+  const location = useLocation();
+  const aiGeneratedText = location.state?.aiGeneratedText || "";
 
   const [bmiData, setBmiData] = useState({
     bmiCategory: "",
@@ -143,6 +146,48 @@ const DietMealPlanAssign = () => {
       console.error("Search error:", error);
     }
   };
+  useEffect(() => {
+    if (aiGeneratedText) {
+      const breakfastIndex = energyProteinDistribution.findIndex(
+        (row) => row.mealName.toLowerCase() === "breakfast"
+      );
+
+      if (breakfastIndex !== -1) {
+        // ✅ Breakfast exists → push AI plan
+        const updated = [...energyProteinDistribution];
+        updated[breakfastIndex].options.push({
+          meal: "AI Suggested",
+          ingredients: "-",
+          recipe: aiGeneratedText,
+          cookingVideo: "",
+        });
+        setEnergyProteinDistribution(updated);
+        toast.success("AI plan added to Breakfast automatically");
+      } else {
+        // ✅ Breakfast doesn't exist → create it with AI plan
+        setSelectedMeals((prev) => [...prev, "Breakfast"]);
+        setEnergyProteinDistribution((prev) => [
+          ...prev,
+          {
+            mealName: "Breakfast",
+            mealTime: "08:00",
+            calories: "400", // Optional: you can leave it "" if not known
+            protein: "20",
+            enabled: true,
+            options: [
+              {
+                meal: "AI Suggested",
+                ingredients: "-",
+                recipe: aiGeneratedText,
+                cookingVideo: "",
+              },
+            ],
+          },
+        ]);
+        toast.success("AI plan injected as Breakfast meal");
+      }
+    }
+  }, [aiGeneratedText]);
 
   const handleBmiChange = (e) => {
     const { name, value } = e.target;
@@ -1429,7 +1474,23 @@ const DietMealPlanAssign = () => {
                 <Link to="/diet_ai_assistant" className="btn btn-primary">
                   Launch AI Diet Assistant 🤖
                 </Link>
-
+                {aiGeneratedText && (
+                  <div
+                    className="card"
+                    style={{ marginBottom: "1rem", backgroundColor: "#fff7f0" }}
+                  >
+                    <h2 className="card-header">AI Generated Diet Plan ✨</h2>
+                    <div
+                      style={{
+                        whiteSpace: "pre-wrap",
+                        padding: "1rem",
+                        color: "#331a00",
+                      }}
+                    >
+                      {aiGeneratedText}
+                    </div>
+                  </div>
+                )}
                 {/* 📝 Placeholder: show AI-generated content once logic is ready */}
                 <div style={{ marginTop: "1.5rem" }}>
                   <p>
@@ -1438,6 +1499,24 @@ const DietMealPlanAssign = () => {
                     breakdown.
                   </p>
                 </div>
+                {dietMode === "ai" && aiGeneratedText && (
+                  <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
+                    <button
+                      className="btn btn-primary"
+                      onClick={handleCompleteAssignment}
+                      style={{
+                        padding: "0.75rem 2rem",
+                        fontSize: "1rem",
+                        background: "#cc5500",
+                        color: "#fff",
+                        fontWeight: "bold",
+                        borderRadius: "8px",
+                      }}
+                    >
+                      Complete Assignment
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
