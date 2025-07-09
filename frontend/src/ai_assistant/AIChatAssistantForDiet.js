@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"; // ⬅ Add at top
+import { useNavigate, useLocation } from "react-router-dom"; // ⬅ Add at top
 import React, { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 
@@ -36,6 +36,8 @@ const AIChatAssistantForDiet = () => {
   const [editableContent, setEditableContent] = useState("");
 
   const chatEndRef = useRef(null);
+  const location = useLocation();
+  const aiInitialData = location.state?.aiInitialData || {};
 
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -361,13 +363,16 @@ const AIChatAssistantForDiet = () => {
               className="btn btn-success"
               style={{ marginTop: "1rem" }}
               onClick={() => {
-                toast.success("Diet chart successfully saved!");
-                setIsEditing(false);
-
-                // Redirect with data
-                navigate("/diet/DietMealPlanAssign", {
-                  state: {
-                    aiGeneratedText: editableContent,
+                toast.success("Diet chart successfully saved!", {
+                  autoClose: 1500, // optional: controls how long the toast stays
+                  onClose: () => {
+                    setIsEditing(false);
+                    navigate("/diet/DietMealPlanAssign", {
+                      state: {
+                        aiGeneratedText: editableContent,
+                        ...aiInitialData, // ✅ preserve diet state
+                      },
+                    });
                   },
                 });
               }}

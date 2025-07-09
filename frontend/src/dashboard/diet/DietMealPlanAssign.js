@@ -52,9 +52,30 @@ const DietMealPlanAssign = () => {
   const [assignedPlans, setAssignedPlans] = useState([]);
   const [focusedCaloriesIndex, setFocusedCaloriesIndex] = useState(null);
   const [focusedProteinIndex, setFocusedProteinIndex] = useState(null);
-  const [dietMode, setDietMode] = useState("manual"); // "manual" | "ai"
+  const [dietMode, setDietMode] = useState(""); // ✅ default hidden
+
   const location = useLocation();
-  const aiGeneratedText = location.state?.aiGeneratedText || "";
+  const {
+    aiGeneratedText = "",
+    aiInitialData = {},
+    mrn: stateMrn,
+    clientData: stateClientData,
+    fromDateTime: stateFrom,
+    toDateTime: stateTo,
+    bmiData: stateBmi,
+    energyProteinDistribution: stateDist,
+    selectedMeals: stateMeals,
+  } = location.state || {};
+
+  useEffect(() => {
+    if (stateMrn) setMrn(stateMrn);
+    if (stateClientData) setClientData(stateClientData);
+    if (stateFrom) setFromDateTime(stateFrom);
+    if (stateTo) setToDateTime(stateTo);
+    if (stateBmi) setBmiData(stateBmi);
+    if (stateDist) setEnergyProteinDistribution(stateDist);
+    if (stateMeals) setSelectedMeals(stateMeals);
+  }, []);
 
   const [bmiData, setBmiData] = useState({
     bmiCategory: "",
@@ -147,14 +168,22 @@ const DietMealPlanAssign = () => {
     }
   };
   useEffect(() => {
-    if (aiGeneratedText) {
-      const breakfastIndex = energyProteinDistribution.findIndex(
-        (row) => row.mealName.toLowerCase() === "breakfast"
+    if (!aiGeneratedText) return;
+
+    setDietMode("ai"); // ✅ Switch to AI mode when returning
+    const breakfastIndex = energyProteinDistribution.findIndex(
+      (row) => row.mealName.toLowerCase() === "breakfast"
+    );
+
+    if (breakfastIndex !== -1) {
+      const updated = [...energyProteinDistribution];
+
+      // 🔁 Prevent duplicate injection
+      const alreadyInjected = updated[breakfastIndex].options.some(
+        (opt) => opt.meal === "AI Suggested" && opt.recipe === aiGeneratedText
       );
 
-      if (breakfastIndex !== -1) {
-        // ✅ Breakfast exists → push AI plan
-        const updated = [...energyProteinDistribution];
+      if (!alreadyInjected) {
         updated[breakfastIndex].options.push({
           meal: "AI Suggested",
           ingredients: "-",
@@ -163,31 +192,31 @@ const DietMealPlanAssign = () => {
         });
         setEnergyProteinDistribution(updated);
         toast.success("AI plan added to Breakfast automatically");
-      } else {
-        // ✅ Breakfast doesn't exist → create it with AI plan
-        setSelectedMeals((prev) => [...prev, "Breakfast"]);
-        setEnergyProteinDistribution((prev) => [
-          ...prev,
-          {
-            mealName: "Breakfast",
-            mealTime: "08:00",
-            calories: "400", // Optional: you can leave it "" if not known
-            protein: "20",
-            enabled: true,
-            options: [
-              {
-                meal: "AI Suggested",
-                ingredients: "-",
-                recipe: aiGeneratedText,
-                cookingVideo: "",
-              },
-            ],
-          },
-        ]);
-        toast.success("AI plan injected as Breakfast meal");
       }
+    } else {
+      // ✅ Breakfast doesn’t exist → create it
+      setSelectedMeals((prev) => [...prev, "Breakfast"]);
+      setEnergyProteinDistribution((prev) => [
+        ...prev,
+        {
+          mealName: "Breakfast",
+          mealTime: "08:00",
+          calories: "400",
+          protein: "20",
+          enabled: true,
+          options: [
+            {
+              meal: "AI Suggested",
+              ingredients: "-",
+              recipe: aiGeneratedText,
+              cookingVideo: "",
+            },
+          ],
+        },
+      ]);
+      toast.success("AI plan injected as Breakfast meal");
     }
-  }, [aiGeneratedText]);
+  }, [aiGeneratedText, energyProteinDistribution]);
 
   const handleBmiChange = (e) => {
     const { name, value } = e.target;
@@ -655,646 +684,757 @@ const DietMealPlanAssign = () => {
               </div>
             </div>
           </div>
-          {clientData && (
-            <div className="card" style={{ marginBottom: "1.5rem" }}>
-              <h2 className="card-header">Choose Diet Plan Mode</h2>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "1rem",
-                  justifyContent: "center",
-                  flexWrap: "wrap",
-                }}
-              >
-                <button
-                  className={`btn ${
-                    dietMode === "manual" ? "btn-primary" : "btn-secondary"
-                  }`}
-                  onClick={() => setDietMode("manual")}
-                >
-                  Manual Mode
-                </button>
-                <button
-                  className={`btn ${
-                    dietMode === "ai" ? "btn-primary" : "btn-secondary"
-                  }`}
-                  onClick={() => {
-                    setDietMode("ai");
-                    // Optional: clear any previous manual values
-                    setEnergyProteinDistribution([]);
-                    setSelectedMeals([]);
-                  }}
-                >
-                  AI Generated Plan 🤖
-                </button>
-              </div>
-            </div>
-          )}
 
           <div className="card mt-4">
-            {dietMode === "manual" && (
-              <>
-                <h2 className="card-header">
-                  Daily Energy & Protein Distribution
-                </h2>
-                {/* Warning */}
-                {(!fromDateTime || !toDateTime) && (
-                  <div
-                    style={{
-                      textAlign: "center",
-                      padding: "1rem",
-                      marginBottom: "1rem",
-                      backgroundColor: "var(--bg-primary)",
-                      color: "#FF0000",
-                      border: "1px solid (255, 191, 0)",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    Please select a <strong>From</strong> and{" "}
-                    <strong>To</strong> date range to activate the distribution
-                    section.
-                  </div>
-                )}
-                {/* Date Range Pickers */}
+            {/* Always visible Date Range and Choose Diet Plan Mode */}
+            <h2 className="card-header">Daily Energy & Protein Distribution</h2>
+            {(!fromDateTime || !toDateTime) && (
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "1rem",
+                  marginBottom: "1rem",
+                  backgroundColor: "var(--bg-primary)",
+                  color: "#FF0000",
+                  border: "1px solid (255, 191, 0)",
+                  borderRadius: "5px",
+                }}
+              >
+                Please select a <strong>From</strong> and <strong>To</strong>{" "}
+                date range to activate the distribution section.
+              </div>
+            )}
+            {/* Date Range Pickers */}
+            <div
+              className="date-range-container"
+              style={{
+                display: "flex",
+                gap: "1rem",
+                flexWrap: "wrap",
+                marginBottom: "1rem",
+              }}
+            >
+              <div style={{ flex: "1", minWidth: "150px" }}>
+                <label
+                  style={{
+                    display: "block",
+                    marginBottom: "0.5rem",
+                    fontWeight: "600",
+                  }}
+                >
+                  From Date
+                </label>
+                <input
+                  type="date"
+                  placeholder="DD-MM-YYYY"
+                  style={{
+                    borderRadius: "6px",
+                    border: "1px solid #cc5500",
+                    fontSize: "1rem",
+                    width: "100%",
+                    color: "var(--text-white)",
+                    backgroundColor: "var(--bg-primary)",
+                  }}
+                  value={fromDateTime}
+                  onChange={(e) => setFromDateTime(e.target.value)}
+                  min={new Date().toISOString().split("T")[0]}
+                />
+              </div>
+              <div style={{ flex: "1", minWidth: "150px" }}>
+                <label
+                  style={{
+                    display: "block",
+                    marginBottom: "0.5rem",
+                    fontWeight: "600",
+                  }}
+                >
+                  To Date
+                </label>
+                <input
+                  type="date"
+                  placeholder="DD-MM-YYYY"
+                  style={{
+                    padding: "10px",
+                    borderRadius: "6px",
+                    border: "1px solid #cc5500",
+                    fontSize: "1rem",
+                    width: "100%",
+                    backgroundColor: "var(--bg-primary)",
+                    color: "var(--text-white)",
+                  }}
+                  value={toDateTime}
+                  onChange={(e) => setToDateTime(e.target.value)}
+                  min={fromDateTime || new Date().toISOString().split("T")[0]}
+                />
+              </div>
+            </div>
+
+            {/* Choose Diet Plan Mode */}
+            {clientData && fromDateTime && toDateTime && (
+              <div className="card" style={{ marginBottom: "1.5rem" }}>
+                <h2 className="card-header">Choose Diet Plan Mode</h2>
                 <div
-                  className="date-range-container"
                   style={{
                     display: "flex",
                     gap: "1rem",
+                    justifyContent: "center",
                     flexWrap: "wrap",
-                    marginBottom: "1rem",
                   }}
                 >
-                  <div style={{ flex: "1", minWidth: "150px" }}>
+                  <button
+                    className={`btn ${
+                      dietMode === "manual" ? "btn-primary" : "btn-secondary"
+                    }`}
+                    onClick={() => setDietMode("manual")}
+                  >
+                    Manual Mode
+                  </button>
+                  <button
+                    className={`btn ${
+                      dietMode === "ai" ? "btn-primary" : "btn-secondary"
+                    }`}
+                    onClick={() => {
+                      setDietMode("ai");
+                      // Optional: clear any previous manual values
+                      setEnergyProteinDistribution([]);
+                      setSelectedMeals([]);
+                    }}
+                  >
+                    AI Generated Plan 🤖
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Conditionally Render Content Based on Diet Plan Mode */}
+            <div className="card">
+              {dietMode === "manual" && (
+                <>
+                  {/* Show Manual Mode Content */}
+                  <h2>Manual Meal Plan</h2>
+                  <p>Select Meal Time, Calories, and Protein</p>
+
+                  {/* Meal Time Selector and Input Fields */}
+                  <div className="meal-selector">
                     <label
                       style={{
                         display: "block",
                         marginBottom: "0.5rem",
                         fontWeight: "600",
+                        color: "var(--text-white)", // optional if not globally styled
                       }}
                     >
-                      From Date
+                      Select Meal Time
                     </label>
-                    <input
-                      type="date"
-                      placeholder="DD-MM-YYYY"
-                      style={{
-                        borderRadius: "6px",
-                        border: "1px solid #cc5500",
-                        fontSize: "1rem",
-                        width: "100%",
-                        color: "var(--text-white)",
-                        backgroundColor: "var(--bg-primary)",
-                      }}
-                      value={fromDateTime}
-                      onChange={(e) => setFromDateTime(e.target.value)}
-                      min={new Date().toISOString().split("T")[0]}
-                    />
-                  </div>
-                  <div style={{ flex: "1", minWidth: "150px" }}>
-                    <label
-                      style={{
-                        display: "block",
-                        marginBottom: "0.5rem",
-                        fontWeight: "600",
-                      }}
-                    >
-                      To Date
-                    </label>
-                    <input
-                      type="date"
-                      placeholder="DD-MM-YYYY"
+
+                    {/* Dropdown to select meal */}
+                    <select
+                      className="form-control"
                       style={{
                         padding: "10px",
                         borderRadius: "6px",
                         border: "1px solid #cc5500",
                         fontSize: "1rem",
                         width: "100%",
+                        maxWidth: "250px",
                         backgroundColor: "var(--bg-primary)",
                         color: "var(--text-white)",
+                        marginBottom: "1rem",
                       }}
-                      value={toDateTime}
-                      onChange={(e) => setToDateTime(e.target.value)}
-                      min={
-                        fromDateTime || new Date().toISOString().split("T")[0]
-                      }
-                    />
-                  </div>
-                </div>
+                      onChange={(e) => {
+                        const selected = e.target.value;
+                        if (selected && !selectedMeals.includes(selected)) {
+                          setSelectedMeals((prev) => [...prev, selected]);
 
-                {/* Meal Time Selector */}
-                <div className="meal-selector">
-                  <label
-                    style={{
-                      display: "block",
-                      marginBottom: "0.5rem",
-                      fontWeight: "600",
-                      color: "var(--text-white)", // optional if not globally styled
-                    }}
-                  >
-                    Select Meal Time
-                  </label>
+                          setEnergyProteinDistribution((prev) => [
+                            ...prev,
+                            {
+                              mealName: selected,
+                              mealTime: "",
+                              calories: "",
+                              protein: "",
+                              options: [],
+                              enabled: true,
+                            },
+                          ]);
+                        }
+                      }}
+                    >
+                      <option value="">-- Choose Meal --</option>
+                      {availableMeals.map((meal) => (
+                        <option key={meal.id} value={meal.name}>
+                          {meal.name}
+                        </option>
+                      ))}
+                    </select>
 
-                  {/* Dropdown to select meal */}
-                  <select
-                    className="form-control"
-                    style={{
-                      padding: "10px",
-                      borderRadius: "6px",
-                      border: "1px solid #cc5500",
-                      fontSize: "1rem",
-                      width: "100%",
-                      maxWidth: "250px",
-                      backgroundColor: "var(--bg-primary)",
-                      color: "var(--text-white)",
-                      marginBottom: "1rem",
-                    }}
-                    onChange={(e) => {
-                      const selected = e.target.value;
-                      if (selected && !selectedMeals.includes(selected)) {
-                        setSelectedMeals((prev) => [...prev, selected]);
-
-                        setEnergyProteinDistribution((prev) => [
-                          ...prev,
-                          {
-                            mealName: selected,
-                            mealTime: "",
-                            calories: "",
-                            protein: "",
-                            options: [],
-                            enabled: true,
-                          },
-                        ]);
-                      }
-                    }}
-                  >
-                    <option value="">-- Choose Meal --</option>
-                    {availableMeals.map((meal) => (
-                      <option key={meal.id} value={meal.name}>
-                        {meal.name}
-                      </option>
-                    ))}
-                  </select>
-                  {/* Render selected meals as buttons with '×' to remove */}
-                  <div
-                    className="selected-meals"
-                    style={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      gap: "10px",
-                      paddingTop: "5px",
-                    }}
-                  >
-                    {selectedMeals.map((meal, index) => (
-                      <div
-                        key={index}
-                        style={{
-                          position: "relative",
-                          display: "inline-block",
-                        }}
-                      >
-                        <button
-                          className="selected-meal-btn"
+                    {/* Render selected meals as buttons with '×' to remove */}
+                    <div
+                      className="selected-meals"
+                      style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: "10px",
+                        paddingTop: "5px",
+                      }}
+                    >
+                      {selectedMeals.map((meal, index) => (
+                        <div
+                          key={index}
                           style={{
-                            padding: "10px 14px",
-                            fontSize: "0.95rem",
-                            backgroundColor: "transparent",
-                            border: "1px solid #cc5500",
-                            borderRadius: "10px",
-                            color: "var(--text-white)",
-                            fontWeight: "bold",
-                            cursor: "default",
+                            position: "relative",
+                            display: "inline-block",
                           }}
-                          disabled
                         >
-                          {meal}
-                        </button>
-                        <span
-                          onClick={() => {
-                            setSelectedMeals((prev) =>
-                              prev.filter((m) => m !== meal)
-                            );
-                            setEnergyProteinDistribution((prev) =>
-                              prev.filter((row) => row.mealName !== meal)
-                            );
-                          }}
-                          style={{
-                            position: "absolute",
-                            top: "-6px",
-                            right: "-6px",
-                            backgroundColor: "#cc5500",
-                            color: "#fff",
-                            borderRadius: "50%",
-                            width: "20px",
-                            height: "20px",
-                            fontSize: "14px",
-                            fontWeight: "bold",
-                            lineHeight: "20px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            cursor: "pointer",
-                            boxShadow: "0 0 2px rgba(0, 0, 0, 0.5)",
-                            zIndex: 1,
-                          }}
-                          title="Remove"
-                        >
-                          ×
-                        </span>
-                      </div>
-                    ))}
+                          <button
+                            className="selected-meal-btn"
+                            style={{
+                              padding: "10px 14px",
+                              fontSize: "0.95rem",
+                              backgroundColor: "transparent",
+                              border: "1px solid #cc5500",
+                              borderRadius: "10px",
+                              color: "var(--text-white)",
+                              fontWeight: "bold",
+                              cursor: "default",
+                            }}
+                            disabled
+                          >
+                            {meal}
+                          </button>
+                          <span
+                            onClick={() => {
+                              setSelectedMeals((prev) =>
+                                prev.filter((m) => m !== meal)
+                              );
+                              setEnergyProteinDistribution((prev) =>
+                                prev.filter((row) => row.mealName !== meal)
+                              );
+                            }}
+                            style={{
+                              position: "absolute",
+                              top: "-6px",
+                              right: "-6px",
+                              backgroundColor: "#cc5500",
+                              color: "#fff",
+                              borderRadius: "50%",
+                              width: "20px",
+                              height: "20px",
+                              fontSize: "14px",
+                              fontWeight: "bold",
+                              lineHeight: "20px",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              cursor: "pointer",
+                              boxShadow: "0 0 2px rgba(0, 0, 0, 0.5)",
+                              zIndex: 1,
+                            }}
+                            title="Remove"
+                          >
+                            ×
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                {/* Conditionally Render Table */}
-                {fromDateTime && toDateTime && selectedMeals.length > 0 && (
-                  <div className="meal-table-container">
-                    <style jsx>{`
-                      .meal-table-container {
-                        margin-top: 1rem;
-                        overflow-x: auto;
-                        border-radius: 4px;
-                        overflow: hidden;
-                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-                        background-color: var(--bg-primary);
-                        -webkit-overflow-scrolling: touch;
-                      }
-
-                      .meal-table {
-                        width: 100%;
-                        border-collapse: collapse;
-                        min-width: 700px;
-                        font-family: -apple-system, BlinkMacSystemFont,
-                          "Segoe UI", Roboto, sans-serif;
-                      }
-
-                      .meal-table thead {
-                        background: linear-gradient(135deg, #cc5500, #cc5500);
-                        color: "var(--text-white)";
-                      }
-
-                      .meal-table th {
-                        padding: 12px 8px;
-                        font-weight: 600;
-                        font-size: 0.9rem;
-                        text-align: center;
-                        border: none;
-                        position: sticky;
-                        top: 0;
-                        z-index: 10;
-                        white-space: nowrap;
-                      }
-
-                      .meal-table tbody tr {
-                        transition: background-color 0.2s ease;
-                        border: 1px solid #cc5500;
-                      }
-
-                      .meal-table td {
-                        padding: 12px 8px;
-                        text-align: center;
-                        vertical-align: middle;
-                        border: none;
-                      }
-
-                      .meal-name {
-                        font-weight: bold;
-                        color: "var(--text-white)";
-                        font-size: 0.95rem;
-                        word-break: break-word;
-                      }
-
-                      .meal-input {
-                        width: 100%;
-                        min-width: 80px;
-                        max-width: 120px;
-                        padding: 8px;
-                        border-radius: 6px;
-                        border: 2px solid #cc5500;
-                        font-size: 0.9rem;
-                        background-color: #fff;
-                        color: #333;
-                        transition: border-color 0.2s ease, box-shadow 0.2s ease;
-                        box-sizing: border-box;
-                      }
-
-                      .meal-input:focus {
-                        outline: none;
-                        border-color: #cc5500;
-                        box-shadow: 0 0 0 3px rgba(204, 85, 0, 0.1);
-                      }
-
-                      .meal-input::placeholder {
-                        color: #888;
-                        font-size: 0.85rem;
-                      }
-
-                      .meal-btn {
-                        padding: 8px 12px;
-                        border-radius: 6px;
-                        background: linear-gradient(135deg, #cc5500, #e06600);
-                        border: none;
-                        color: white;
-                        font-weight: bold;
-                        font-size: 0.85rem;
-                        cursor: pointer;
-                        white-space: nowrap;
-                        transition: all 0.2s ease;
-                        box-shadow: 0 2px 4px rgba(204, 85, 0, 0.2);
-                        min-width: fit-content;
-                      }
-
-                      .meal-btn:hover {
-                        background: linear-gradient(135deg, #b84d00, #cc5500);
-                        transform: translateY(-1px);
-                        box-shadow: 0 4px 8px rgba(204, 85, 0, 0.3);
-                      }
-
-                      .meal-btn:disabled {
-                        background: #ccc;
-                        color: #666;
-                        cursor: not-allowed;
-                        transform: none;
-                        box-shadow: none;
-                      }
-
-                      .options-cell {
-                        vertical-align: top;
-                        padding-top: 12px;
-                      }
-
-                      /* Card Layout for Mobile */
-                      .meal-cards {
-                        display: none;
-                        flex-direction: column;
-                        gap: 1rem;
-                        padding: 1rem;
-                      }
-
-                      .meal-card {
-                        background: var(--bg-primary);
-                        border: 2px solid #cc5500;
-                        border-radius: 8px;
-                        padding: 1rem;
-                        box-shadow: 0 2px 4px rgba(204, 85, 0, 0.1);
-                      }
-
-                      .meal-card-header {
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        margin-bottom: 1rem;
-                        padding-bottom: 0.5rem;
-                        border-bottom: 1px solid #e9ecef;
-                      }
-
-                      .meal-card-title {
-                        font-weight: bold;
-                        color: var(--text-primary);
-                        font-size: 1.1rem;
-                      }
-
-                      .meal-card-grid {
-                        display: grid;
-                        grid-template-columns: 1fr 1fr;
-                        gap: 1rem;
-                        margin-bottom: 1rem;
-                      }
-
-                      .meal-card-field {
-                        display: flex;
-                        flex-direction: column;
-                        gap: 0.25rem;
-                      }
-
-                      .meal-card-label {
-                        font-weight: 600;
-                        color: #cc5500;
-                        font-size: 0.85rem;
-                      }
-
-                      .meal-card-input {
-                        padding: 8px;
-                        border-radius: 6px;
-                        border: 2px solid #cc5500;
-                        font-size: 0.9rem;
-                        background-color: #fff;
-                        color: #333;
-                        transition: border-color 0.2s ease, box-shadow 0.2s ease;
-                      }
-
-                      .meal-card-input:focus {
-                        outline: none;
-                        border-color: #cc5500;
-                        box-shadow: 0 0 0 3px rgba(204, 85, 0, 0.1);
-                      }
-
-                      .meal-card-actions {
-                        display: flex;
-                        gap: 0.5rem;
-                        justify-content: flex-end;
-                      }
-
-                      .meal-card-btn {
-                        padding: 8px 16px;
-                        border-radius: 6px;
-                        background: linear-gradient(135deg, #cc5500, #e06600);
-                        border: none;
-                        color: white;
-                        font-weight: bold;
-                        font-size: 0.85rem;
-                        cursor: pointer;
-                        transition: all 0.2s ease;
-                        box-shadow: 0 2px 4px rgba(204, 85, 0, 0.2);
-                      }
-
-                      .meal-card-btn:hover {
-                        background: linear-gradient(135deg, #b84d00, #cc5500);
-                        transform: translateY(-1px);
-                        box-shadow: 0 4px 8px rgba(204, 85, 0, 0.3);
-                      }
-
-                      .meal-card-btn:disabled {
-                        background: #ccc;
-                        color: #666;
-                        cursor: not-allowed;
-                        transform: none;
-                        box-shadow: none;
-                      }
-
-                      /* Mobile First Responsive Design */
-                      @media (max-width: 768px) {
+                  {/* Conditionally Render Table for Manual Mode */}
+                  {fromDateTime && toDateTime && selectedMeals.length > 0 && (
+                    <div className="meal-table-container">
+                      <style jsx>{`
                         .meal-table-container {
-                          margin: 1rem 0;
-                          border-radius: 8px;
-                          box-shadow: none;
-                          background: transparent;
-                          overflow: visible;
+                          margin-top: 1rem;
+                          overflow-x: auto;
+                          border-radius: 4px;
+                          overflow: hidden;
+                          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                          background-color: var(--bg-primary);
+                          -webkit-overflow-scrolling: touch;
                         }
 
                         .meal-table {
-                          display: none;
-                        }
-
-                        .meal-cards {
-                          display: flex;
-                        }
-
-                        .meal-card-grid {
-                          grid-template-columns: 1fr;
-                          gap: 0.75rem;
-                        }
-
-                        .meal-card {
-                          padding: 0.75rem;
-                        }
-
-                        .meal-card-actions {
-                          flex-direction: column;
-                          gap: 0.5rem;
-                        }
-
-                        .meal-card-btn {
                           width: 100%;
-                        }
-                      }
-
-                      @media (max-width: 480px) {
-                        .meal-cards {
-                          padding: 0.5rem;
-                          gap: 0.75rem;
+                          border-collapse: collapse;
+                          min-width: 700px;
+                          font-family: -apple-system, BlinkMacSystemFont,
+                            "Segoe UI", Roboto, sans-serif;
                         }
 
-                        .meal-card {
-                          padding: 0.5rem;
+                        .meal-table thead {
+                          background: linear-gradient(135deg, #cc5500, #cc5500);
+                          color: "var(--text-white)";
                         }
 
-                        .meal-card-title {
-                          font-size: 1rem;
+                        .meal-table th {
+                          padding: 12px 8px;
+                          font-weight: 600;
+                          font-size: 0.9rem;
+                          text-align: center;
+                          border: none;
+                          position: sticky;
+                          top: 0;
+                          z-index: 10;
+                          white-space: nowrap;
                         }
 
-                        .meal-card-input {
-                          padding: 6px;
-                          font-size: 0.85rem;
+                        .meal-table tbody tr {
+                          transition: background-color 0.2s ease;
+                          border: 1px solid #cc5500;
                         }
 
-                        .meal-card-btn {
-                          padding: 6px 12px;
-                          font-size: 0.8rem;
+                        .meal-table td {
+                          padding: 12px 8px;
+                          text-align: center;
+                          vertical-align: middle;
+                          border: none;
                         }
-                      }
 
-                      /* Large screens optimization */
-                      @media (min-width: 1200px) {
-                        .meal-table {
-                          min-width: 800px;
+                        .meal-name {
+                          font-weight: bold;
+                          color: "var(--text-white)";
+                          font-size: 0.95rem;
+                          word-break: break-word;
                         }
 
                         .meal-input {
-                          max-width: 140px;
-                          padding: 10px;
+                          width: 100%;
+                          min-width: 80px;
+                          max-width: 120px;
+                          padding: 8px;
+                          border-radius: 6px;
+                          border: 2px solid #cc5500;
+                          font-size: 0.9rem;
+                          background-color: #fff;
+                          color: #333;
+                          transition: border-color 0.2s ease,
+                            box-shadow 0.2s ease;
+                          box-sizing: border-box;
+                        }
+
+                        .meal-input:focus {
+                          outline: none;
+                          border-color: #cc5500;
+                          box-shadow: 0 0 0 3px rgba(204, 85, 0, 0.1);
+                        }
+
+                        .meal-input::placeholder {
+                          color: #888;
+                          font-size: 0.85rem;
                         }
 
                         .meal-btn {
-                          padding: 10px 16px;
-                          font-size: 0.9rem;
+                          padding: 8px 12px;
+                          border-radius: 6px;
+                          background: linear-gradient(135deg, #cc5500, #e06600);
+                          border: none;
+                          color: white;
+                          font-weight: bold;
+                          font-size: 0.85rem;
+                          cursor: pointer;
+                          white-space: nowrap;
+                          transition: all 0.2s ease;
+                          box-shadow: 0 2px 4px rgba(204, 85, 0, 0.2);
+                          min-width: fit-content;
                         }
-                      }
-                    `}</style>
 
-                    {/* Table Layout for Desktop */}
-                    <table className="meal-table">
-                      <thead>
-                        <tr>
-                          <th>Meal Name</th>
-                          <th>Time</th>
-                          <th>Calories</th>
-                          <th>Protein</th>
-                          <th>Actions</th>
-                          <th>Options</th>
-                        </tr>
-                      </thead>
-                      <tbody>
+                        .meal-btn:hover {
+                          background: linear-gradient(135deg, #b84d00, #cc5500);
+                          transform: translateY(-1px);
+                          box-shadow: 0 4px 8px rgba(204, 85, 0, 0.3);
+                        }
+
+                        .meal-btn:disabled {
+                          background: #ccc;
+                          color: #666;
+                          cursor: not-allowed;
+                          transform: none;
+                          box-shadow: none;
+                        }
+
+                        .options-cell {
+                          vertical-align: top;
+                          padding-top: 12px;
+                        }
+
+                        /* Card Layout for Mobile */
+                        .meal-cards {
+                          display: none;
+                          flex-direction: column;
+                          gap: 1rem;
+                          padding: 1rem;
+                        }
+
+                        .meal-card {
+                          background: var(--bg-primary);
+                          border: 2px solid #cc5500;
+                          border-radius: 8px;
+                          padding: 1rem;
+                          box-shadow: 0 2px 4px rgba(204, 85, 0, 0.1);
+                        }
+
+                        .meal-card-header {
+                          display: flex;
+                          justify-content: space-between;
+                          align-items: center;
+                          margin-bottom: 1rem;
+                          padding-bottom: 0.5rem;
+                          border-bottom: 1px solid #e9ecef;
+                        }
+
+                        .meal-card-title {
+                          font-weight: bold;
+                          color: var(--text-primary);
+                          font-size: 1.1rem;
+                        }
+
+                        .meal-card-grid {
+                          display: grid;
+                          grid-template-columns: 1fr 1fr;
+                          gap: 1rem;
+                          margin-bottom: 1rem;
+                        }
+
+                        .meal-card-field {
+                          display: flex;
+                          flex-direction: column;
+                          gap: 0.25rem;
+                        }
+
+                        .meal-card-label {
+                          font-weight: 600;
+                          color: #cc5500;
+                          font-size: 0.85rem;
+                        }
+
+                        .meal-card-input {
+                          padding: 8px;
+                          border-radius: 6px;
+                          border: 2px solid #cc5500;
+                          font-size: 0.9rem;
+                          background-color: #fff;
+                          color: #333;
+                          transition: border-color 0.2s ease,
+                            box-shadow 0.2s ease;
+                        }
+
+                        .meal-card-input:focus {
+                          outline: none;
+                          border-color: #cc5500;
+                          box-shadow: 0 0 0 3px rgba(204, 85, 0, 0.1);
+                        }
+
+                        .meal-card-actions {
+                          display: flex;
+                          gap: 0.5rem;
+                          justify-content: flex-end;
+                        }
+
+                        .meal-card-btn {
+                          padding: 8px 16px;
+                          border-radius: 6px;
+                          background: linear-gradient(135deg, #cc5500, #e06600);
+                          border: none;
+                          color: white;
+                          font-weight: bold;
+                          font-size: 0.85rem;
+                          cursor: pointer;
+                          transition: all 0.2s ease;
+                          box-shadow: 0 2px 4px rgba(204, 85, 0, 0.2);
+                        }
+
+                        .meal-card-btn:hover {
+                          background: linear-gradient(135deg, #b84d00, #cc5500);
+                          transform: translateY(-1px);
+                          box-shadow: 0 4px 8px rgba(204, 85, 0, 0.3);
+                        }
+
+                        .meal-card-btn:disabled {
+                          background: #ccc;
+                          color: #666;
+                          cursor: not-allowed;
+                          transform: none;
+                          box-shadow: none;
+                        }
+
+                        /* Mobile First Responsive Design */
+                        @media (max-width: 768px) {
+                          .meal-table-container {
+                            margin: 1rem 0;
+                            border-radius: 8px;
+                            box-shadow: none;
+                            background: transparent;
+                            overflow: visible;
+                          }
+
+                          .meal-table {
+                            display: none;
+                          }
+
+                          .meal-cards {
+                            display: flex;
+                          }
+
+                          .meal-card-grid {
+                            grid-template-columns: 1fr;
+                            gap: 0.75rem;
+                          }
+
+                          .meal-card {
+                            padding: 0.75rem;
+                          }
+
+                          .meal-card-actions {
+                            flex-direction: column;
+                            gap: 0.5rem;
+                          }
+
+                          .meal-card-btn {
+                            width: 100%;
+                          }
+                        }
+
+                        @media (max-width: 480px) {
+                          .meal-cards {
+                            padding: 0.5rem;
+                            gap: 0.75rem;
+                          }
+
+                          .meal-card {
+                            padding: 0.5rem;
+                          }
+
+                          .meal-card-title {
+                            font-size: 1rem;
+                          }
+
+                          .meal-card-input {
+                            padding: 6px;
+                            font-size: 0.85rem;
+                          }
+
+                          .meal-card-btn {
+                            padding: 6px 12px;
+                            font-size: 0.8rem;
+                          }
+                        }
+
+                        /* Large screens optimization */
+                        @media (min-width: 1200px) {
+                          .meal-table {
+                            min-width: 800px;
+                          }
+
+                          .meal-input {
+                            max-width: 140px;
+                            padding: 10px;
+                          }
+
+                          .meal-btn {
+                            padding: 10px 16px;
+                            font-size: 0.9rem;
+                          }
+                        }
+                      `}</style>
+
+                      {/* Table Layout for Desktop */}
+                      <table className="meal-table">
+                        <thead>
+                          <tr>
+                            <th>Meal Name</th>
+                            <th>Time</th>
+                            <th>Calories</th>
+                            <th>Protein</th>
+                            <th>Actions</th>
+                            <th>Options</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {energyProteinDistribution.map((row, index) => (
+                            <tr
+                              key={index}
+                              className={!row.enabled ? "disabled-meal" : ""}
+                            >
+                              <td>
+                                <div className="meal-name">{row.mealName}</div>
+                              </td>
+
+                              <td>
+                                <input
+                                  type="time"
+                                  className="meal-input"
+                                  value={row.mealTime}
+                                  onChange={(e) =>
+                                    handleEnergyProteinChange(
+                                      index,
+                                      "mealTime",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </td>
+
+                              <td>
+                                <input
+                                  className="meal-input"
+                                  type={
+                                    focusedCaloriesIndex === index ||
+                                    row.calories
+                                      ? "number"
+                                      : "text"
+                                  }
+                                  placeholder="kcal"
+                                  value={row.calories}
+                                  onChange={(e) =>
+                                    handleEnergyProteinChange(
+                                      index,
+                                      "calories",
+                                      e.target.value
+                                    )
+                                  }
+                                  onFocus={() => setFocusedCaloriesIndex(index)}
+                                  onBlur={() => setFocusedCaloriesIndex(null)}
+                                />
+                              </td>
+
+                              <td>
+                                <input
+                                  className="meal-input"
+                                  type={
+                                    focusedProteinIndex === index || row.protein
+                                      ? "number"
+                                      : "text"
+                                  }
+                                  placeholder="g"
+                                  value={row.protein}
+                                  onChange={(e) =>
+                                    handleEnergyProteinChange(
+                                      index,
+                                      "protein",
+                                      e.target.value
+                                    )
+                                  }
+                                  onFocus={() => setFocusedProteinIndex(index)}
+                                  onBlur={() => setFocusedProteinIndex(null)}
+                                />
+                              </td>
+
+                              <td>
+                                <button
+                                  className="meal-btn"
+                                  onClick={() => handleAddOptionClick(index)}
+                                >
+                                  Add
+                                </button>
+                              </td>
+
+                              <td className="options-cell">
+                                <button
+                                  className="meal-btn"
+                                  onClick={() =>
+                                    setShowOptionGridPopup({
+                                      visible: true,
+                                      index,
+                                    })
+                                  }
+                                  disabled={row.options.length === 0}
+                                >
+                                  View ({row.options.length})
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+
+                      {/* Card Layout for Mobile */}
+                      <div className="meal-cards">
                         {energyProteinDistribution.map((row, index) => (
-                          <tr
-                            key={index}
-                            className={!row.enabled ? "disabled-meal" : ""}
-                          >
-                            <td>
-                              <div className="meal-name">{row.mealName}</div>
-                            </td>
+                          <div key={index} className="meal-card">
+                            <div className="meal-card-header">
+                              <div className="meal-card-title">
+                                {row.mealName}
+                              </div>
+                            </div>
 
-                            <td>
-                              <input
-                                type="time"
-                                className="meal-input"
-                                value={row.mealTime}
-                                onChange={(e) =>
-                                  handleEnergyProteinChange(
-                                    index,
-                                    "mealTime",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </td>
+                            <div className="meal-card-grid">
+                              <div className="meal-card-field">
+                                <label className="meal-card-label">Time</label>
+                                <input
+                                  type="time"
+                                  className="meal-card-input"
+                                  value={row.mealTime}
+                                  onChange={(e) =>
+                                    handleEnergyProteinChange(
+                                      index,
+                                      "mealTime",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </div>
 
-                            <td>
-                              <input
-                                className="meal-input"
-                                type={
-                                  focusedCaloriesIndex === index || row.calories
-                                    ? "number"
-                                    : "text"
-                                }
-                                placeholder="kcal"
-                                value={row.calories}
-                                onChange={(e) =>
-                                  handleEnergyProteinChange(
-                                    index,
-                                    "calories",
-                                    e.target.value
-                                  )
-                                }
-                                onFocus={() => setFocusedCaloriesIndex(index)}
-                                onBlur={() => setFocusedCaloriesIndex(null)}
-                              />
-                            </td>
+                              <div className="meal-card-field">
+                                <label className="meal-card-label">
+                                  Calories
+                                </label>
+                                <input
+                                  className="meal-card-input"
+                                  type={
+                                    focusedCaloriesIndex === index ||
+                                    row.calories
+                                      ? "number"
+                                      : "text"
+                                  }
+                                  placeholder="kcal"
+                                  value={row.calories}
+                                  onChange={(e) =>
+                                    handleEnergyProteinChange(
+                                      index,
+                                      "calories",
+                                      e.target.value
+                                    )
+                                  }
+                                  onFocus={() => setFocusedCaloriesIndex(index)}
+                                  onBlur={() => setFocusedCaloriesIndex(null)}
+                                />
+                              </div>
 
-                            <td>
-                              <input
-                                className="meal-input"
-                                type={
-                                  focusedProteinIndex === index || row.protein
-                                    ? "number"
-                                    : "text"
-                                }
-                                placeholder="g"
-                                value={row.protein}
-                                onChange={(e) =>
-                                  handleEnergyProteinChange(
-                                    index,
-                                    "protein",
-                                    e.target.value
-                                  )
-                                }
-                                onFocus={() => setFocusedProteinIndex(index)}
-                                onBlur={() => setFocusedProteinIndex(null)}
-                              />
-                            </td>
+                              <div className="meal-card-field">
+                                <label className="meal-card-label">
+                                  Protein
+                                </label>
+                                <input
+                                  className="meal-card-input"
+                                  type={
+                                    focusedProteinIndex === index || row.protein
+                                      ? "number"
+                                      : "text"
+                                  }
+                                  placeholder="g"
+                                  value={row.protein}
+                                  onChange={(e) =>
+                                    handleEnergyProteinChange(
+                                      index,
+                                      "protein",
+                                      e.target.value
+                                    )
+                                  }
+                                  onFocus={() => setFocusedProteinIndex(index)}
+                                  onBlur={() => setFocusedProteinIndex(null)}
+                                />
+                              </div>
+                            </div>
 
-                            <td>
+                            <div className="meal-card-actions">
                               <button
-                                className="meal-btn"
+                                className="meal-card-btn"
                                 onClick={() => handleAddOptionClick(index)}
                               >
-                                Add
+                                Add Option
                               </button>
-                            </td>
-
-                            <td className="options-cell">
                               <button
-                                className="meal-btn"
+                                className="meal-card-btn"
                                 onClick={() =>
                                   setShowOptionGridPopup({
                                     visible: true,
@@ -1303,222 +1443,145 @@ const DietMealPlanAssign = () => {
                                 }
                                 disabled={row.options.length === 0}
                               >
-                                View ({row.options.length})
+                                View Options ({row.options.length})
                               </button>
-                            </td>
-                          </tr>
+                            </div>
+                          </div>
                         ))}
-                      </tbody>
-                    </table>
-
-                    {/* Card Layout for Mobile */}
-                    <div className="meal-cards">
-                      {energyProteinDistribution.map((row, index) => (
-                        <div key={index} className="meal-card">
-                          <div className="meal-card-header">
-                            <div className="meal-card-title">
-                              {row.mealName}
-                            </div>
-                          </div>
-
-                          <div className="meal-card-grid">
-                            <div className="meal-card-field">
-                              <label className="meal-card-label">Time</label>
-                              <input
-                                type="time"
-                                className="meal-card-input"
-                                value={row.mealTime}
-                                onChange={(e) =>
-                                  handleEnergyProteinChange(
-                                    index,
-                                    "mealTime",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </div>
-
-                            <div className="meal-card-field">
-                              <label className="meal-card-label">
-                                Calories
-                              </label>
-                              <input
-                                className="meal-card-input"
-                                type={
-                                  focusedCaloriesIndex === index || row.calories
-                                    ? "number"
-                                    : "text"
-                                }
-                                placeholder="kcal"
-                                value={row.calories}
-                                onChange={(e) =>
-                                  handleEnergyProteinChange(
-                                    index,
-                                    "calories",
-                                    e.target.value
-                                  )
-                                }
-                                onFocus={() => setFocusedCaloriesIndex(index)}
-                                onBlur={() => setFocusedCaloriesIndex(null)}
-                              />
-                            </div>
-
-                            <div className="meal-card-field">
-                              <label className="meal-card-label">Protein</label>
-                              <input
-                                className="meal-card-input"
-                                type={
-                                  focusedProteinIndex === index || row.protein
-                                    ? "number"
-                                    : "text"
-                                }
-                                placeholder="g"
-                                value={row.protein}
-                                onChange={(e) =>
-                                  handleEnergyProteinChange(
-                                    index,
-                                    "protein",
-                                    e.target.value
-                                  )
-                                }
-                                onFocus={() => setFocusedProteinIndex(index)}
-                                onBlur={() => setFocusedProteinIndex(null)}
-                              />
-                            </div>
-                          </div>
-
-                          <div className="meal-card-actions">
-                            <button
-                              className="meal-card-btn"
-                              onClick={() => handleAddOptionClick(index)}
-                            >
-                              Add Option
-                            </button>
-                            <button
-                              className="meal-card-btn"
-                              onClick={() =>
-                                setShowOptionGridPopup({ visible: true, index })
-                              }
-                              disabled={row.options.length === 0}
-                            >
-                              View Options ({row.options.length})
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </>
+              )}
 
-                <div style={{ padding: "1rem", textAlign: "center" }}>
-                  <button
-                    className="btn btn-primary"
-                    style={{
-                      fontSize: "1rem",
-                      marginBottom: "1rem",
-                      width: "100%",
-                      maxWidth: "300px",
+              {dietMode === "ai" && (
+                <div className="card">
+                  <h2 className="card-header">AI-Generated Meal Plan</h2>
+                  <p>
+                    This section will automatically generate a personalized plan
+                    based on the client's profile and goals.
+                  </p>
+
+                  <Link
+                    to="/diet_ai_assistant"
+                    state={{
+                      aiInitialData: {
+                        mrn,
+                        clientData,
+                        fromDateTime,
+                        toDateTime,
+                        bmiData,
+                        energyProteinDistribution,
+                        selectedMeals,
+                      },
                     }}
-                    onClick={generateDietPDF}
-                    disabled={
-                      !fromDateTime ||
-                      !toDateTime ||
-                      selectedMeals.length === 0 ||
-                      energyProteinDistribution.length === 0
-                    }
+                    className="btn btn-primary"
                   >
-                    Generate PDF
-                  </button>
+                    Launch AI Diet Assistant 🤖
+                  </Link>
 
-                  <div>
-                    <button
-                      id="complete-btn"
-                      className="btn btn-primary"
+                  {aiGeneratedText && (
+                    <div
+                      className="card"
                       style={{
-                        fontSize: "1rem",
                         marginBottom: "1rem",
-                        width: "100%",
-                        maxWidth: "300px",
+                        backgroundColor: "#fff7f0",
                       }}
-                      onClick={handleCompleteAssignment}
                     >
-                      Complete Assignment
-                    </button>
+                      <h2 className="card-header">AI Generated Diet Plan ✨</h2>
+                      <div
+                        style={{
+                          whiteSpace: "pre-wrap",
+                          padding: "1rem",
+                          color: "#331a00",
+                        }}
+                      >
+                        {aiGeneratedText}
+                      </div>
+                    </div>
+                  )}
+                  {/* 📝 Placeholder: show AI-generated content once logic is ready */}
+                  <div style={{ marginTop: "1.5rem" }}>
+                    <p>
+                      <strong>Coming Soon:</strong> AI-generated diet chart will
+                      be displayed here with meal options, calories, and protein
+                      breakdown.
+                    </p>
                   </div>
-
-                  {pdfUrl && (
-                    <button
-                      className="btn btn-secondary"
-                      style={{
-                        padding: "10px 20px",
-                        fontSize: "0.9rem",
-                        width: "100%",
-                        maxWidth: "250px",
-                      }}
-                      onClick={() => setShowPdfViewer(true)}
-                    >
-                      View Generated PDF
-                    </button>
+                  {dietMode === "ai" && aiGeneratedText && (
+                    <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
+                      <button
+                        className="btn btn-primary"
+                        onClick={handleCompleteAssignment}
+                        style={{
+                          padding: "0.75rem 2rem",
+                          fontSize: "1rem",
+                          background: "#cc5500",
+                          color: "#fff",
+                          fontWeight: "bold",
+                          borderRadius: "8px",
+                        }}
+                      >
+                        Complete Assignment
+                      </button>
+                    </div>
                   )}
                 </div>
-              </>
-            )}
-            {dietMode === "ai" && (
-              <div className="card">
-                <h2 className="card-header">AI-Generated Meal Plan</h2>
-                <p>
-                  This section will automatically generate a personalized plan
-                  based on the client's profile and goals.
-                </p>
+              )}
+            </div>
 
-                <Link to="/diet_ai_assistant" className="btn btn-primary">
-                  Launch AI Diet Assistant 🤖
-                </Link>
-                {aiGeneratedText && (
-                  <div
-                    className="card"
-                    style={{ marginBottom: "1rem", backgroundColor: "#fff7f0" }}
-                  >
-                    <h2 className="card-header">AI Generated Diet Plan ✨</h2>
-                    <div
-                      style={{
-                        whiteSpace: "pre-wrap",
-                        padding: "1rem",
-                        color: "#331a00",
-                      }}
-                    >
-                      {aiGeneratedText}
-                    </div>
-                  </div>
-                )}
-                {/* 📝 Placeholder: show AI-generated content once logic is ready */}
-                <div style={{ marginTop: "1.5rem" }}>
-                  <p>
-                    <strong>Coming Soon:</strong> AI-generated diet chart will
-                    be displayed here with meal options, calories, and protein
-                    breakdown.
-                  </p>
-                </div>
-                {dietMode === "ai" && aiGeneratedText && (
-                  <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
-                    <button
-                      className="btn btn-primary"
-                      onClick={handleCompleteAssignment}
-                      style={{
-                        padding: "0.75rem 2rem",
-                        fontSize: "1rem",
-                        background: "#cc5500",
-                        color: "#fff",
-                        fontWeight: "bold",
-                        borderRadius: "8px",
-                      }}
-                    >
-                      Complete Assignment
-                    </button>
-                  </div>
-                )}
+            {/* Buttons for PDF and Assignment */}
+            <div style={{ padding: "1rem", textAlign: "center" }}>
+              <button
+                className="btn btn-primary"
+                style={{
+                  fontSize: "1rem",
+                  marginBottom: "1rem",
+                  width: "100%",
+                  maxWidth: "300px",
+                }}
+                onClick={generateDietPDF}
+                disabled={
+                  !fromDateTime ||
+                  !toDateTime ||
+                  selectedMeals.length === 0 ||
+                  energyProteinDistribution.length === 0
+                }
+              >
+                Generate PDF
+              </button>
+
+              <div>
+                <button
+                  id="complete-btn"
+                  className="btn btn-primary"
+                  style={{
+                    fontSize: "1rem",
+                    marginBottom: "1rem",
+                    width: "100%",
+                    maxWidth: "300px",
+                  }}
+                  onClick={handleCompleteAssignment}
+                >
+                  Complete Assignment
+                </button>
               </div>
-            )}
+
+              {pdfUrl && (
+                <button
+                  className="btn btn-secondary"
+                  style={{
+                    padding: "10px 20px",
+                    fontSize: "0.9rem",
+                    width: "100%",
+                    maxWidth: "250px",
+                  }}
+                  onClick={() => setShowPdfViewer(true)}
+                >
+                  View Generated PDF
+                </button>
+              )}
+            </div>
           </div>
 
           {clientData && (
