@@ -53,6 +53,7 @@ const DietMealPlanAssign = () => {
   const [focusedCaloriesIndex, setFocusedCaloriesIndex] = useState(null);
   const [focusedProteinIndex, setFocusedProteinIndex] = useState(null);
   const [dietMode, setDietMode] = useState(""); // ✅ default hidden
+  const [aiInjected, setAiInjected] = useState(false);
 
   const location = useLocation();
   const {
@@ -168,22 +169,22 @@ const DietMealPlanAssign = () => {
     }
   };
   useEffect(() => {
-    if (!aiGeneratedText) return;
+    if (!aiGeneratedText || aiInjected) return;
 
-    setDietMode("ai"); // ✅ Switch to AI mode when returning
+    setDietMode("ai"); // Ensure AI mode is set
+    setAiInjected(true); // ✅ Prevent further execution of this effect
+
     const breakfastIndex = energyProteinDistribution.findIndex(
       (row) => row.mealName.toLowerCase() === "breakfast"
     );
 
     if (breakfastIndex !== -1) {
       const updated = [...energyProteinDistribution];
-
-      // 🔁 Prevent duplicate injection
-      const alreadyInjected = updated[breakfastIndex].options.some(
-        (opt) => opt.meal === "AI Suggested" && opt.recipe === aiGeneratedText
+      const alreadyHasAI = updated[breakfastIndex].options.some(
+        (opt) => opt.meal === "AI Suggested"
       );
 
-      if (!alreadyInjected) {
+      if (!alreadyHasAI) {
         updated[breakfastIndex].options.push({
           meal: "AI Suggested",
           ingredients: "-",
@@ -194,7 +195,6 @@ const DietMealPlanAssign = () => {
         toast.success("AI plan added to Breakfast automatically");
       }
     } else {
-      // ✅ Breakfast doesn’t exist → create it
       setSelectedMeals((prev) => [...prev, "Breakfast"]);
       setEnergyProteinDistribution((prev) => [
         ...prev,
@@ -214,8 +214,17 @@ const DietMealPlanAssign = () => {
           ],
         },
       ]);
+      toast.success("AI plan injected as Breakfast meal");
     }
-  }, [aiGeneratedText, energyProteinDistribution]);
+
+    // Auto-scroll to meal section
+    setTimeout(() => {
+      const section = document.getElementById("meal-plan-section");
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 300);
+  }, [aiGeneratedText, energyProteinDistribution, aiInjected]);
 
   const handleBmiChange = (e) => {
     const { name, value } = e.target;
@@ -1454,7 +1463,7 @@ const DietMealPlanAssign = () => {
               )}
 
               {dietMode === "ai" && (
-                <div className="card">
+                <div className="card" id="meal-plan-section">
                   <h2 className="card-header">AI-Generated Meal Plan</h2>
                   <p>
                     This section will automatically generate a personalized plan

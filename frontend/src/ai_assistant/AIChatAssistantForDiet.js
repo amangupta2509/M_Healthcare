@@ -364,15 +364,13 @@ const AIChatAssistantForDiet = () => {
               style={{ marginTop: "1rem" }}
               onClick={() => {
                 toast.success("Diet chart successfully saved!", {
-                  autoClose: 1500, // optional: controls how long the toast stays
-                  onClose: () => {
-                    setIsEditing(false);
-                    navigate("/diet/DietMealPlanAssign", {
-                      state: {
-                        aiGeneratedText: editableContent,
-                        ...aiInitialData, // ✅ preserve diet state
-                      },
-                    });
+                  autoClose: 1500,
+                });
+                setIsEditing(false);
+                navigate("/diet/DietMealPlanAssign", {
+                  state: {
+                    aiGeneratedText: editableContent,
+                    ...aiInitialData,
                   },
                 });
               }}
