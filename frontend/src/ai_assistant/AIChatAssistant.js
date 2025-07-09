@@ -8,7 +8,8 @@ import {
   X,
   Moon,
   Sun,
-  Sparkles,
+  Mic,
+  Dna,
   Brush,
 } from "lucide-react";
 import "./AIChatAssistant.css";
@@ -28,6 +29,93 @@ const AIChatAssistant = () => {
   const [lastPrompt, setLastPrompt] = useState("");
   const [previewFile, setPreviewFile] = useState(null);
   const [error, setError] = useState("");
+  const recognitionRef = useRef(null);
+  const [isVoiceMode, setIsVoiceMode] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  useEffect(() => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (SpeechRecognition) {
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.lang = "en-US";
+      recognitionRef.current.interimResults = false;
+
+      recognitionRef.current.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setInput(transcript); // sets input for logging
+        sendVoiceMessage(transcript); // sends it automatically
+      };
+
+      recognitionRef.current.onerror = (event) => {
+        console.error("Speech recognition error:", event.error);
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
+    }
+  }, []);
+  const sendVoiceMessage = (voiceText) => {
+    const newMessage = { type: "user", text: voiceText, file: null };
+    setMessages((prev) => [...prev, newMessage]);
+    setLastPrompt(voiceText);
+    setInput("");
+    setLoading(true);
+
+    setTimeout(() => {
+      const responseText = `You said: "${voiceText}". Here's a sample voice reply!`;
+      const botMsg = {
+        type: "bot",
+        text: responseText,
+      };
+      setMessages((prev) => [...prev, botMsg]);
+      setLoading(false);
+      speakText(responseText); // use speech synthesis
+    }, 1200);
+  };
+  const speakText = (text) => {
+    const synth = window.speechSynthesis;
+    if (!synth) return;
+
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = "en-US";
+    utter.rate = 1;
+    utter.pitch = 1;
+
+    utter.onend = () => {
+      if (isVoiceMode) {
+        startListening(); // loop to listen again
+      }
+    };
+
+    synth.speak(utter);
+  };
+  const toggleVoiceMode = () => {
+    const newState = !isVoiceMode;
+    setIsVoiceMode(newState);
+    if (newState) {
+      startListening();
+    } else {
+      stopListening();
+    }
+  };
+
+  const startListening = () => {
+    if (recognitionRef.current && !isListening) {
+      recognitionRef.current.start();
+      setIsListening(true);
+    }
+  };
+
+  const stopListening = () => {
+    if (recognitionRef.current && isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    }
+  };
 
   const chatEndRef = useRef(null);
 
@@ -181,10 +269,10 @@ const AIChatAssistant = () => {
         <div className="ai-header">
           <div className="ai-header-content">
             <div className="ai-logo">
-              <Sparkles size={20} color="#fff" />
+              <Dna size={35} color="#fff" />
             </div>
             <div className="ai-header-text">
-              <h1>Assistant</h1>
+              <h1>AI Assistant</h1>
               <p>Powered by dnalyst</p>
             </div>
           </div>
@@ -289,6 +377,13 @@ const AIChatAssistant = () => {
               disabled={!lastPrompt}
             >
               <RefreshCcw size={20} />
+            </button>
+            <button
+              className={`action-btn ${isVoiceMode ? "voice-active" : ""}`}
+              onClick={toggleVoiceMode}
+              title="Use Voice Mode"
+            >
+              <Mic color={isVoiceMode ? "red" : "currentColor"} />
             </button>
 
             <button

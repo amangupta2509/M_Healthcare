@@ -214,7 +214,6 @@ const DietMealPlanAssign = () => {
           ],
         },
       ]);
-      toast.success("AI plan injected as Breakfast meal");
     }
   }, [aiGeneratedText, energyProteinDistribution]);
 
@@ -1508,24 +1507,6 @@ const DietMealPlanAssign = () => {
                       breakdown.
                     </p>
                   </div>
-                  {dietMode === "ai" && aiGeneratedText && (
-                    <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
-                      <button
-                        className="btn btn-primary"
-                        onClick={handleCompleteAssignment}
-                        style={{
-                          padding: "0.75rem 2rem",
-                          fontSize: "1rem",
-                          background: "#cc5500",
-                          color: "#fff",
-                          fontWeight: "bold",
-                          borderRadius: "8px",
-                        }}
-                      >
-                        Complete Assignment
-                      </button>
-                    </div>
-                  )}
                 </div>
               )}
             </div>

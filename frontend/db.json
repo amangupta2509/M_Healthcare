@@ -1716,6 +1716,39 @@
           "enabled": true
         }
       ]
+    },
+    {
+      "id": "b19e",
+      "mrn": "MRN123",
+      "fromDateTime": "2025-07-11",
+      "toDateTime": "2025-07-12",
+      "bmiData": {
+        "bmiCategory": "12",
+        "bmr": "5",
+        "tdee": "6",
+        "target": "6",
+        "energy": "6",
+        "protein": "6",
+        "carbohydrate": "6",
+        "fats": "6"
+      },
+      "meals": [
+        {
+          "mealName": "Breakfast",
+          "mealTime": "08:00",
+          "calories": "400",
+          "protein": "20",
+          "enabled": true,
+          "options": [
+            {
+              "meal": "AI Suggested",
+              "ingredients": "-",
+              "recipe": "🍽️ Hello! I'm your AI diet assistant. How can I help you with a meal plan today?",
+              "cookingVideo": ""
+            }
+          ]
+        }
+      ]
     }
   ],
   "counselorTypes": [
