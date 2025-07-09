@@ -225,6 +225,80 @@ const DietMealPlanAssign = () => {
       }
     }, 300);
   }, [aiGeneratedText, energyProteinDistribution, aiInjected]);
+  const handleSwitchToAI = () => {
+    const hasManualData = energyProteinDistribution.length > 0;
+
+    if (hasManualData) {
+      const confirmSwitch = window.confirm(
+        "You’ve already entered a manual diet plan. Switching to AI mode will discard it. Continue?"
+      );
+      if (!confirmSwitch) return;
+
+      // Clear manual data
+      setSelectedMeals([]);
+      setEnergyProteinDistribution([]);
+    }
+
+    setDietMode("ai");
+  };
+  // Custom confirmation toast
+  const ConfirmSwitchToast = ({ message, onConfirm, onCancel }) => (
+    <div style={{ padding: "0.5rem" }}>
+      <p style={{ marginBottom: "0.5rem" }}>{message}</p>
+      <div
+        style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}
+      >
+        <button
+          onClick={() => {
+            toast.dismiss();
+            onConfirm();
+          }}
+          style={{
+            background: "#16a34a",
+            color: "#fff",
+            border: "none",
+            padding: "0.3rem 0.6rem",
+            borderRadius: "5px",
+          }}
+        >
+          Yes
+        </button>
+        <button
+          onClick={() => {
+            toast.dismiss();
+            if (onCancel) onCancel();
+          }}
+          style={{
+            background: "#dc2626",
+            color: "#fff",
+            border: "none",
+            padding: "0.3rem 0.6rem",
+            borderRadius: "5px",
+          }}
+        >
+          No
+        </button>
+      </div>
+    </div>
+  );
+  const handleSwitchToManual = () => {
+    const hasAI = aiGeneratedText || dietMode === "ai";
+
+    if (hasAI) {
+      const confirmSwitch = window.confirm(
+        "You're currently using an AI-generated plan. Switching to Manual mode will discard it. Continue?"
+      );
+      if (!confirmSwitch) return;
+
+      // Clear AI data
+      setEnergyProteinDistribution([]);
+      setSelectedMeals([]);
+      setAiInjected(false); // reset flag
+      location.state = {}; // optional: clear nav state
+    }
+
+    setDietMode("manual");
+  };
 
   const handleBmiChange = (e) => {
     const { name, value } = e.target;
@@ -793,19 +867,57 @@ const DietMealPlanAssign = () => {
                     className={`btn ${
                       dietMode === "manual" ? "btn-primary" : "btn-secondary"
                     }`}
-                    onClick={() => setDietMode("manual")}
+                    onClick={() => {
+                      const hasAI = aiGeneratedText || dietMode === "ai";
+
+                      if (hasAI) {
+                        toast.info(
+                          <ConfirmSwitchToast
+                            message="You're currently using an AI-generated plan. Switch to Manual Mode and discard AI data?"
+                            onConfirm={() => {
+                              setEnergyProteinDistribution([]);
+                              setSelectedMeals([]);
+                              setAiInjected(false);
+                              if (location.state)
+                                location.state.aiGeneratedText = "";
+                              setDietMode("manual");
+                              toast.success("Switched to Manual Mode");
+                            }}
+                          />,
+                          { autoClose: false }
+                        );
+                      } else {
+                        setDietMode("manual");
+                      }
+                    }}
                   >
                     Manual Mode
                   </button>
+
                   <button
                     className={`btn ${
                       dietMode === "ai" ? "btn-primary" : "btn-secondary"
                     }`}
                     onClick={() => {
-                      setDietMode("ai");
-                      // Optional: clear any previous manual values
-                      setEnergyProteinDistribution([]);
-                      setSelectedMeals([]);
+                      const hasManualData =
+                        energyProteinDistribution.length > 0;
+
+                      if (hasManualData) {
+                        toast.info(
+                          <ConfirmSwitchToast
+                            message="You've already entered a manual diet plan. Switch to AI Mode and discard it?"
+                            onConfirm={() => {
+                              setEnergyProteinDistribution([]);
+                              setSelectedMeals([]);
+                              setDietMode("ai");
+                              toast.success("Switched to AI Mode");
+                            }}
+                          />,
+                          { autoClose: false }
+                        );
+                      } else {
+                        setDietMode("ai");
+                      }
                     }}
                   >
                     AI Generated Plan 🤖
