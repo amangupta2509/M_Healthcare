@@ -388,7 +388,22 @@ const DietMealPlanAssign = () => {
   };
 
   const handleBmiChange = (e) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+
+    // Clean number before appending unit
+    const numericValue = value.replace(/[^0-9.]/g, "");
+
+    // Append correct units
+    if (name === "energy" || name === "target") {
+      value = `${numericValue} kcal/day`;
+    } else if (
+      name === "protein" ||
+      name === "carbohydrate" ||
+      name === "fats"
+    ) {
+      value = `${numericValue} g`;
+    }
+
     setBmiData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -2148,7 +2163,7 @@ const DietMealPlanAssign = () => {
                 </label>
                 <input
                   type="text"
-                  value={bmiData.bmi || ""}
+                  value={bmiData.bmi ? `${bmiData.bmi} kg/m²` : ""}
                   readOnly
                   className="form-control"
                   style={{ backgroundColor: "#f0f0f0", color: "#333" }}
@@ -2180,7 +2195,7 @@ const DietMealPlanAssign = () => {
                 </label>
                 <input
                   type="text"
-                  value={bmiData.bmr || ""}
+                  value={bmiData.bmr ? `${bmiData.bmr} kcal/day` : ""}
                   readOnly
                   className="form-control"
                   style={{ backgroundColor: "#f0f0f0", color: "#333" }}
@@ -2218,7 +2233,11 @@ const DietMealPlanAssign = () => {
                 </label>
                 <input
                   type="text"
-                  value={bmiData.calculatedTdee || ""}
+                  value={
+                    bmiData.calculatedTdee
+                      ? `${bmiData.calculatedTdee} kcal/day`
+                      : ""
+                  }
                   readOnly
                   className="form-control"
                   style={{ backgroundColor: "#f0f0f0", color: "#333" }}
@@ -2238,31 +2257,31 @@ const DietMealPlanAssign = () => {
               </div>
 
               <InputField
-                label="Target"
+                label="Target (kcal/day)"
                 name="target"
                 value={bmiData.target}
                 onChange={handleBmiChange}
               />
               <InputField
-                label="Energy"
+                label="Energy (kcal/day)"
                 name="energy"
                 value={bmiData.energy}
                 onChange={handleBmiChange}
               />
               <InputField
-                label="Protein"
+                label="Protein (g)"
                 name="protein"
                 value={bmiData.protein}
                 onChange={handleBmiChange}
               />
               <InputField
-                label="Carbohydrate"
+                label="Carbohydrate (g)"
                 name="carbohydrate"
                 value={bmiData.carbohydrate}
                 onChange={handleBmiChange}
               />
               <InputField
-                label="Fats"
+                label="Fats (g)"
                 name="fats"
                 value={bmiData.fats}
                 onChange={handleBmiChange}
