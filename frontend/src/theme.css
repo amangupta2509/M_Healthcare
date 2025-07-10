@@ -61,3 +61,35 @@ input[type="text"] {
 button {
   cursor: pointer;
 }
+
+/* Applies to all inputs, selects, and textareas */
+
+select {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-secondary);
+}
+
+/* Focus state */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-light);
+}
+
+/* Override system color-scheme to avoid auto-dark mode styling */
+input,
+textarea,
+select {
+  color-scheme: light dark; /* lets browser use custom CSS instead of forced dark inputs */
+}

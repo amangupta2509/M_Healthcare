@@ -764,7 +764,7 @@ const DietMealPlanAssign = () => {
       <h1>Diet Plan Assignment</h1>
 
       {/* Search Section */}
-      <div className="card">
+      <div className="card" style={{ marginBottom: "1.5%" }}>
         <div
           className="form-group"
           style={{
@@ -772,6 +772,7 @@ const DietMealPlanAssign = () => {
             alignItems: "center",
             gap: "1rem",
             flexWrap: "wrap",
+            marginBottom: "0",
           }}
         >
           <input
@@ -793,6 +794,7 @@ const DietMealPlanAssign = () => {
               fontSize: "1rem",
               border: "1px solid #cc5500",
               borderRadius: "4px",
+              marginBottom: "0",
             }}
           />
 
@@ -1656,7 +1658,7 @@ const DietMealPlanAssign = () => {
               )}
 
               {dietMode === "ai" && (
-                <div className="card" id="meal-plan-section">
+                <div id="meal-plan-section">
                   <h2 className="card-header">AI-Generated Meal Plan</h2>
                   <p>
                     This section will automatically generate a personalized plan
@@ -1682,20 +1684,21 @@ const DietMealPlanAssign = () => {
                   </Link>
 
                   {aiGeneratedText && (
-                    <div
-                      className="card"
-                      style={{
-                        marginBottom: "1rem",
-                        backgroundColor: "#fff7f0",
-                      }}
-                    >
+                    <div>
                       <h2 className="card-header">AI Generated Diet Plan ✨</h2>
                       <div
                         style={{
                           whiteSpace: "pre-wrap",
                           padding: "1rem",
                           color: "#331a00",
+                          maxHeight: "300px", // adjust height as needed
+                          overflowY: "auto",
+                          border: "1px solid #cc5500",
+                          borderRadius: "6px",
+                          scrollbarWidth: "thin", // for Firefox
+                          scrollbarColor: "#cc5500 transparent",
                         }}
+                        className="custom-scroll"
                       >
                         {aiGeneratedText}
                       </div>
@@ -2048,6 +2051,7 @@ const DietMealPlanAssign = () => {
             top: 0,
             left: 0,
             width: "100vw",
+            // margin:"1rem",
             height: "100vh",
             backgroundColor: "rgba(0,0,0,0.5)",
             display: "flex",
@@ -2098,7 +2102,7 @@ const DietMealPlanAssign = () => {
               }}
               style={{
                 display: "grid",
-                gridTemplateColumns: "1fr 1fr",
+                gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
                 gap: "1rem 2rem",
               }}
             >
