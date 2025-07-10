@@ -1615,28 +1615,29 @@
       "id": "05fd"
     }
   ],
-  "mealclients": [
-    {
-      "mrn": "MRN123",
-      "name": "Aman Gupta",
-      "age": 38,
-      "height": "163 cm",
-      "weight": "62 kg",
-      "bmi": "23.3",
-      "goal": "Mild Deficit - 1700 kcal/day",
-      "modifiedBMI": {
-        "bmiCategory": "Normal",
-        "bmr": "1288 kcal/day",
-        "tdee": "2000 kcal/day",
-        "target": "1700 kcal/day",
-        "energy": "1700 kcal/day",
-        "protein": "110g",
-        "carbohydrate": "190g",
-        "fats": "30g"
-      },
-      "id": "521d"
-    }
-  ],
+ "mealclients": [
+  {
+    "mrn": "MRN123",
+    "name": "Aman Gupta",
+    "age": 38,
+    "gender": "Male",
+    "height": 163,
+    "weight": 62,
+    "bmi": "23.3",
+    "goal": "Mild Deficit - 1700 kcal/day",
+    "modifiedBMI": {
+      "bmiCategory": "Normal",
+      "bmr": "1288 kcal/day",
+      "tdee": "2000 kcal/day",
+      "target": "1700 kcal/day",
+      "energy": "1700 kcal/day",
+      "protein": "110g",
+      "carbohydrate": "190g",
+      "fats": "30g"
+    },
+    "id": "521d"
+  }
+],
   "assignedMeals": [
     {
       "id": "1",

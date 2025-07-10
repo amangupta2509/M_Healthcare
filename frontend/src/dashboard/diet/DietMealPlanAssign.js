@@ -88,6 +88,93 @@ const DietMealPlanAssign = () => {
     carbohydrate: "",
     fats: "",
   });
+  const InputField = ({ label, name, value, onChange, readOnly = false }) => (
+    <div>
+      <label style={{ fontWeight: "600" }}>{label}</label>
+      <input
+        type="text"
+        name={name}
+        value={value}
+        onChange={onChange}
+        readOnly={readOnly}
+        className="form-control"
+        style={{
+          backgroundColor: readOnly ? "#f0f0f0" : "var(--bg-primary)",
+          color: readOnly ? "#555" : undefined,
+        }}
+      />
+    </div>
+  );
+
+  const DropdownField = ({ label, name, value, onChange, options }) => (
+    <div>
+      <label style={{ fontWeight: "600" }}>{label}</label>
+      <select
+        name={name}
+        value={value}
+        onChange={onChange}
+        className="form-control"
+        style={{
+          backgroundColor: "var(--bg-primary)",
+          color: "var(--text-white)",
+        }}
+      >
+        <option value="">-- Select --</option>
+        {options.map((opt, i) => (
+          <option key={i} value={opt.split(" ")[0]}>
+            {opt}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+  useEffect(() => {
+    if (
+      !clientData?.height ||
+      !clientData?.weight ||
+      !clientData?.age ||
+      !clientData?.gender
+    )
+      return;
+
+    const heightInMeters = clientData.height / 100;
+    const weight = clientData.weight;
+    const age = clientData.age;
+    const gender = clientData.gender.toLowerCase();
+
+    // BMI
+    const bmi = (weight / (heightInMeters * heightInMeters)).toFixed(2);
+
+    // BMI Category
+    let bmiCategory = "";
+    if (bmi < 18.5) bmiCategory = "Underweight";
+    else if (bmi < 24.9) bmiCategory = "Normal";
+    else if (bmi < 29.9) bmiCategory = "Overweight";
+    else bmiCategory = "Obese";
+
+    // BMR
+    let bmr;
+    if (gender === "male") {
+      bmr = (10 * weight + 6.25 * clientData.height - 5 * age + 5).toFixed(2);
+    } else {
+      bmr = (10 * weight + 6.25 * clientData.height - 5 * age - 161).toFixed(2);
+    }
+
+    // TDEE — only if dropdown selected
+    const activityMultiplier = parseFloat(bmiData.tdee);
+    let tdee = "";
+    if (!isNaN(activityMultiplier)) {
+      tdee = (bmr * activityMultiplier).toFixed(2);
+    }
+
+    setBmiData((prev) => ({
+      ...prev,
+      bmi,
+      bmiCategory: prev.bmiCategory || bmiCategory,
+      bmr,
+      calculatedTdee: tdee || prev.calculatedTdee,
+    }));
+  }, [clientData, bmiData.tdee]);
 
   const [energyProteinDistribution, setEnergyProteinDistribution] = useState(
     []
@@ -711,27 +798,6 @@ const DietMealPlanAssign = () => {
       {clientData && (
         <>
           <div className="row">
-            <div className="col card">
-              <h2 className="card-header">Client Details</h2>
-              <div>
-                <strong>Name:</strong> {clientData.name}
-              </div>
-              <div>
-                <strong>Age:</strong> {clientData.age}
-              </div>
-              <div>
-                <strong>Height:</strong> {clientData.height}
-              </div>
-              <div>
-                <strong>Weight:</strong> {clientData.weight}
-              </div>
-              <div>
-                <strong>BMI:</strong> {clientData.bmi}
-              </div>
-              <div>
-                <strong>Goal:</strong> {clientData.goal}
-              </div>
-            </div>
             <div className="card" ref={bmiCardRef}>
               <div
                 style={{
@@ -1968,7 +2034,7 @@ const DietMealPlanAssign = () => {
             left: 0,
             width: "100vw",
             height: "100vh",
-            backgroundColor: "var(--bg-primary)",
+            backgroundColor: "rgba(0,0,0,0.5)",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -1983,7 +2049,7 @@ const DietMealPlanAssign = () => {
               padding: "2rem",
               borderRadius: "8px",
               width: "90%",
-              maxWidth: "600px",
+              maxWidth: "750px",
               maxHeight: "90vh",
               overflowY: "auto",
               position: "relative",
@@ -2005,50 +2071,214 @@ const DietMealPlanAssign = () => {
                 cursor: "pointer",
               }}
             >
-              X
+              ✕
             </button>
-            <h2>MODIFIED BMI</h2>
+
+            <h2 className="text-center mb-3">Modified BMI</h2>
+
             <form
               onSubmit={(e) => {
-                e.preventDefault(); // prevent page reload
+                e.preventDefault();
                 handleBmiSubmit();
               }}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "1rem 2rem",
+              }}
             >
-              {Object.entries(bmiData).map(([key, value]) => (
-                <div
-                  className="form-group d-flex align-items-center mb-2"
-                  key={key}
-                  style={{ gap: "10px" }}
-                >
-                  <label
-                    htmlFor={key}
+              {/* GROUP 1: Client Info */}
+              <div
+                style={{
+                  gridColumn: "1 / -1",
+                  fontWeight: "600",
+                  fontSize: "1.1rem",
+                }}
+              >
+                👤 Client Information
+              </div>
+
+              <InputField
+                label="Name"
+                value={clientData?.name || ""}
+                readOnly
+              />
+              <InputField label="Age" value={clientData?.age || ""} readOnly />
+              <InputField
+                label="Gender"
+                value={clientData?.gender || ""}
+                readOnly
+              />
+              <InputField
+                label="Height (cm)"
+                value={clientData?.height || ""}
+                readOnly
+              />
+              <InputField
+                label="Weight (kg)"
+                value={clientData?.weight || ""}
+                readOnly
+              />
+
+              {/* GROUP 2: Auto Calculated & Dropdowns */}
+              <div
+                style={{
+                  gridColumn: "1 / -1",
+                  fontWeight: "600",
+                  fontSize: "1.1rem",
+                  marginTop: "1rem",
+                }}
+              >
+                ⚙️ Auto Calculated & Dropdowns
+              </div>
+
+              {/* BMI */}
+              <div>
+                <label style={{ fontWeight: "600" }}>
+                  BMI{" "}
+                  <span
                     style={{
-                      width: "140px",
-                      fontWeight: "600",
-                      marginBottom: "0",
+                      fontWeight: "400",
+                      fontSize: "0.85rem",
+                      color: "gray",
                     }}
                   >
-                    {key.replace(/([A-Z])/g, " $1").toUpperCase()}
-                  </label>
-                  <input
-                    type="text"
-                    name={key}
-                    id={key}
-                    value={value}
-                    onChange={handleBmiChange}
-                    className="form-control"
-                    placeholder={`Enter ${key}`}
-                    style={{ flex: 1 }}
-                    required
-                  />
-                </div>
-              ))}
+                    (Auto-calculated)
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  value={bmiData.bmi || ""}
+                  readOnly
+                  className="form-control"
+                  style={{ backgroundColor: "#f0f0f0", color: "#333" }}
+                />
+              </div>
 
-              <center>
-                <button type="submit" className="btn btn-primary mt-3">
-                  Submit
+              {/* BMI Category */}
+              <DropdownField
+                label="BMI Category"
+                name="bmiCategory"
+                value={bmiData.bmiCategory}
+                onChange={handleBmiChange}
+                options={["Underweight", "Normal", "Overweight", "Obese"]}
+              />
+
+              {/* BMR */}
+              <div>
+                <label style={{ fontWeight: "600" }}>
+                  BMR{" "}
+                  <span
+                    style={{
+                      fontWeight: "400",
+                      fontSize: "0.85rem",
+                      color: "gray",
+                    }}
+                  >
+                    (Auto-calculated)
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  value={bmiData.bmr || ""}
+                  readOnly
+                  className="form-control"
+                  style={{ backgroundColor: "#f0f0f0", color: "#333" }}
+                />
+              </div>
+
+              {/* TDEE Activity Level */}
+              <DropdownField
+                label="Activity Level"
+                name="tdee"
+                value={bmiData.tdee}
+                onChange={handleBmiChange}
+                options={[
+                  "1.2 - Sedentary (little or no exercise)",
+                  "1.37 - Lightly active (1–3 days/week)",
+                  "1.55 - Moderately active (3–5 days/week)",
+                  "1.7 - Very active (6–7 days/week)",
+                  "1.9 - Extra active (physical job or 2x/day training)",
+                ]}
+              />
+
+              {/* TDEE */}
+              <div>
+                <label style={{ fontWeight: "600" }}>
+                  TDEE{" "}
+                  <span
+                    style={{
+                      fontWeight: "400",
+                      fontSize: "0.85rem",
+                      color: "gray",
+                    }}
+                  >
+                    (Auto-calculated after activity selection)
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  value={bmiData.calculatedTdee || ""}
+                  readOnly
+                  className="form-control"
+                  style={{ backgroundColor: "#f0f0f0", color: "#333" }}
+                />
+              </div>
+
+              {/* GROUP 3: Manual Inputs */}
+              <div
+                style={{
+                  gridColumn: "1 / -1",
+                  fontWeight: "600",
+                  fontSize: "1.1rem",
+                  marginTop: "1rem",
+                }}
+              >
+                ✍️ Manual Inputs
+              </div>
+
+              <InputField
+                label="Target"
+                name="target"
+                value={bmiData.target}
+                onChange={handleBmiChange}
+              />
+              <InputField
+                label="Energy"
+                name="energy"
+                value={bmiData.energy}
+                onChange={handleBmiChange}
+              />
+              <InputField
+                label="Protein"
+                name="protein"
+                value={bmiData.protein}
+                onChange={handleBmiChange}
+              />
+              <InputField
+                label="Carbohydrate"
+                name="carbohydrate"
+                value={bmiData.carbohydrate}
+                onChange={handleBmiChange}
+              />
+              <InputField
+                label="Fats"
+                name="fats"
+                value={bmiData.fats}
+                onChange={handleBmiChange}
+              />
+
+              <div
+                style={{
+                  gridColumn: "1 / -1",
+                  textAlign: "center",
+                  marginTop: "1rem",
+                }}
+              >
+                <button type="submit" className="btn btn-primary">
+                  Save BMI Data
                 </button>
-              </center>
+              </div>
             </form>
           </div>
         </div>
