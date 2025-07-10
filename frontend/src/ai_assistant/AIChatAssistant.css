@@ -547,8 +547,7 @@ body {
 
 .message-input:focus {
   outline: none;
-  border-color: #cc5500;
-  box-shadow: 0 0 0 2px rgba(204, 85, 0, 0.2); /* optional glow effect */
+  border-color: var(--primary);
 }
 
 .message-input::placeholder {
@@ -1086,4 +1085,3 @@ body {
   border-color: #fecaca;
   color: #dc2626;
 }
-

@@ -9,8 +9,9 @@ import {
   Moon,
   Sun,
   Mic,
-  Dna,
+  Sparkles,
   Brush,
+  Dna,
 } from "lucide-react";
 import "./AIChatAssistant.css";
 
@@ -32,13 +33,26 @@ const AIChatAssistant = () => {
   const recognitionRef = useRef(null);
   const [isVoiceMode, setIsVoiceMode] = useState(false);
   const [isListening, setIsListening] = useState(false);
+
+  const chatEndRef = useRef(null);
+
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
   useEffect(() => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (SpeechRecognition) {
       recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
+      recognitionRef.current.continuous = true;
       recognitionRef.current.lang = "en-US";
       recognitionRef.current.interimResults = false;
 
@@ -115,19 +129,6 @@ const AIChatAssistant = () => {
       recognitionRef.current.stop();
       setIsListening(false);
     }
-  };
-
-  const chatEndRef = useRef(null);
-
-  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, theme]);
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
   const isValidFile = (file) => {
@@ -272,20 +273,20 @@ const AIChatAssistant = () => {
               <Dna size={35} color="#fff" />
             </div>
             <div className="ai-header-text">
-              <h1>AI Assistant</h1>
+              <h1>Assistant</h1>
               <p>Powered by dnalyst</p>
             </div>
           </div>
           <div style={{ display: "flex", gap: "0.5rem" }}>
+            <button className="theme-toggle" onClick={toggleTheme}>
+              {theme === "dark" ? <Sun /> : <Moon />}
+            </button>
             <button
               className="theme-toggle"
               onClick={clearChat}
               title="Clear Chat"
             >
               <Brush size={20} />
-            </button>
-            <button className="theme-toggle" onClick={toggleTheme}>
-              {theme === "dark" ? <Sun /> : <Moon />}
             </button>
           </div>
         </div>
