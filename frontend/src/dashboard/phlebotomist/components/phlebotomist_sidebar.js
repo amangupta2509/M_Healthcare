@@ -161,17 +161,6 @@ const PhlebotomistSidebar = () => {
 
         <nav className="sidebar-menu-wrapper">
           <ul className="sidebar-menu">
-            {/* <li>
-              <NavLink to="/doctor/doctor_profile" className={navLinkClass}>
-                <Home
-                  size={18}
-                  style={{
-                    marginRight: !collapsed || isHovering ? "10px" : "0",
-                  }}
-                />
-                <span>Dashboard</span>
-              </NavLink>
-            </li> */}
             <li>
               <NavLink
                 to="/doctor/DoctorDashboardHome"
@@ -199,35 +188,6 @@ const PhlebotomistSidebar = () => {
                   }}
                 />
                 <span> Appointments</span>
-              </NavLink>
-            </li>
-
-            <li>
-              <NavLink
-                to="/doctor/DoctorAssignmentDashboard"
-                className={navLinkClass}
-              >
-                <LayoutDashboard
-                  size={18}
-                  style={{
-                    marginRight: !collapsed || isHovering ? "10px" : "0",
-                  }}
-                />
-                <span>Assign Dashboard</span>
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/doctor/DoctorSlotBooking"
-                className={navLinkClass}
-              >
-                <LayoutDashboard
-                  size={18}
-                  style={{
-                    marginRight: !collapsed || isHovering ? "10px" : "0",
-                  }}
-                />
-                <span>Slot Booking</span>
               </NavLink>
             </li>
 

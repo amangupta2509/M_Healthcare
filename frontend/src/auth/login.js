@@ -66,7 +66,9 @@ const Login = () => {
 
         if (nextAttempts >= 3) {
           setLockoutTime(30);
-          setMessage("Too many failed attempts. Please try again in 30 seconds.");
+          setMessage(
+            "Too many failed attempts. Please try again in 30 seconds."
+          );
         } else {
           setMessage("Invalid credentials. Please try again.");
         }
@@ -108,6 +110,9 @@ const Login = () => {
           case "counselor":
             navigate("/counselor");
             break;
+          case "phlebotomist":
+            navigate("/phlebotomist");
+            break; // ✅ THIS was missing
           default:
             navigate("/unauthorized");
         }
@@ -180,6 +185,7 @@ const Login = () => {
               <option value="physio">Physio</option>
               <option value="dietitian">Dietitian</option>
               <option value="counselor">Counselor</option>
+              <option value="phlebotomist">Phlebotomist</option>
               <option value="masteradmin">Master Admin</option>
             </select>
             <label htmlFor="role" className="floating-label">
