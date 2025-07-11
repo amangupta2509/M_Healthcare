@@ -1,0 +1,30 @@
+.form label {
+  display: block;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+.form input, .form textarea, .form select {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+.form textarea {
+  resize: vertical;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.table th,
+.table td {
+  border: 1px solid var(--border-color);
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.table th {
+  background-color: var(--bg-hover);
+}

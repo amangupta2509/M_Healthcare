@@ -425,10 +425,10 @@ const App = () => {
           </Route>
           <Route path="/phlebotomist" element={<PhlebotomistDashboardLayout />}>
             <Route index element={<PhlebotomistDashboardHome />} />
-            <Route path="appointments" element={<PhlebotomistAppointmentss />} />
-            <Route path="booking-form" element={<PhlebotomistBookingForm />} />
+            <Route path="PhlebotomistAppointmentss" element={<PhlebotomistAppointmentss />} />
+            <Route path="PhlebotomistBookingForm" element={<PhlebotomistBookingForm />} />
             <Route
-              path="password-request"
+              path="PhlebotomistPasswordRequest"
               element={<PhlebotomistPasswordRequest />}
             />
           </Route>

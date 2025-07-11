@@ -10,18 +10,16 @@ import {
   LogOut,
   Hamburger,
   Menu,
+  KeyRoundIcon,
+  Calendar,
   Workflow,
   ChevronLeft,
   ChevronRight,
   X,
   Check,
-  Hospital,
-  LayoutDashboard,
-  Calendar,
-  KeyRoundIcon,
 } from "lucide-react";
 
-const PhlebotomistSidebar = () => {
+const DietSidebar = () => {
   const [isOpen, setIsOpen] = useState(window.innerWidth > 768);
   const [collapsed, setCollapsed] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
@@ -152,9 +150,9 @@ const PhlebotomistSidebar = () => {
         <div className="sidebar-header">
           <div className="sidebar-profile">
             <img src={ProfileImage} alt="Profile" className="sidebar-avatar" />
-            <a href="/doctor/DoctorDashboardHome">
+            <a href="/phlebotomist">
               {" "}
-              <span className="sidebar-username">Doctor</span>
+              <span className="sidebar-username">Phlebotomist</span>
             </a>
           </div>
         </div>
@@ -162,10 +160,8 @@ const PhlebotomistSidebar = () => {
         <nav className="sidebar-menu-wrapper">
           <ul className="sidebar-menu">
             <li>
-              <NavLink
-                to="/doctor/DoctorDashboardHome"
-                className={navLinkClass}
-              >
+              <NavLink to="/phlebotomist" className={navLinkClass}>
+
                 <Home
                   size={18}
                   style={{
@@ -177,25 +173,29 @@ const PhlebotomistSidebar = () => {
             </li>
 
             <li>
-              <NavLink
-                to="/doctor/DoctorsAppointments"
-                className={navLinkClass}
-              >
+             <NavLink to="/phlebotomist/PhlebotomistAppointmentss" className={navLinkClass}>
                 <Calendar
                   size={18}
                   style={{
                     marginRight: !collapsed || isHovering ? "10px" : "0",
                   }}
                 />
-                <span> Appointments</span>
+                <span>Appointments</span>
               </NavLink>
             </li>
-
             <li>
-              <NavLink
-                to="/doctor/DoctorPasswordRequest"
-                className={navLinkClass}
-              >
+             <NavLink to="/phlebotomist/PhlebotomistBookingForm" className={navLinkClass}>
+                <Calendar
+                  size={18}
+                  style={{
+                    marginRight: !collapsed || isHovering ? "10px" : "0",
+                  }}
+                />
+                <span> Booking</span>
+              </NavLink>
+            </li>
+            <li>
+             <NavLink to="/phlebotomist/PhlebotomistPasswordRequest" className={navLinkClass}>
                 <KeyRoundIcon
                   size={18}
                   style={{
@@ -243,4 +243,4 @@ const PhlebotomistSidebar = () => {
   );
 };
 
-export default PhlebotomistSidebar;
+export default DietSidebar;
