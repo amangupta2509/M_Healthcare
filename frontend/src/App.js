@@ -122,6 +122,21 @@ import CounselorsAppointments from "./dashboard/counselor/CounselorsAppointments
 import CounselorCompletedAppointments from "./dashboard/counselor/CounselorCompletedAppointments";
 import CounselorPasswordRequest from "./dashboard/counselor/pages/CounselorPasswordRequest";
 
+
+// ==============================================
+// PHLEBOTOMIST DASHBOARD
+// ==============================================
+// Components
+import PhlebotomistNavbar from "./dashboard/phlebotomist/components/phlebotomist_navbar";
+import PhlebotomistSidebar from "./dashboard/phlebotomist/components/phlebotomist_sidebar";
+import PhlebotomistFooter from "./dashboard/phlebotomist/components/phlebotomist_footer";
+
+// Pages
+import PhlebotomistDashboardHome from "./dashboard/phlebotomist/PhlebotomistDashboardHome";
+import PhlebotomistAppointmentss from "./dashboard/phlebotomist/PhlebotomistAppointments";
+import PhlebotomistBookingForm from "./dashboard/phlebotomist/PhlebotomistBookingForm";
+import PhlebotomistPasswordRequest from "./dashboard/phlebotomist/pages/PhlebotomistPasswordRequest";
+
 // ==============================================
 // LAYOUT COMPONENTS
 // ==============================================
@@ -236,160 +251,191 @@ const CounselorDashboardLayout = () => {
     </ProtectedRoute>
   );
 };
+const PhlebotomistDashboardLayout = () => {
+  const { theme } = useTheme();
+  return (
+    <ProtectedRoute allowedRoles={["phlebotomist"]}>
+      <div className={`app ${theme}`}>
+        <PhlebotomistNavbar />
+        <div className="dashboard-layout">
+          <PhlebotomistSidebar />
+          <div className="dashboard-main">
+            <div className="content-wrapper">
+              <Outlet />
+            </div>
+            <PhlebotomistFooter />
+          </div>
+        </div>
+      </div>
+    </ProtectedRoute>
+  );
+};
 
 // ==============================================
 // MAIN APP COMPONENT
 // ==============================================
 
 const App = () => {
-return (
-  <BrowserRouter>
-    <ThemeProvider>
-      <ToastContainer position="top-center" autoClose={2000} />
-      <Routes>
-        {/* ==============================================
+  return (
+    <BrowserRouter>
+      <ThemeProvider>
+        <ToastContainer position="top-center" autoClose={2000} />
+        <Routes>
+          {/* ==============================================
             AUTH ROUTES
             ============================================== */}
-        <Route element={<AuthLayout />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgotpassword" element={<Forgot />} />
-        </Route>
+          <Route element={<AuthLayout />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/forgotpassword" element={<Forgot />} />
+          </Route>
 
-        {/* ==============================================
+          {/* ==============================================
             COMMON ROUTES
             ============================================== */}
-        <Route path="/unauthorized" element={<Unauthorized />} />
-        <Route path="/ai" element={<AIChatAssistant />} />{/* ✅ AI Route Added */}
-        <Route path="diet_ai_assistant" element={<AIChatAssistantForDiet />} />
-        {/* ==============================================
+          <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="/ai" element={<AIChatAssistant />} />
+          {/* ✅ AI Route Added */}
+          <Route
+            path="diet_ai_assistant"
+            element={<AIChatAssistantForDiet />}
+          />
+          {/* ==============================================
             PHYSIO DASHBOARD ROUTES
             ============================================== */}
-        <Route element={<PhysioDashboardLayout />}>
-          <Route path="/" element={<Navigate to="/profile" replace />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/user" element={<UserDetails />} />
-          <Route path="/user-details/:userId" element={<UserDetails />} />
-          <Route
-            path="/PhysiosAppointments"
-            element={<PhysiosAppointments />}
-          />
-          <Route
-            path="/PhysioPasswordRequest"
-            element={<PhysioPasswordRequest />}
-          />
-          <Route path="/PhysioPlanAssign" element={<PhysioPlanAssign />} />
-        </Route>
+          <Route element={<PhysioDashboardLayout />}>
+            <Route path="/" element={<Navigate to="/profile" replace />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/user" element={<UserDetails />} />
+            <Route path="/user-details/:userId" element={<UserDetails />} />
+            <Route
+              path="/PhysiosAppointments"
+              element={<PhysiosAppointments />}
+            />
+            <Route
+              path="/PhysioPasswordRequest"
+              element={<PhysioPasswordRequest />}
+            />
+            <Route path="/PhysioPlanAssign" element={<PhysioPlanAssign />} />
+          </Route>
 
-        {/* ==============================================
+          {/* ==============================================
             DIET DASHBOARD ROUTES
             ============================================== */}
-        <Route path="/diet" element={<DietDashboardLayout />}>
-          <Route path="diet_profile" element={<DietProfile />} />
-          <Route path="diet_assign" element={<DietAssign />} />
-          <Route path="diet_physio" element={<DietPhysioo />} />
-          <Route
-            path="DietitiansAppointments"
-            element={<DietitiansAppointments />}
-          />
-          <Route
-            path="DietPasswordRequest"
-            element={<DietPasswordRequest />}
-          />
-          <Route path="DietMealPlanAssign" element={<DietMealPlanAssign />} />
-        </Route>
+          <Route path="/diet" element={<DietDashboardLayout />}>
+            <Route path="diet_profile" element={<DietProfile />} />
+            <Route path="diet_assign" element={<DietAssign />} />
+            <Route path="diet_physio" element={<DietPhysioo />} />
+            <Route
+              path="DietitiansAppointments"
+              element={<DietitiansAppointments />}
+            />
+            <Route
+              path="DietPasswordRequest"
+              element={<DietPasswordRequest />}
+            />
+            <Route path="DietMealPlanAssign" element={<DietMealPlanAssign />} />
+          </Route>
 
-        {/* ==============================================
+          {/* ==============================================
             DOCTOR DASHBOARD ROUTES
             ============================================== */}
-        <Route path="/doctor" element={<DoctorDashboardLayout />}>
-          <Route
-            index
-            element={<Navigate to="DoctorDashboardHome" replace />}
-          />
-          <Route
-            path="DoctorsAppointments"
-            element={<DoctorsAppointments />}
-          />
-          <Route
-            path="DoctorAssignmentDashboard"
-            element={<DoctorAssignmentDashboard />}
-          />
-          <Route
-            path="DoctorPasswordRequest"
-            element={<DoctorPasswordRequest />}
-          />
-          <Route
-            path="DoctorDashboardHome"
-            element={<DoctorDashboardHome />}
-          />
-          <Route path="DoctorSlotBooking" element={<DoctorSlotBooking />} />
-        </Route>
+          <Route path="/doctor" element={<DoctorDashboardLayout />}>
+            <Route
+              index
+              element={<Navigate to="DoctorDashboardHome" replace />}
+            />
+            <Route
+              path="DoctorsAppointments"
+              element={<DoctorsAppointments />}
+            />
+            <Route
+              path="DoctorAssignmentDashboard"
+              element={<DoctorAssignmentDashboard />}
+            />
+            <Route
+              path="DoctorPasswordRequest"
+              element={<DoctorPasswordRequest />}
+            />
+            <Route
+              path="DoctorDashboardHome"
+              element={<DoctorDashboardHome />}
+            />
+            <Route path="DoctorSlotBooking" element={<DoctorSlotBooking />} />
+          </Route>
 
-        {/* ==============================================
+          {/* ==============================================
             MASTER ADMIN DASHBOARD ROUTES
             ============================================== */}
-        <Route path="/masteradmin" element={<MasterAdminDashboardLayout />}>
-          <Route index element={<MasterAdminDashboard />} />
-          <Route path="UserManagement" element={<UserManagement />} />
-          <Route path="SystemOverview" element={<SystemOverview />} />
-          <Route path="PatientJourney" element={<PatientJourney />} />
-          <Route path="AllReports" element={<AllReports />} />
-          <Route path="ActivityLogs" element={<ActivityLogs />} />
-          <Route path="SecurityControls" element={<SecurityControls />} />
-          <Route path="Services" element={<Services />} />
-          <Route path="AdminBlogSection" element={<AdminBlogSection />} />
-          <Route path="appointments" element={<AppointmentsContainer />} />
-          <Route
-            path="appointments/counselor"
-            element={<CounselorAppointments />}
-          />
-          <Route
-            path="appointments/doctor"
-            element={<DoctorAppointments />}
-          />
-          <Route
-            path="appointments/dietitian"
-            element={<DietitianAppointments />}
-          />
-          <Route
-            path="appointments/physio"
-            element={<PhysioAppointments />}
-          />
-          <Route
-            path="appointments/phlebotomist"
-            element={<PhlebotomistAppointments />}
-          />
-          <Route
-            path="AdminPasswordRequests"
-            element={<AdminPasswordRequests />}
-          />
-          <Route path="ReportBuilder" element={<ReportBuilder />} />
-          <Route path="TemplateDemo" element={<TemplateDemo />} />
-        </Route>
+          <Route path="/masteradmin" element={<MasterAdminDashboardLayout />}>
+            <Route index element={<MasterAdminDashboard />} />
+            <Route path="UserManagement" element={<UserManagement />} />
+            <Route path="SystemOverview" element={<SystemOverview />} />
+            <Route path="PatientJourney" element={<PatientJourney />} />
+            <Route path="AllReports" element={<AllReports />} />
+            <Route path="ActivityLogs" element={<ActivityLogs />} />
+            <Route path="SecurityControls" element={<SecurityControls />} />
+            <Route path="Services" element={<Services />} />
+            <Route path="AdminBlogSection" element={<AdminBlogSection />} />
+            <Route path="appointments" element={<AppointmentsContainer />} />
+            <Route
+              path="appointments/counselor"
+              element={<CounselorAppointments />}
+            />
+            <Route
+              path="appointments/doctor"
+              element={<DoctorAppointments />}
+            />
+            <Route
+              path="appointments/dietitian"
+              element={<DietitianAppointments />}
+            />
+            <Route
+              path="appointments/physio"
+              element={<PhysioAppointments />}
+            />
+            <Route
+              path="appointments/phlebotomist"
+              element={<PhlebotomistAppointments />}
+            />
+            <Route
+              path="AdminPasswordRequests"
+              element={<AdminPasswordRequests />}
+            />
+            <Route path="ReportBuilder" element={<ReportBuilder />} />
+            <Route path="TemplateDemo" element={<TemplateDemo />} />
+          </Route>
 
-        {/* ==============================================
+          {/* ==============================================
             COUNSELOR DASHBOARD ROUTES
             ============================================== */}
-        <Route path="/counselor" element={<CounselorDashboardLayout />}>
-          <Route index element={<CounselorDashboard />} />
-          <Route
-            path="CounselorsAppointments"
-            element={<CounselorsAppointments />}
-          />
-          <Route
-            path="CounselorCompletedAppointments"
-            element={<CounselorCompletedAppointments />}
-          />
-          <Route
-            path="CounselorPasswordRequest"
-            element={<CounselorPasswordRequest />}
-          />
-        </Route>
-      </Routes>
-    </ThemeProvider>
-  </BrowserRouter>
-);
-
+          <Route path="/counselor" element={<CounselorDashboardLayout />}>
+            <Route index element={<CounselorDashboard />} />
+            <Route
+              path="CounselorsAppointments"
+              element={<CounselorsAppointments />}
+            />
+            <Route
+              path="CounselorCompletedAppointments"
+              element={<CounselorCompletedAppointments />}
+            />
+            <Route
+              path="CounselorPasswordRequest"
+              element={<CounselorPasswordRequest />}
+            />
+          </Route>
+          <Route path="/phlebotomist" element={<PhlebotomistDashboardLayout />}>
+            <Route index element={<PhlebotomistDashboardHome />} />
+            <Route path="appointments" element={<PhlebotomistAppointmentss />} />
+            <Route path="booking-form" element={<PhlebotomistBookingForm />} />
+            <Route
+              path="password-request"
+              element={<PhlebotomistPasswordRequest />}
+            />
+          </Route>
+        </Routes>
+      </ThemeProvider>
+    </BrowserRouter>
+  );
 };
 
 export default App;
