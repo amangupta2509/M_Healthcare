@@ -12,6 +12,7 @@ const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [activeRole, setActiveRole] = useState("All");
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -25,6 +26,13 @@ const UserManagement = () => {
 
   useEffect(() => {
     fetchUsers();
+    
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const fetchUsers = async () => {
@@ -138,6 +146,256 @@ const UserManagement = () => {
 
   return (
     <div className={`dashboard-main ${theme}`}>
+      <style jsx>{`
+        .dashboard-main {
+          padding: 1rem;
+          min-height: 100vh;
+        }
+
+        .dashboard-main h1 {
+          margin-bottom: 1.5rem;
+          font-size: clamp(1.5rem, 4vw, 2rem);
+        }
+
+        .user-actions {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          margin-bottom: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+          .user-actions {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+          }
+        }
+
+        .search-input {
+          flex: 1;
+          min-width: 200px;
+          padding: 0.5rem;
+          border-radius: 4px;
+          border: 1px solid #ddd;
+          font-size: 1rem;
+        }
+
+        .role-filters {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          justify-content: center;
+        }
+
+        @media (min-width: 768px) {
+          .role-filters {
+            justify-content: flex-start;
+          }
+        }
+
+        .filter-btn {
+          padding: 0.5rem 1rem;
+          border: 1px solid #ddd;
+          background: transparent;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: all 0.2s;
+          font-size: 0.9rem;
+        }
+
+        .filter-btn.active {
+          background: #007bff;
+          color: white;
+          border-color: #007bff;
+        }
+
+        .btn {
+          padding: 0.5rem 1rem;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 0.9rem;
+          transition: all 0.2s;
+          white-space: nowrap;
+        }
+
+        .btn-primary {
+          background: #007bff;
+          color: white;
+        }
+
+        .btn-primary:hover {
+          background: #0056b3;
+        }
+
+        .table-responsive {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          margin-bottom: 1rem;
+        }
+
+        .user-table {
+          width: 100%;
+          border-collapse: collapse;
+          min-width: 600px;
+        }
+
+        .user-table th,
+        .user-table td {
+          padding: 0.75rem;
+          text-align: left;
+          border-bottom: 1px solid #ddd;
+        }
+
+        .user-table th {
+          background: #f8f9fa;
+          font-weight: 600;
+          position: sticky;
+          top: 0;
+          z-index: 1;
+        }
+
+        .user-table td {
+          vertical-align: middle;
+        }
+
+        .user-table td:last-child {
+          display: flex;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+        }
+
+        @media (max-width: 767px) {
+          .user-table td:last-child {
+            flex-direction: column;
+          }
+        }
+
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          padding: 1rem;
+        }
+
+        .modal-box {
+          background: white;
+          border-radius: 8px;
+          width: 100%;
+          max-width: 500px;
+          max-height: 90vh;
+          overflow-y: auto;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1rem;
+          border-bottom: 1px solid #ddd;
+        }
+
+        .modal-header h3 {
+          margin: 0;
+          font-size: 1.25rem;
+        }
+
+        .close-modal {
+          background: none;
+          border: none;
+          font-size: 1.5rem;
+          cursor: pointer;
+          padding: 0;
+          width: 30px;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .modal-body {
+          padding: 1rem;
+        }
+
+        .form-group {
+          margin-bottom: 1rem;
+        }
+
+        .form-group label {
+          display: block;
+          margin-bottom: 0.5rem;
+          font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+          width: 100%;
+          padding: 0.5rem;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          font-size: 1rem;
+          box-sizing: border-box;
+        }
+
+        .modal-actions {
+          display: flex;
+          justify-content: flex-end;
+          gap: 0.5rem;
+          padding: 1rem;
+          border-top: 1px solid #ddd;
+        }
+
+        @media (max-width: 480px) {
+          .modal-actions {
+            flex-direction: column-reverse;
+          }
+          
+          .modal-actions button {
+            width: 100%;
+          }
+        }
+
+        /* Dark theme support */
+        .dark .search-input,
+        .dark .filter-btn,
+        .dark .form-group input,
+        .dark .form-group select {
+          background: #333;
+          color: white;
+          border-color: #555;
+        }
+
+        .dark .filter-btn.active {
+          background: #0056b3;
+          border-color: #0056b3;
+        }
+
+        .dark .user-table th {
+          background: #333;
+          color: white;
+        }
+
+        .dark .modal-box {
+          background: #222;
+          color: white;
+        }
+
+        .dark .modal-header,
+        .dark .modal-actions {
+          border-color: #444;
+        }
+      `}</style>
+      
       <ToastContainer position="top-center" autoClose={3000} />
       <h1>User Management</h1>
 

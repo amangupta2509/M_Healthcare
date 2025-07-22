@@ -94,33 +94,13 @@ const BasicPage = () => {
         <h1>Master Admin Dashboard</h1>
 
         {/* Small, responsive, wrapping role cards */}
-        <div
-          className="dashboard-cards"
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "20px",
-            justifyContent: "flex-start",
-            marginBottom: "20px",
-          }}
-        >
+        <div className="dashboard-cards">
           {metrics.roleCounts.map((r, i) => (
-            <div className="card"
-              key={i}
-              style={{
-                padding: "12px",
-                minWidth: "246px",
-                maxWidth: "160px",
-                border: "1px solid #cc5500",
-                backgroundColor: "transparent",
-                textAlign: "center",
-                fontSize: "20px",
-                borderRadius: "8px",
-                flex: "0 0 auto",
-              }}
-            >
+            <div className="dashboard-card" key={i}>
               <h4 style={{ margin: 0, color: "#cc5500" }}>{r.role}</h4>
-              <p style={{ fontSize: "20px", margin: "6px 0" }}>{r.count} Registered</p>
+              <p style={{ fontSize: "20px", margin: "6px 0" }}>
+                {r.count} Registered
+              </p>
             </div>
           ))}
         </div>

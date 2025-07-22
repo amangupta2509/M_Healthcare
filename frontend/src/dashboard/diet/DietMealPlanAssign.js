@@ -1,15 +1,14 @@
-import React, { useState, useRef, useEffect } from "react";
+"use client";
+
+import { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import "../physio/assign.css";
 import "../master_admin/master_admin.css";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Eye, Pencil, Trash2 } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import html2canvas from "html2canvas";
 import logo from "../../image/logo.png";
-import signature from "../../image/signature.png";
 import { Link } from "react-router-dom";
 
 const DietMealPlanAssign = () => {
@@ -33,7 +32,7 @@ const DietMealPlanAssign = () => {
     meal: "",
     ingredients: "",
     recipe: "",
-    cookingVideo: "", // ✅ New field
+    cookingVideo: "",
   });
 
   const [editIndex, setEditIndex] = useState({ row: null, opt: null });
@@ -52,7 +51,7 @@ const DietMealPlanAssign = () => {
   const [assignedPlans, setAssignedPlans] = useState([]);
   const [focusedCaloriesIndex, setFocusedCaloriesIndex] = useState(null);
   const [focusedProteinIndex, setFocusedProteinIndex] = useState(null);
-  const [dietMode, setDietMode] = useState(""); // ✅ default hidden
+  const [dietMode, setDietMode] = useState("");
   const [aiInjected, setAiInjected] = useState(false);
 
   const location = useLocation();
@@ -88,9 +87,10 @@ const DietMealPlanAssign = () => {
     carbohydrate: "",
     fats: "",
   });
+
   const InputField = ({ label, name, value, onChange, readOnly = false }) => (
-    <div>
-      <label style={{ fontWeight: "600" }}>{label}</label>
+    <div className="input-field">
+      <label className="input-label">{label}</label>
       <input
         type="text"
         name={name}
@@ -107,8 +107,8 @@ const DietMealPlanAssign = () => {
   );
 
   const DropdownField = ({ label, name, value, onChange, options }) => (
-    <div>
-      <label style={{ fontWeight: "600" }}>{label}</label>
+    <div className="input-field">
+      <label className="input-label">{label}</label>
       <select
         name={name}
         value={value}
@@ -128,6 +128,7 @@ const DietMealPlanAssign = () => {
       </select>
     </div>
   );
+
   useEffect(() => {
     if (
       !clientData?.height ||
@@ -160,8 +161,8 @@ const DietMealPlanAssign = () => {
       bmr = (10 * weight + 6.25 * clientData.height - 5 * age - 161).toFixed(2);
     }
 
-    // TDEE — only if dropdown selected
-    const activityMultiplier = parseFloat(bmiData.tdee);
+    // TDEE
+    const activityMultiplier = Number.parseFloat(bmiData.tdee);
     let tdee = "";
     if (!isNaN(activityMultiplier)) {
       tdee = (bmr * activityMultiplier).toFixed(2);
@@ -189,6 +190,7 @@ const DietMealPlanAssign = () => {
     updated[index].enabled = !updated[index].enabled;
     setEnergyProteinDistribution(updated);
   };
+
   const handleSearch = async () => {
     if (!mrn.trim()) {
       toast.error("Please enter a valid MRN number");
@@ -205,12 +207,11 @@ const DietMealPlanAssign = () => {
         const client = data[0];
         setClientData(client);
 
-        // ✅ Fetch previously assigned meals for this MRN
         const assignedRes = await fetch(
           `http://localhost:5000/assignedMeals?mrn=${mrn}`
         );
         const assignedData = await assignedRes.json();
-        setAssignedPlans(assignedData); // ✅ Now this will populate "Previous Assigned Charts"
+        setAssignedPlans(assignedData);
 
         setTimeout(() => {
           if (bmiCardRef.current) {
@@ -247,7 +248,7 @@ const DietMealPlanAssign = () => {
       } else {
         toast.error("No client found with this MRN");
         setClientData(null);
-        setAssignedPlans([]); // ❗ Clear any old data if no client found
+        setAssignedPlans([]);
         setBmiData({});
       }
     } catch (error) {
@@ -255,11 +256,12 @@ const DietMealPlanAssign = () => {
       console.error("Search error:", error);
     }
   };
+
   useEffect(() => {
     if (!aiGeneratedText || aiInjected) return;
 
-    setDietMode("ai"); // Ensure AI mode is set
-    setAiInjected(true); // ✅ Prevent further execution of this effect
+    setDietMode("ai");
+    setAiInjected(true);
 
     const breakfastIndex = energyProteinDistribution.findIndex(
       (row) => row.mealName.toLowerCase() === "breakfast"
@@ -304,7 +306,6 @@ const DietMealPlanAssign = () => {
       toast.success("AI plan injected as Breakfast meal");
     }
 
-    // Auto-scroll to meal section
     setTimeout(() => {
       const section = document.getElementById("meal-plan-section");
       if (section) {
@@ -312,23 +313,23 @@ const DietMealPlanAssign = () => {
       }
     }, 300);
   }, [aiGeneratedText, energyProteinDistribution, aiInjected]);
+
   const handleSwitchToAI = () => {
     const hasManualData = energyProteinDistribution.length > 0;
 
     if (hasManualData) {
       const confirmSwitch = window.confirm(
-        "You’ve already entered a manual diet plan. Switching to AI mode will discard it. Continue?"
+        "You've already entered a manual diet plan. Switching to AI mode will discard it. Continue?"
       );
       if (!confirmSwitch) return;
 
-      // Clear manual data
       setSelectedMeals([]);
       setEnergyProteinDistribution([]);
     }
 
     setDietMode("ai");
   };
-  // Custom confirmation toast
+
   const ConfirmSwitchToast = ({ message, onConfirm, onCancel }) => (
     <div style={{ padding: "0.5rem" }}>
       <p style={{ marginBottom: "0.5rem" }}>{message}</p>
@@ -368,6 +369,7 @@ const DietMealPlanAssign = () => {
       </div>
     </div>
   );
+
   const handleSwitchToManual = () => {
     const hasAI = aiGeneratedText || dietMode === "ai";
 
@@ -377,11 +379,10 @@ const DietMealPlanAssign = () => {
       );
       if (!confirmSwitch) return;
 
-      // Clear AI data
       setEnergyProteinDistribution([]);
       setSelectedMeals([]);
-      setAiInjected(false); // reset flag
-      location.state = {}; // optional: clear nav state
+      setAiInjected(false);
+      location.state = {};
     }
 
     setDietMode("manual");
@@ -390,10 +391,8 @@ const DietMealPlanAssign = () => {
   const handleBmiChange = (e) => {
     let { name, value } = e.target;
 
-    // Clean number before appending unit
     const numericValue = value.replace(/[^0-9.]/g, "");
 
-    // Append correct units
     if (name === "energy" || name === "target") {
       value = `${numericValue} kcal/day`;
     } else if (
@@ -415,7 +414,7 @@ const DietMealPlanAssign = () => {
 
   const handleAddOptionClick = (index) => {
     setShowOptionPopup({ index, visible: true });
-    setNewOption({ meal: "", ingredients: "", recipe: "" });
+    setNewOption({ meal: "", ingredients: "", recipe: "", cookingVideo: "" });
     setEditIndex({ row: null, opt: null });
   };
 
@@ -462,18 +461,18 @@ const DietMealPlanAssign = () => {
     setConfirmDelete({ visible: false, rowIndex: null, optIndex: null });
     toast.info("Option deleted");
   };
+
   const isBmiFilled = () => {
     return Object.values(bmiData).every((val) => val.trim() !== "");
   };
+
   const handleCompleteAssignment = async () => {
-    // ✅ 1. Validate if BMI is filled
     const isBmiFilled = Object.values(bmiData).every(
       (val) => val.trim() !== ""
     );
     if (!isBmiFilled) {
       toast.error("Please complete the Modified BMI section.");
 
-      // 🔁 Scroll and highlight the BMI card
       if (bmiCardRef?.current) {
         bmiCardRef.current.scrollIntoView({
           behavior: "smooth",
@@ -485,7 +484,6 @@ const DietMealPlanAssign = () => {
         }, 3000);
       }
 
-      // ❗ Shake the Complete Assignment button
       const btn = document.querySelector("#complete-btn");
       if (btn) {
         btn.classList.add("shake");
@@ -495,13 +493,11 @@ const DietMealPlanAssign = () => {
       return;
     }
 
-    // ✅ 2. Check for date & meal selection
     if (!fromDateTime || !toDateTime || selectedMeals.length === 0) {
       toast.error("Please fill date range and select at least one meal");
       return;
     }
 
-    // ✅ 3. Validate date logic
     const today = new Date().toISOString().split("T")[0];
     if (fromDateTime < today) {
       toast.error("From date cannot be in the past.");
@@ -513,7 +509,6 @@ const DietMealPlanAssign = () => {
       return;
     }
 
-    // ✅ 4. Validate meal data
     const selectedMealData = energyProteinDistribution.filter((row) =>
       selectedMeals.includes(row.mealName)
     );
@@ -533,7 +528,6 @@ const DietMealPlanAssign = () => {
       return;
     }
 
-    // ✅ 5. Construct payload and save
     const payload = {
       mrn,
       fromDateTime,
@@ -554,7 +548,6 @@ const DietMealPlanAssign = () => {
       toast.error("Failed to save data.");
     }
 
-    // ✅ 6. Reset form after submission
     setFromDateTime("");
     setToDateTime("");
     setSelectedMeals([]);
@@ -575,17 +568,10 @@ const DietMealPlanAssign = () => {
     setShowBmiPopup(false);
   };
 
-  const button = document.querySelector("#complete-btn");
-  if (button) {
-    button.classList.add("shake");
-    setTimeout(() => button.classList.remove("shake"), 400);
-  }
   const generateDietPDF = () => {
     const pdf = new jsPDF("p", "mm", "a4");
-    // ✅ Add the logo (already imported)
-    pdf.addImage(logo, "PNG", 14, 10, 50, 20); // x, y, width, height
+    pdf.addImage(logo, "PNG", 14, 10, 50, 20);
 
-    // ---------- STEP 1: TITLE + CLIENT PROFILE ----------
     pdf.setFontSize(18);
     pdf.setFont("helvetica", "bold");
     pdf.text("Personalized - Meal Plan", 105, 20, { align: "center" });
@@ -609,7 +595,6 @@ const DietMealPlanAssign = () => {
     pdf.text(`Ideal Body Weight: ${bmiData?.ibw || "-"}`, col2X, y);
     y += 14;
 
-    // ---------- STEP 2: NUTRITIONAL BLUEPRINT ----------
     pdf.setFontSize(14);
     pdf.setFont("helvetica", "bold");
     pdf.text("Personalized Nutritional Blueprint", 14, y);
@@ -646,7 +631,6 @@ const DietMealPlanAssign = () => {
       headStyles: { fillColor: [204, 85, 0], textColor: "#fff" },
     });
 
-    // ---------- STEP 3: DAILY ENERGY & PROTEIN DISTRIBUTION ----------
     let distY = pdf.lastAutoTable.finalY + 10;
     pdf.setFontSize(14);
     pdf.setFont("helvetica", "bold");
@@ -670,7 +654,6 @@ const DietMealPlanAssign = () => {
       headStyles: { fillColor: [204, 85, 0], textColor: "#fff" },
     });
 
-    // ---------- STEP 4: DETAILED MEAL PLAN (TABLE FORMAT) ----------
     let optionY = pdf.lastAutoTable.finalY + 10;
     pdf.setFontSize(14);
     pdf.setFont("helvetica", "bold");
@@ -699,7 +682,6 @@ const DietMealPlanAssign = () => {
     autoTable(pdf, {
       startY: optionY + 2,
       head: [["Meal Time", "Option", "Meal", "Ingredients", "Recipe", "Video"]],
-
       body: optionTableRows,
       theme: "striped",
       styles: { fontSize: 9, cellPadding: 2, valign: "top" },
@@ -714,7 +696,6 @@ const DietMealPlanAssign = () => {
       },
     });
 
-    // ---------- STEP 5: DIETARY GUIDELINES ----------
     let guideY = pdf.lastAutoTable.finalY + 10;
 
     pdf.setFontSize(14);
@@ -735,10 +716,10 @@ const DietMealPlanAssign = () => {
       },
     });
 
-    // ---------- SAVE PDF ----------
     pdf.save(`DietPlan_${mrn}.pdf`);
     toast.success("PDF successfully generated and downloaded!");
   };
+
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
@@ -760,21 +741,559 @@ const DietMealPlanAssign = () => {
 
   return (
     <div className="dashboard-main">
+      <style jsx>{`
+        .dashboard-main {
+          padding: 1rem;
+          width: 100%;
+          overflow-x: hidden;
+        }
+
+        .card {
+          background: var(--bg-primary);
+          border: 1px solid #cc5500;
+          border-radius: 8px;
+          padding: 1rem;
+          margin-bottom: 1rem;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+          font-size: 1.25rem;
+          font-weight: bold;
+          color: var(--text-primary);
+          margin-bottom: 1rem;
+          padding-bottom: 0.5rem;
+          border-bottom: 2px solid #cc5500;
+        }
+
+        .search-containers {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.5rem 0;
+        }
+
+        .search-input {
+          flex: 1;
+          min-width: 200px;
+          padding: 0.75rem;
+          font-size: 1rem;
+          border: 1px solid #cc5500;
+          border-radius: 4px;
+          background: var(
+            --bg-primary,
+            #1e1e1e
+          ); /* fallback if var not defined */
+          color: var(--text-white, #ffffff);
+        }
+
+        .search-button {
+          padding: 0.75rem 1rem;
+          font-size: 1rem;
+          border: none;
+          border-radius: 4px;
+          background-color: #cc5500;
+          color: white;
+          cursor: pointer;
+        }
+
+        .btn.btn-primary {
+          padding: 0.75rem 1rem;
+          background-color: #cc5500;
+          color: #fff;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+
+        .btn {
+          padding: 0.75rem 1.5rem;
+          font-size: 1rem;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          white-space: nowrap;
+          min-width: fit-content;
+        }
+
+        .btn-primary {
+          background: linear-gradient(135deg, #cc5500, #e06600);
+          color: white;
+          font-weight: bold;
+        }
+
+        .btn-primary:hover {
+          background: linear-gradient(135deg, #b84d00, #cc5500);
+          transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+          background: #6c757d;
+          color: white;
+        }
+
+        .btn-secondary:hover {
+          background: #5a6268;
+        }
+
+        .bmi-card {
+          text-align: center;
+          padding: 2rem 1rem;
+        }
+
+        .bmi-highlight {
+          animation: highlight 3s ease-in-out;
+        }
+
+        @keyframes highlight {
+          0%,
+          100% {
+            background-color: var(--bg-primary);
+          }
+          50% {
+            background-color: rgba(204, 85, 0, 0.1);
+          }
+        }
+
+        .date-range-container {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 1rem;
+          margin-bottom: 1rem;
+        }
+
+        .input-field {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .input-label {
+          font-weight: 600;
+          color: var(--text-white);
+        }
+
+        .form-control {
+          padding: 0.75rem;
+          border: 1px solid #cc5500;
+          border-radius: 4px;
+          font-size: 1rem;
+          background: var(--bg-primary);
+          color: var(--text-white);
+          width: 100%;
+        }
+
+        .form-control:focus {
+          outline: none;
+          border-color: #cc5500;
+          box-shadow: 0 0 0 3px rgba(204, 85, 0, 0.1);
+        }
+
+        .diet-mode-selector {
+          display: flex;
+          gap: 1rem;
+          justify-content: center;
+          flex-wrap: wrap;
+          margin: 1rem 0;
+        }
+
+        .meal-selector {
+          margin-bottom: 1rem;
+        }
+
+        .selected-meals {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          margin-top: 0.5rem;
+        }
+
+        .selected-meal-btn {
+          position: relative;
+          padding: 0.5rem 1rem;
+          background: transparent;
+          border: 1px solid #cc5500;
+          border-radius: 20px;
+          color: var(--text-white);
+          font-weight: bold;
+        }
+
+        .remove-meal {
+          position: absolute;
+          top: -6px;
+          right: -6px;
+          background: #cc5500;
+          color: white;
+          border-radius: 50%;
+          width: 20px;
+          height: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          font-size: 12px;
+          font-weight: bold;
+        }
+
+        .meal-table-container {
+          overflow-x: auto;
+          margin: 1rem 0;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .meal-table {
+          width: 100%;
+          min-width: 800px;
+          border-collapse: collapse;
+          background: var(--bg-primary);
+        }
+
+        .meal-table th {
+          background: linear-gradient(135deg, #cc5500, #e06600);
+          color: white;
+          padding: 1rem 0.5rem;
+          text-align: center;
+          font-weight: 600;
+          position: sticky;
+          top: 0;
+          z-index: 10;
+        }
+
+        .meal-table td {
+          padding: 1rem 0.5rem;
+          text-align: center;
+          border-bottom: 1px solid #cc5500;
+          vertical-align: middle;
+        }
+
+        .meal-table tr:hover {
+          background-color: rgba(204, 85, 0, 0.05);
+        }
+
+        .meal-input {
+          width: 100%;
+          max-width: 120px;
+          padding: 0.5rem;
+          border: 2px solid #cc5500;
+          border-radius: 4px;
+          font-size: 0.9rem;
+          background: white;
+          color: #333;
+        }
+
+        .meal-input:focus {
+          outline: none;
+          border-color: #cc5500;
+          box-shadow: 0 0 0 3px rgba(204, 85, 0, 0.1);
+        }
+
+        .meal-cards {
+          display: none;
+        }
+
+        .popup-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 9999;
+          padding: 1rem;
+        }
+
+        .popup-content {
+          background: var(--bg-primary);
+          border-radius: 8px;
+          padding: 2rem;
+          width: 100%;
+          max-width: 600px;
+          max-height: 90vh;
+          overflow-y: auto;
+          position: relative;
+        }
+
+        .close-btn {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          background: #cc5500;
+          color: white;
+          border: none;
+          padding: 0.5rem 1rem;
+          border-radius: 4px;
+          cursor: pointer;
+          font-weight: bold;
+        }
+
+        .form-group {
+          margin-bottom: 1rem;
+        }
+
+        .form-group label {
+          display: block;
+          margin-bottom: 0.5rem;
+          font-weight: 600;
+        }
+
+        .form-group textarea {
+          min-height: 100px;
+          resize: vertical;
+        }
+
+        .action-buttons {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          align-items: center;
+          margin: 2rem 0;
+        }
+
+        .action-buttons .btn {
+          width: 100%;
+          max-width: 300px;
+        }
+
+        .history-cards {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+          gap: 1rem;
+          margin: 1rem 0;
+        }
+
+        .history-card {
+          border: 1px solid #cc5500;
+          border-radius: 8px;
+          padding: 1rem;
+          background: var(--bg-primary);
+        }
+
+        .shake {
+          animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+          0%,
+          100% {
+            transform: translateX(0);
+          }
+          25% {
+            transform: translateX(-5px);
+          }
+          75% {
+            transform: translateX(5px);
+          }
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+          .dashboard-main {
+            padding: 0.5rem;
+          }
+
+          .card {
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+          }
+
+          .card-header {
+            font-size: 1.1rem;
+          }
+
+          .search-containers {
+            gap: 0.75rem;
+          }
+
+          .search-input {
+            min-width: 150px;
+            padding: 0.6rem;
+            font-size: 0.9rem;
+          }
+
+          .btn {
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+          }
+
+          .date-range-container {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+          }
+
+          .diet-mode-selector {
+            flex-direction: column;
+            align-items: center;
+          }
+
+          .diet-mode-selector .btn {
+            width: 100%;
+            max-width: 250px;
+          }
+
+          .meal-table-container {
+            display: none;
+          }
+
+          .meal-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+          }
+
+          .meal-card {
+            border: 2px solid #cc5500;
+            border-radius: 8px;
+            padding: 1rem;
+            background: var(--bg-primary);
+          }
+
+          .meal-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #cc5500;
+          }
+
+          .meal-card-title {
+            font-weight: bold;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+          }
+
+          .meal-card-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+          }
+
+          .meal-card-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+          }
+
+          .popup-content {
+            padding: 1rem;
+            margin: 0.5rem;
+          }
+
+          .bmi-card {
+            padding: 1.5rem 0.5rem;
+          }
+
+          .action-buttons {
+            margin: 1rem 0;
+          }
+
+          .history-cards {
+            grid-template-columns: 1fr;
+          }
+
+          .selected-meals {
+            justify-content: center;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .dashboard-main {
+            padding: 0.25rem;
+          }
+
+          .card {
+            padding: 0.5rem;
+          }
+
+          .card-header {
+            font-size: 1rem;
+          }
+
+          .search-containers {
+            flex-direction: column;
+            align-items: stretch;
+          }
+
+          .search-button {
+            width: 50%;
+          }
+
+          .search-input {
+            padding: 0.5rem;
+            font-size: 0.85rem;
+          }
+
+          .btn {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
+          }
+
+          .popup-content {
+            padding: 0.75rem;
+            margin: 0.25rem;
+          }
+
+          .meal-card {
+            padding: 0.75rem;
+          }
+
+          .meal-card-title {
+            font-size: 1rem;
+          }
+
+          .form-control {
+            padding: 0.5rem;
+            font-size: 0.9rem;
+          }
+
+          .bmi-card {
+            padding: 1rem 0.25rem;
+          }
+        }
+
+        /* Large screen optimizations */
+        @media (min-width: 1200px) {
+          .dashboard-main {
+            max-width: 100%;
+            margin: 0 auto;
+          }
+
+          .date-range-container {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          .diet-mode-selector {
+            justify-content: center;
+          }
+
+          .meal-table {
+            min-width: 900px;
+          }
+
+          .action-buttons {
+            flex-direction: row;
+            justify-content: center;
+          }
+
+          .action-buttons .btn {
+            width: auto;
+            min-width: 200px;
+          }
+        }
+      `}</style>
+
       <ToastContainer position="top-center" autoClose={2000} />
       <h1>Diet Plan Assignment</h1>
 
       {/* Search Section */}
-      <div className="card" style={{ marginBottom: "1.5%" }}>
-        <div
-          className="form-group"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "1rem",
-            flexWrap: "wrap",
-            marginBottom: "0",
-          }}
-        >
+      <div className="card">
+        <div className="search-containers">
           <input
             type="text"
             placeholder="Enter MRN Number"
@@ -787,26 +1306,8 @@ const DietMealPlanAssign = () => {
                 handleSearch();
               }
             }}
-            style={{
-              flex: "1",
-              minWidth: "200px",
-              padding: "0.75rem",
-              fontSize: "1rem",
-              border: "1px solid #cc5500",
-              borderRadius: "4px",
-              marginBottom: "0",
-            }}
           />
-
-          <button
-            className="btn btn-primary"
-            onClick={handleSearch}
-            style={{
-              padding: "0.75rem 1.5rem",
-              fontSize: "1rem",
-              whiteSpace: "nowrap",
-            }}
-          >
+          <button className="search-button" onClick={handleSearch}>
             Search
           </button>
         </div>
@@ -814,54 +1315,40 @@ const DietMealPlanAssign = () => {
 
       {clientData && (
         <>
-          <div className="row">
-            <div className="card" ref={bmiCardRef}>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1rem",
-                  padding: "1rem",
-                  alignItems: "center",
-                  textAlign: "center",
-                }}
+          {/* BMI Card */}
+          <div className="card" ref={bmiCardRef}>
+            <div className="bmi-card">
+              <h2 className="text-primary" style={{ margin: 0 }}>
+                MODIFIED BMI
+              </h2>
+              <p
+                className="text-muted"
+                style={{ margin: "0.5rem 0", fontSize: "0.9rem" }}
               >
-                <h2 className="text-primary" style={{ margin: 0 }}>
-                  MODIFIED BMI
-                </h2>
-                <p
-                  className="text-muted"
-                  style={{ margin: 0, fontSize: "0.9rem" }}
-                >
-                  Click the button below to enter MODIFIED BMI details.
-                </p>
-                <button
-                  className="btn btn-primary"
-                  onClick={() => setShowBmiPopup(true)}
-                  style={{
-                    padding: "0.75rem 1.5rem",
-                    fontSize: "1rem",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  Enter MODIFIED BMI
-                </button>
-              </div>
+                Click the button below to enter MODIFIED BMI details.
+              </p>
+              <button
+                className="btn btn-primary"
+                onClick={() => setShowBmiPopup(true)}
+              >
+                Enter MODIFIED BMI
+              </button>
             </div>
           </div>
 
-          <div className="card mt-4">
-            {/* Always visible Date Range and Choose Diet Plan Mode */}
+          {/* Main Content Card */}
+          <div className="card">
             <h2 className="card-header">Daily Energy & Protein Distribution</h2>
+
             {(!fromDateTime || !toDateTime) && (
               <div
                 style={{
                   textAlign: "center",
                   padding: "1rem",
                   marginBottom: "1rem",
-                  backgroundColor: "var(--bg-primary)",
+                  backgroundColor: "rgba(255, 191, 0, 0.1)",
                   color: "#FF0000",
-                  border: "1px solid (255, 191, 0)",
+                  border: "1px solid #FFBF00",
                   borderRadius: "5px",
                 }}
               >
@@ -869,64 +1356,24 @@ const DietMealPlanAssign = () => {
                 date range to activate the distribution section.
               </div>
             )}
+
             {/* Date Range Pickers */}
-            <div
-              className="date-range-container"
-              style={{
-                display: "flex",
-                gap: "1rem",
-                flexWrap: "wrap",
-                marginBottom: "1rem",
-              }}
-            >
-              <div style={{ flex: "1", minWidth: "150px" }}>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "0.5rem",
-                    fontWeight: "600",
-                  }}
-                >
-                  From Date
-                </label>
+            <div className="date-range-container">
+              <div className="input-field">
+                <label className="input-label">From Date</label>
                 <input
                   type="date"
-                  placeholder="DD-MM-YYYY"
-                  style={{
-                    borderRadius: "6px",
-                    border: "1px solid #cc5500",
-                    fontSize: "1rem",
-                    width: "100%",
-                    color: "var(--text-white)",
-                    backgroundColor: "var(--bg-primary)",
-                  }}
+                  className="form-control"
                   value={fromDateTime}
                   onChange={(e) => setFromDateTime(e.target.value)}
                   min={new Date().toISOString().split("T")[0]}
                 />
               </div>
-              <div style={{ flex: "1", minWidth: "150px" }}>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "0.5rem",
-                    fontWeight: "600",
-                  }}
-                >
-                  To Date
-                </label>
+              <div className="input-field">
+                <label className="input-label">To Date</label>
                 <input
                   type="date"
-                  placeholder="DD-MM-YYYY"
-                  style={{
-                    padding: "10px",
-                    borderRadius: "6px",
-                    border: "1px solid #cc5500",
-                    fontSize: "1rem",
-                    width: "100%",
-                    backgroundColor: "var(--bg-primary)",
-                    color: "var(--text-white)",
-                  }}
+                  className="form-control"
                   value={toDateTime}
                   onChange={(e) => setToDateTime(e.target.value)}
                   min={fromDateTime || new Date().toISOString().split("T")[0]}
@@ -934,18 +1381,11 @@ const DietMealPlanAssign = () => {
               </div>
             </div>
 
-            {/* Choose Diet Plan Mode */}
+            {/* Diet Mode Selector */}
             {clientData && fromDateTime && toDateTime && (
-              <div className="card" style={{ marginBottom: "1.5rem" }}>
+              <div className="card">
                 <h2 className="card-header">Choose Diet Plan Mode</h2>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "1rem",
-                    justifyContent: "center",
-                    flexWrap: "wrap",
-                  }}
-                >
+                <div className="diet-mode-selector">
                   <button
                     className={`btn ${
                       dietMode === "manual" ? "btn-primary" : "btn-secondary"
@@ -1009,438 +1449,73 @@ const DietMealPlanAssign = () => {
               </div>
             )}
 
-            {/* Conditionally Render Content Based on Diet Plan Mode */}
-            <div className="card">
-              {dietMode === "manual" && (
-                <>
-                  {/* Show Manual Mode Content */}
-                  <h2>Manual Meal Plan</h2>
-                  <p>Select Meal Time, Calories, and Protein</p>
+            {/* Content based on diet mode */}
+            {dietMode === "manual" && (
+              <div className="card">
+                <h2>Manual Meal Plan</h2>
+                <p>Select Meal Time, Calories, and Protein</p>
 
-                  {/* Meal Time Selector and Input Fields */}
-                  <div className="meal-selector">
-                    <label
-                      style={{
-                        display: "block",
-                        marginBottom: "0.5rem",
-                        fontWeight: "600",
-                        color: "var(--text-white)", // optional if not globally styled
-                      }}
-                    >
-                      Select Meal Time
-                    </label>
+                {/* Meal Selector */}
+                <div className="meal-selector">
+                  <label className="input-label">Select Meal Time</label>
+                  <select
+                    className="form-control"
+                    style={{ maxWidth: "250px" }}
+                    onChange={(e) => {
+                      const selected = e.target.value;
+                      if (selected && !selectedMeals.includes(selected)) {
+                        setSelectedMeals((prev) => [...prev, selected]);
+                        setEnergyProteinDistribution((prev) => [
+                          ...prev,
+                          {
+                            mealName: selected,
+                            mealTime: "",
+                            calories: "",
+                            protein: "",
+                            options: [],
+                            enabled: true,
+                          },
+                        ]);
+                      }
+                    }}
+                  >
+                    <option value="">-- Choose Meal --</option>
+                    {availableMeals.map((meal) => (
+                      <option key={meal.id} value={meal.name}>
+                        {meal.name}
+                      </option>
+                    ))}
+                  </select>
 
-                    {/* Dropdown to select meal */}
-                    <select
-                      className="form-control"
-                      style={{
-                        padding: "10px",
-                        borderRadius: "6px",
-                        border: "1px solid #cc5500",
-                        fontSize: "1rem",
-                        width: "100%",
-                        maxWidth: "250px",
-                        backgroundColor: "var(--bg-primary)",
-                        color: "var(--text-white)",
-                        marginBottom: "1rem",
-                      }}
-                      onChange={(e) => {
-                        const selected = e.target.value;
-                        if (selected && !selectedMeals.includes(selected)) {
-                          setSelectedMeals((prev) => [...prev, selected]);
-
-                          setEnergyProteinDistribution((prev) => [
-                            ...prev,
-                            {
-                              mealName: selected,
-                              mealTime: "",
-                              calories: "",
-                              protein: "",
-                              options: [],
-                              enabled: true,
-                            },
-                          ]);
-                        }
-                      }}
-                    >
-                      <option value="">-- Choose Meal --</option>
-                      {availableMeals.map((meal) => (
-                        <option key={meal.id} value={meal.name}>
-                          {meal.name}
-                        </option>
-                      ))}
-                    </select>
-
-                    {/* Render selected meals as buttons with '×' to remove */}
-                    <div
-                      className="selected-meals"
-                      style={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        gap: "10px",
-                        paddingTop: "5px",
-                      }}
-                    >
-                      {selectedMeals.map((meal, index) => (
-                        <div
-                          key={index}
-                          style={{
-                            position: "relative",
-                            display: "inline-block",
+                  {/* Selected Meals */}
+                  <div className="selected-meals">
+                    {selectedMeals.map((meal, index) => (
+                      <div key={index} className="selected-meal-btn">
+                        {meal}
+                        <span
+                          className="remove-meal"
+                          onClick={() => {
+                            setSelectedMeals((prev) =>
+                              prev.filter((m) => m !== meal)
+                            );
+                            setEnergyProteinDistribution((prev) =>
+                              prev.filter((row) => row.mealName !== meal)
+                            );
                           }}
+                          title="Remove"
                         >
-                          <button
-                            className="selected-meal-btn"
-                            style={{
-                              padding: "10px 14px",
-                              fontSize: "0.95rem",
-                              backgroundColor: "transparent",
-                              border: "1px solid #cc5500",
-                              borderRadius: "10px",
-                              color: "var(--text-white)",
-                              fontWeight: "bold",
-                              cursor: "default",
-                            }}
-                            disabled
-                          >
-                            {meal}
-                          </button>
-                          <span
-                            onClick={() => {
-                              setSelectedMeals((prev) =>
-                                prev.filter((m) => m !== meal)
-                              );
-                              setEnergyProteinDistribution((prev) =>
-                                prev.filter((row) => row.mealName !== meal)
-                              );
-                            }}
-                            style={{
-                              position: "absolute",
-                              top: "-6px",
-                              right: "-6px",
-                              backgroundColor: "#cc5500",
-                              color: "#fff",
-                              borderRadius: "50%",
-                              width: "20px",
-                              height: "20px",
-                              fontSize: "14px",
-                              fontWeight: "bold",
-                              lineHeight: "20px",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              cursor: "pointer",
-                              boxShadow: "0 0 2px rgba(0, 0, 0, 0.5)",
-                              zIndex: 1,
-                            }}
-                            title="Remove"
-                          >
-                            ×
-                          </span>
-                        </div>
-                      ))}
-                    </div>
+                          ×
+                        </span>
+                      </div>
+                    ))}
                   </div>
+                </div>
 
-                  {/* Conditionally Render Table for Manual Mode */}
-                  {fromDateTime && toDateTime && selectedMeals.length > 0 && (
+                {/* Meal Table/Cards */}
+                {fromDateTime && toDateTime && selectedMeals.length > 0 && (
+                  <>
+                    {/* Desktop Table */}
                     <div className="meal-table-container">
-                      <style jsx>{`
-                        .meal-table-container {
-                          margin-top: 1rem;
-                          overflow-x: auto;
-                          border-radius: 4px;
-                          overflow: hidden;
-                          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-                          background-color: var(--bg-primary);
-                          -webkit-overflow-scrolling: touch;
-                        }
-
-                        .meal-table {
-                          width: 100%;
-                          border-collapse: collapse;
-                          min-width: 700px;
-                          font-family: -apple-system, BlinkMacSystemFont,
-                            "Segoe UI", Roboto, sans-serif;
-                        }
-
-                        .meal-table thead {
-                          background: linear-gradient(135deg, #cc5500, #cc5500);
-                          color: "var(--text-white)";
-                        }
-
-                        .meal-table th {
-                          padding: 12px 8px;
-                          font-weight: 600;
-                          font-size: 0.9rem;
-                          text-align: center;
-                          border: none;
-                          position: sticky;
-                          top: 0;
-                          z-index: 10;
-                          white-space: nowrap;
-                        }
-
-                        .meal-table tbody tr {
-                          transition: background-color 0.2s ease;
-                          border: 1px solid #cc5500;
-                        }
-
-                        .meal-table td {
-                          padding: 12px 8px;
-                          text-align: center;
-                          vertical-align: middle;
-                          border: none;
-                        }
-
-                        .meal-name {
-                          font-weight: bold;
-                          color: "var(--text-white)";
-                          font-size: 0.95rem;
-                          word-break: break-word;
-                        }
-
-                        .meal-input {
-                          width: 100%;
-                          min-width: 80px;
-                          max-width: 120px;
-                          padding: 8px;
-                          border-radius: 6px;
-                          border: 2px solid #cc5500;
-                          font-size: 0.9rem;
-                          background-color: #fff;
-                          color: #333;
-                          transition: border-color 0.2s ease,
-                            box-shadow 0.2s ease;
-                          box-sizing: border-box;
-                        }
-
-                        .meal-input:focus {
-                          outline: none;
-                          border-color: #cc5500;
-                          box-shadow: 0 0 0 3px rgba(204, 85, 0, 0.1);
-                        }
-
-                        .meal-input::placeholder {
-                          color: #888;
-                          font-size: 0.85rem;
-                        }
-
-                        .meal-btn {
-                          padding: 8px 12px;
-                          border-radius: 6px;
-                          background: linear-gradient(135deg, #cc5500, #e06600);
-                          border: none;
-                          color: white;
-                          font-weight: bold;
-                          font-size: 0.85rem;
-                          cursor: pointer;
-                          white-space: nowrap;
-                          transition: all 0.2s ease;
-                          box-shadow: 0 2px 4px rgba(204, 85, 0, 0.2);
-                          min-width: fit-content;
-                        }
-
-                        .meal-btn:hover {
-                          background: linear-gradient(135deg, #b84d00, #cc5500);
-                          transform: translateY(-1px);
-                          box-shadow: 0 4px 8px rgba(204, 85, 0, 0.3);
-                        }
-
-                        .meal-btn:disabled {
-                          background: #ccc;
-                          color: #666;
-                          cursor: not-allowed;
-                          transform: none;
-                          box-shadow: none;
-                        }
-
-                        .options-cell {
-                          vertical-align: top;
-                          padding-top: 12px;
-                        }
-
-                        /* Card Layout for Mobile */
-                        .meal-cards {
-                          display: none;
-                          flex-direction: column;
-                          gap: 1rem;
-                          padding: 1rem;
-                        }
-
-                        .meal-card {
-                          background: var(--bg-primary);
-                          border: 2px solid #cc5500;
-                          border-radius: 8px;
-                          padding: 1rem;
-                          box-shadow: 0 2px 4px rgba(204, 85, 0, 0.1);
-                        }
-
-                        .meal-card-header {
-                          display: flex;
-                          justify-content: space-between;
-                          align-items: center;
-                          margin-bottom: 1rem;
-                          padding-bottom: 0.5rem;
-                          border-bottom: 1px solid #e9ecef;
-                        }
-
-                        .meal-card-title {
-                          font-weight: bold;
-                          color: var(--text-primary);
-                          font-size: 1.1rem;
-                        }
-
-                        .meal-card-grid {
-                          display: grid;
-                          grid-template-columns: 1fr 1fr;
-                          gap: 1rem;
-                          margin-bottom: 1rem;
-                        }
-
-                        .meal-card-field {
-                          display: flex;
-                          flex-direction: column;
-                          gap: 0.25rem;
-                        }
-
-                        .meal-card-label {
-                          font-weight: 600;
-                          color: #cc5500;
-                          font-size: 0.85rem;
-                        }
-
-                        .meal-card-input {
-                          padding: 8px;
-                          border-radius: 6px;
-                          border: 2px solid #cc5500;
-                          font-size: 0.9rem;
-                          background-color: #fff;
-                          color: #333;
-                          transition: border-color 0.2s ease,
-                            box-shadow 0.2s ease;
-                        }
-
-                        .meal-card-input:focus {
-                          outline: none;
-                          border-color: #cc5500;
-                          box-shadow: 0 0 0 3px rgba(204, 85, 0, 0.1);
-                        }
-
-                        .meal-card-actions {
-                          display: flex;
-                          gap: 0.5rem;
-                          justify-content: flex-end;
-                        }
-
-                        .meal-card-btn {
-                          padding: 8px 16px;
-                          border-radius: 6px;
-                          background: linear-gradient(135deg, #cc5500, #e06600);
-                          border: none;
-                          color: white;
-                          font-weight: bold;
-                          font-size: 0.85rem;
-                          cursor: pointer;
-                          transition: all 0.2s ease;
-                          box-shadow: 0 2px 4px rgba(204, 85, 0, 0.2);
-                        }
-
-                        .meal-card-btn:hover {
-                          background: linear-gradient(135deg, #b84d00, #cc5500);
-                          transform: translateY(-1px);
-                          box-shadow: 0 4px 8px rgba(204, 85, 0, 0.3);
-                        }
-
-                        .meal-card-btn:disabled {
-                          background: #ccc;
-                          color: #666;
-                          cursor: not-allowed;
-                          transform: none;
-                          box-shadow: none;
-                        }
-
-                        /* Mobile First Responsive Design */
-                        @media (max-width: 768px) {
-                          .meal-table-container {
-                            margin: 1rem 0;
-                            border-radius: 8px;
-                            box-shadow: none;
-                            background: transparent;
-                            overflow: visible;
-                          }
-
-                          .meal-table {
-                            display: none;
-                          }
-
-                          .meal-cards {
-                            display: flex;
-                          }
-
-                          .meal-card-grid {
-                            grid-template-columns: 1fr;
-                            gap: 0.75rem;
-                          }
-
-                          .meal-card {
-                            padding: 0.75rem;
-                          }
-
-                          .meal-card-actions {
-                            flex-direction: column;
-                            gap: 0.5rem;
-                          }
-
-                          .meal-card-btn {
-                            width: 100%;
-                          }
-                        }
-
-                        @media (max-width: 480px) {
-                          .meal-cards {
-                            padding: 0.5rem;
-                            gap: 0.75rem;
-                          }
-
-                          .meal-card {
-                            padding: 0.5rem;
-                          }
-
-                          .meal-card-title {
-                            font-size: 1rem;
-                          }
-
-                          .meal-card-input {
-                            padding: 6px;
-                            font-size: 0.85rem;
-                          }
-
-                          .meal-card-btn {
-                            padding: 6px 12px;
-                            font-size: 0.8rem;
-                          }
-                        }
-
-                        /* Large screens optimization */
-                        @media (min-width: 1200px) {
-                          .meal-table {
-                            min-width: 800px;
-                          }
-
-                          .meal-input {
-                            max-width: 140px;
-                            padding: 10px;
-                          }
-
-                          .meal-btn {
-                            padding: 10px 16px;
-                            font-size: 0.9rem;
-                          }
-                        }
-                      `}</style>
-
-                      {/* Table Layout for Desktop */}
                       <table className="meal-table">
                         <thead>
                           <tr>
@@ -1454,14 +1529,12 @@ const DietMealPlanAssign = () => {
                         </thead>
                         <tbody>
                           {energyProteinDistribution.map((row, index) => (
-                            <tr
-                              key={index}
-                              className={!row.enabled ? "disabled-meal" : ""}
-                            >
+                            <tr key={index}>
                               <td>
-                                <div className="meal-name">{row.mealName}</div>
+                                <div style={{ fontWeight: "bold" }}>
+                                  {row.mealName}
+                                </div>
                               </td>
-
                               <td>
                                 <input
                                   type="time"
@@ -1476,7 +1549,6 @@ const DietMealPlanAssign = () => {
                                   }
                                 />
                               </td>
-
                               <td>
                                 <input
                                   className="meal-input"
@@ -1499,7 +1571,6 @@ const DietMealPlanAssign = () => {
                                   onBlur={() => setFocusedCaloriesIndex(null)}
                                 />
                               </td>
-
                               <td>
                                 <input
                                   className="meal-input"
@@ -1521,19 +1592,25 @@ const DietMealPlanAssign = () => {
                                   onBlur={() => setFocusedProteinIndex(null)}
                                 />
                               </td>
-
                               <td>
                                 <button
-                                  className="meal-btn"
+                                  className="btn btn-primary"
+                                  style={{
+                                    padding: "0.5rem 1rem",
+                                    fontSize: "0.85rem",
+                                  }}
                                   onClick={() => handleAddOptionClick(index)}
                                 >
                                   Add
                                 </button>
                               </td>
-
-                              <td className="options-cell">
+                              <td>
                                 <button
-                                  className="meal-btn"
+                                  className="btn btn-primary"
+                                  style={{
+                                    padding: "0.5rem 1rem",
+                                    fontSize: "0.85rem",
+                                  }}
                                   onClick={() =>
                                     setShowOptionGridPopup({
                                       visible: true,
@@ -1549,122 +1626,119 @@ const DietMealPlanAssign = () => {
                           ))}
                         </tbody>
                       </table>
+                    </div>
 
-                      {/* Card Layout for Mobile */}
-                      <div className="meal-cards">
-                        {energyProteinDistribution.map((row, index) => (
-                          <div key={index} className="meal-card">
-                            <div className="meal-card-header">
-                              <div className="meal-card-title">
-                                {row.mealName}
-                              </div>
-                            </div>
-
-                            <div className="meal-card-grid">
-                              <div className="meal-card-field">
-                                <label className="meal-card-label">Time</label>
-                                <input
-                                  type="time"
-                                  className="meal-card-input"
-                                  value={row.mealTime}
-                                  onChange={(e) =>
-                                    handleEnergyProteinChange(
-                                      index,
-                                      "mealTime",
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                              </div>
-
-                              <div className="meal-card-field">
-                                <label className="meal-card-label">
-                                  Calories
-                                </label>
-                                <input
-                                  className="meal-card-input"
-                                  type={
-                                    focusedCaloriesIndex === index ||
-                                    row.calories
-                                      ? "number"
-                                      : "text"
-                                  }
-                                  placeholder="kcal"
-                                  value={row.calories}
-                                  onChange={(e) =>
-                                    handleEnergyProteinChange(
-                                      index,
-                                      "calories",
-                                      e.target.value
-                                    )
-                                  }
-                                  onFocus={() => setFocusedCaloriesIndex(index)}
-                                  onBlur={() => setFocusedCaloriesIndex(null)}
-                                />
-                              </div>
-
-                              <div className="meal-card-field">
-                                <label className="meal-card-label">
-                                  Protein
-                                </label>
-                                <input
-                                  className="meal-card-input"
-                                  type={
-                                    focusedProteinIndex === index || row.protein
-                                      ? "number"
-                                      : "text"
-                                  }
-                                  placeholder="g"
-                                  value={row.protein}
-                                  onChange={(e) =>
-                                    handleEnergyProteinChange(
-                                      index,
-                                      "protein",
-                                      e.target.value
-                                    )
-                                  }
-                                  onFocus={() => setFocusedProteinIndex(index)}
-                                  onBlur={() => setFocusedProteinIndex(null)}
-                                />
-                              </div>
-                            </div>
-
-                            <div className="meal-card-actions">
-                              <button
-                                className="meal-card-btn"
-                                onClick={() => handleAddOptionClick(index)}
-                              >
-                                Add Option
-                              </button>
-                              <button
-                                className="meal-card-btn"
-                                onClick={() =>
-                                  setShowOptionGridPopup({
-                                    visible: true,
-                                    index,
-                                  })
-                                }
-                                disabled={row.options.length === 0}
-                              >
-                                View Options ({row.options.length})
-                              </button>
+                    {/* Mobile Cards */}
+                    <div className="meal-cards">
+                      {energyProteinDistribution.map((row, index) => (
+                        <div key={index} className="meal-card">
+                          <div className="meal-card-header">
+                            <div className="meal-card-title">
+                              {row.mealName}
                             </div>
                           </div>
-                        ))}
-                      </div>
+
+                          <div className="meal-card-grid">
+                            <div className="input-field">
+                              <label className="input-label">Time</label>
+                              <input
+                                type="time"
+                                className="form-control"
+                                value={row.mealTime}
+                                onChange={(e) =>
+                                  handleEnergyProteinChange(
+                                    index,
+                                    "mealTime",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+
+                            <div className="input-field">
+                              <label className="input-label">Calories</label>
+                              <input
+                                className="form-control"
+                                type={
+                                  focusedCaloriesIndex === index || row.calories
+                                    ? "number"
+                                    : "text"
+                                }
+                                placeholder="kcal"
+                                value={row.calories}
+                                onChange={(e) =>
+                                  handleEnergyProteinChange(
+                                    index,
+                                    "calories",
+                                    e.target.value
+                                  )
+                                }
+                                onFocus={() => setFocusedCaloriesIndex(index)}
+                                onBlur={() => setFocusedCaloriesIndex(null)}
+                              />
+                            </div>
+
+                            <div className="input-field">
+                              <label className="input-label">Protein</label>
+                              <input
+                                className="form-control"
+                                type={
+                                  focusedProteinIndex === index || row.protein
+                                    ? "number"
+                                    : "text"
+                                }
+                                placeholder="g"
+                                value={row.protein}
+                                onChange={(e) =>
+                                  handleEnergyProteinChange(
+                                    index,
+                                    "protein",
+                                    e.target.value
+                                  )
+                                }
+                                onFocus={() => setFocusedProteinIndex(index)}
+                                onBlur={() => setFocusedProteinIndex(null)}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="meal-card-actions">
+                            <button
+                              className="btn btn-primary"
+                              onClick={() => handleAddOptionClick(index)}
+                            >
+                              Add Option
+                            </button>
+                            <button
+                              className="btn btn-primary"
+                              onClick={() =>
+                                setShowOptionGridPopup({
+                                  visible: true,
+                                  index,
+                                })
+                              }
+                              disabled={row.options.length === 0}
+                            >
+                              View Options ({row.options.length})
+                            </button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  )}
-                </>
-              )}
+                  </>
+                )}
+              </div>
+            )}
 
-              {dietMode === "ai" && (
-                <div id="meal-plan-section">
-                  <h2 className="card-header">AI-Generated Meal Plan</h2>
-                  <p>
-                    This section will automatically generate a personalized plan
-                    based on the client's profile and goals.
-                  </p>
+            {dietMode === "ai" && (
+              <div id="meal-plan-section" className="card">
+                <h2 className="card-header">AI-Generated Meal Plan</h2>
+                <p>
+                  This section will automatically generate a personalized plan
+                  based on the client's profile and goals.
+                </p>
 
+                <div style={{ textAlign: "center", margin: "1rem 0" }}>
                   <Link
                     to="/diet_ai_assistant"
                     state={{
@@ -1682,50 +1756,34 @@ const DietMealPlanAssign = () => {
                   >
                     Launch AI Diet Assistant 🤖
                   </Link>
-
-                  {aiGeneratedText && (
-                    <div>
-                      <h2 className="card-header">AI Generated Diet Plan ✨</h2>
-                      <div
-                        style={{
-                          whiteSpace: "pre-wrap",
-                          padding: "1rem",
-                          color: "#331a00",
-                          maxHeight: "300px", // adjust height as needed
-                          overflowY: "auto",
-                          border: "1px solid #cc5500",
-                          borderRadius: "6px",
-                          scrollbarWidth: "thin", // for Firefox
-                          scrollbarColor: "#cc5500 transparent",
-                        }}
-                        className="custom-scroll"
-                      >
-                        {aiGeneratedText}
-                      </div>
-                    </div>
-                  )}
-                  {/* 📝 Placeholder: show AI-generated content once logic is ready */}
-                  <div style={{ marginTop: "1.5rem" }}>
-                    <p>
-                      <strong>Coming Soon:</strong> AI-generated diet chart will
-                      be displayed here with meal options, calories, and protein
-                      breakdown.
-                    </p>
-                  </div>
                 </div>
-              )}
-            </div>
 
-            {/* Buttons for PDF and Assignment */}
-            <div style={{ padding: "1rem", textAlign: "center" }}>
+                {aiGeneratedText && (
+                  <div>
+                    <h2 className="card-header">AI Generated Diet Plan ✨</h2>
+                    <div
+                      style={{
+                        whiteSpace: "pre-wrap",
+                        padding: "1rem",
+                        color: "#331a00",
+                        maxHeight: "300px",
+                        overflowY: "auto",
+                        border: "1px solid #cc5500",
+                        borderRadius: "6px",
+                        backgroundColor: "rgba(204, 85, 0, 0.05)",
+                      }}
+                    >
+                      {aiGeneratedText}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="action-buttons">
               <button
                 className="btn btn-primary"
-                style={{
-                  fontSize: "1rem",
-                  marginBottom: "1rem",
-                  width: "100%",
-                  maxWidth: "300px",
-                }}
                 onClick={generateDietPDF}
                 disabled={
                   !fromDateTime ||
@@ -1737,31 +1795,17 @@ const DietMealPlanAssign = () => {
                 Generate PDF
               </button>
 
-              <div>
-                <button
-                  id="complete-btn"
-                  className="btn btn-primary"
-                  style={{
-                    fontSize: "1rem",
-                    marginBottom: "1rem",
-                    width: "100%",
-                    maxWidth: "300px",
-                  }}
-                  onClick={handleCompleteAssignment}
-                >
-                  Complete Assignment
-                </button>
-              </div>
+              <button
+                id="complete-btn"
+                className="btn btn-primary"
+                onClick={handleCompleteAssignment}
+              >
+                Complete Assignment
+              </button>
 
               {pdfUrl && (
                 <button
                   className="btn btn-secondary"
-                  style={{
-                    padding: "10px 20px",
-                    fontSize: "0.9rem",
-                    width: "100%",
-                    maxWidth: "250px",
-                  }}
                   onClick={() => setShowPdfViewer(true)}
                 >
                   View Generated PDF
@@ -1770,8 +1814,9 @@ const DietMealPlanAssign = () => {
             </div>
           </div>
 
+          {/* Previous Charts Button */}
           {clientData && (
-            <div className="text-end mt-3">
+            <div style={{ textAlign: "center", margin: "1rem 0" }}>
               <button
                 className="btn btn-primary"
                 onClick={() => setShowHistoryCards(true)}
@@ -1782,35 +1827,35 @@ const DietMealPlanAssign = () => {
           )}
         </>
       )}
+
+      {/* History Cards */}
       {showHistoryCards && (
-        <div className="card mt-3 p-3">
-          <h4 className="text-center mb-3">Previous Plans</h4>
-          <div className="row">
+        <div className="card">
+          <h4 style={{ textAlign: "center", marginBottom: "1rem" }}>
+            Previous Plans
+          </h4>
+          <div className="history-cards">
             {assignedPlans.map((plan, idx) => (
-              <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={idx}>
-                <div className="card h-100">
-                  <div className="card-body">
-                    <p>
-                      <strong>From:</strong> {plan.fromDateTime}
-                    </p>
-                    <p>
-                      <strong>To:</strong> {plan.toDateTime}
-                    </p>
-                  </div>
-                  <div className="card-footer text-end">
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => setSelectedPlanToView(plan)}
-                    >
-                      View
-                    </button>
-                  </div>
+              <div className="history-card" key={idx}>
+                <p>
+                  <strong>From:</strong> {plan.fromDateTime}
+                </p>
+                <p>
+                  <strong>To:</strong> {plan.toDateTime}
+                </p>
+                <div style={{ textAlign: "right", marginTop: "1rem" }}>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => setSelectedPlanToView(plan)}
+                  >
+                    View
+                  </button>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="text-end">
+          <div style={{ textAlign: "center", marginTop: "1rem" }}>
             <button
               className="btn btn-primary"
               onClick={() => setShowHistoryCards(false)}
@@ -1820,57 +1865,24 @@ const DietMealPlanAssign = () => {
           </div>
         </div>
       )}
+
+      {/* All Popups */}
       {selectedPlanToView && (
         <div
           className="popup-overlay"
           onClick={() => setSelectedPlanToView(null)}
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "var(--bg-primary)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 9999,
-          }}
         >
-          <div
-            className="popup-content card"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              padding: "2rem",
-              borderRadius: "8px",
-              width: "90%",
-              maxWidth: "800px",
-              maxHeight: "90vh",
-              overflowY: "auto",
-              position: "relative",
-            }}
-          >
+          <div className="popup-content" onClick={(e) => e.stopPropagation()}>
             <button
-              className="btn btn-primary"
+              className="close-btn"
               onClick={() => setSelectedPlanToView(null)}
-              style={{
-                position: "absolute",
-                top: "10px",
-                right: "10px",
-                background: "#cc5500",
-                border: "none",
-                padding: "0.5rem 1rem",
-                fontWeight: "bold",
-                borderRadius: "4px",
-                color: "white",
-                cursor: "pointer",
-              }}
             >
               Close
             </button>
 
-            <h3 className="text-center mb-3">Assigned Diet Plan</h3>
+            <h3 style={{ textAlign: "center", marginBottom: "1rem" }}>
+              Assigned Diet Plan
+            </h3>
             <p>
               <strong>From:</strong> {selectedPlanToView.fromDateTime}
             </p>
@@ -1883,12 +1895,11 @@ const DietMealPlanAssign = () => {
             </p>
 
             {selectedPlanToView.meals.map((meal, idx) => (
-              <div key={idx} className="card mb-3 p-3">
-                <h5 className="text-primary">
+              <div key={idx} className="card" style={{ marginBottom: "1rem" }}>
+                <h5 style={{ color: "#cc5500" }}>
                   {meal.meal || meal.mealName} (
                   {meal.mealTime || "Not specified"})
                 </h5>
-
                 <p>
                   <strong>Calories:</strong> {meal.calories} kcal
                 </p>
@@ -1912,53 +1923,15 @@ const DietMealPlanAssign = () => {
         </div>
       )}
 
-      {/* View Popup */}
       {showViewPopup.visible && (
         <div
           className="popup-overlay"
           onClick={() => setShowViewPopup({ visible: false, option: null })}
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "var(--bg-primary)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 9999,
-          }}
         >
-          <div
-            className="popup-content card"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              padding: "2rem",
-              borderRadius: "8px",
-              width: "90%",
-              maxWidth: "600px",
-              maxHeight: "90vh",
-              overflowY: "auto",
-              position: "relative",
-            }}
-          >
+          <div className="popup-content" onClick={(e) => e.stopPropagation()}>
             <button
               className="close-btn"
               onClick={() => setShowViewPopup({ visible: false, option: null })}
-              style={{
-                position: "absolute",
-                top: "10px",
-                right: "10px",
-                background: "#cc5500",
-                border: "none",
-                padding: "0.5rem 1rem",
-                fontWeight: "bold",
-                borderRadius: "4px",
-                color: "white",
-                cursor: "pointer",
-              }}
             >
               Close
             </button>
@@ -1986,48 +1959,29 @@ const DietMealPlanAssign = () => {
         </div>
       )}
 
-      {/* Confirm Delete Popup */}
       {confirmDelete.visible && (
         <div
           className="popup-overlay"
           onClick={() =>
             setConfirmDelete({ visible: false, rowIndex: null, optIndex: null })
           }
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "var(--bg-primary)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 9999,
-          }}
         >
-          <div
-            className="popup-content card"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              padding: "2rem",
-              borderRadius: "8px",
-              width: "90%",
-              maxWidth: "500px",
-              maxHeight: "90vh",
-              overflowY: "auto",
-              position: "relative",
-            }}
-          >
+          <div className="popup-content" onClick={(e) => e.stopPropagation()}>
             <h3>Confirm Deletion</h3>
             <p>Are you sure you want to delete this meal option?</p>
-            <div className="d-flex justify-content-end gap-3 mt-3">
-              <button className="btn btn-danger" onClick={confirmDeleteOption}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "1rem",
+                marginTop: "1rem",
+              }}
+            >
+              <button className="btn btn-primary" onClick={confirmDeleteOption}>
                 Yes, Delete
               </button>
               <button
-                className="btn btn-outline-secondary"
+                className="btn btn-secondary"
                 onClick={() =>
                   setConfirmDelete({
                     visible: false,
@@ -2042,58 +1996,24 @@ const DietMealPlanAssign = () => {
           </div>
         </div>
       )}
+
       {showBmiPopup && (
-        <div
-          className="popup-overlay"
-          onClick={() => setShowBmiPopup(false)}
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            // margin:"1rem",
-            height: "100vh",
-            backgroundColor: "rgba(0,0,0,0.5)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 9999,
-          }}
-        >
+        <div className="popup-overlay" onClick={() => setShowBmiPopup(false)}>
           <div
-            className="popup-content card"
+            className="popup-content"
             onClick={(e) => e.stopPropagation()}
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              padding: "2rem",
-              borderRadius: "8px",
-              width: "90%",
-              maxWidth: "750px",
-              maxHeight: "90vh",
-              overflowY: "auto",
-              position: "relative",
-            }}
+            style={{ maxWidth: "750px" }}
           >
             <button
               className="close-btn"
               onClick={() => setShowBmiPopup(false)}
-              style={{
-                position: "absolute",
-                top: "10px",
-                right: "10px",
-                background: "#cc5500",
-                border: "none",
-                padding: "0.5rem 1rem",
-                fontWeight: "bold",
-                borderRadius: "4px",
-                color: "white",
-                cursor: "pointer",
-              }}
             >
               ✕
             </button>
 
-            <h2 className="text-center mb-3">Modified BMI</h2>
+            <h2 style={{ textAlign: "center", marginBottom: "1rem" }}>
+              Modified BMI
+            </h2>
 
             <form
               onSubmit={(e) => {
@@ -2106,7 +2026,6 @@ const DietMealPlanAssign = () => {
                 gap: "1rem 2rem",
               }}
             >
-              {/* GROUP 1: Client Info */}
               <div
                 style={{
                   gridColumn: "1 / -1",
@@ -2139,7 +2058,6 @@ const DietMealPlanAssign = () => {
                 readOnly
               />
 
-              {/* GROUP 2: Auto Calculated & Dropdowns */}
               <div
                 style={{
                   gridColumn: "1 / -1",
@@ -2151,7 +2069,6 @@ const DietMealPlanAssign = () => {
                 ⚙️ Auto Calculated & Dropdowns
               </div>
 
-              {/* BMI */}
               <div>
                 <label style={{ fontWeight: "600" }}>
                   BMI{" "}
@@ -2174,7 +2091,6 @@ const DietMealPlanAssign = () => {
                 />
               </div>
 
-              {/* BMI Category */}
               <DropdownField
                 label="BMI Category"
                 name="bmiCategory"
@@ -2183,7 +2099,6 @@ const DietMealPlanAssign = () => {
                 options={["Underweight", "Normal", "Overweight", "Obese"]}
               />
 
-              {/* BMR */}
               <div>
                 <label style={{ fontWeight: "600" }}>
                   BMR{" "}
@@ -2206,7 +2121,6 @@ const DietMealPlanAssign = () => {
                 />
               </div>
 
-              {/* TDEE Activity Level */}
               <DropdownField
                 label="Activity Level"
                 name="tdee"
@@ -2221,7 +2135,6 @@ const DietMealPlanAssign = () => {
                 ]}
               />
 
-              {/* TDEE */}
               <div>
                 <label style={{ fontWeight: "600" }}>
                   TDEE{" "}
@@ -2248,7 +2161,6 @@ const DietMealPlanAssign = () => {
                 />
               </div>
 
-              {/* GROUP 3: Manual Inputs */}
               <div
                 style={{
                   gridColumn: "1 / -1",
@@ -2307,61 +2219,22 @@ const DietMealPlanAssign = () => {
         </div>
       )}
 
-      {/* Add/Edit Option Popup (already implemented earlier) */}
       {showOptionPopup.visible && (
         <div
           className="popup-overlay"
           onClick={() => setShowOptionPopup({ index: null, visible: false })}
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "var(--bg-primary)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 9999,
-          }}
         >
-          <div
-            className="popup-content card"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              padding: "2rem",
-              borderRadius: "8px",
-              width: "90%",
-              maxWidth: "600px",
-              margin: "5%",
-              maxHeight: "90vh",
-              overflowY: "auto",
-              position: "relative",
-            }}
-          >
+          <div className="popup-content" onClick={(e) => e.stopPropagation()}>
             <button
               className="close-btn"
               onClick={() =>
                 setShowOptionPopup({ index: null, visible: false })
               }
-              style={{
-                position: "absolute",
-                top: "10px",
-                right: "10px",
-                background: "#cc5500",
-                border: "none",
-
-                padding: "0.5rem 1rem",
-                fontWeight: "bold",
-                borderRadius: "4px",
-                color: "white",
-                cursor: "pointer",
-              }}
             >
-              close
+              Close
             </button>
             <h2>{editIndex.row !== null ? "Edit" : "Add"} Meal Option</h2>
+
             <div className="form-group">
               <label>Meal</label>
               <input
@@ -2397,6 +2270,7 @@ const DietMealPlanAssign = () => {
                 required
               />
             </div>
+
             <div className="form-group">
               <label>Cooking Video Link</label>
               <input
@@ -2411,164 +2285,116 @@ const DietMealPlanAssign = () => {
               />
             </div>
 
-            <center>
+            <div style={{ textAlign: "center", marginTop: "1rem" }}>
               <button
-                className="btn btn-primary mt-2"
+                className="btn btn-primary"
                 type="button"
                 onClick={handleOptionSubmit}
               >
                 Submit
               </button>
-            </center>
+            </div>
           </div>
         </div>
       )}
+
       {showOptionGridPopup.visible && (
         <div
           className="popup-overlay"
           onClick={() =>
             setShowOptionGridPopup({ visible: false, index: null })
           }
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "var(--bg-primary)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 9998,
-          }}
         >
           <div
-            className="popup-content card"
+            className="popup-content"
             onClick={(e) => e.stopPropagation()}
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              padding: "2rem",
-              borderRadius: "8px",
-              width: "90%",
-              maxWidth: "980px",
-              maxHeight: "90vh",
-              overflowY: "auto",
-            }}
+            style={{ maxWidth: "980px" }}
           >
-            <center>
-              <h3 className="mb-3 text-center">Assigned Meal Options</h3>
-            </center>
-            <div className="row">
+            <h3 style={{ textAlign: "center", marginBottom: "1rem" }}>
+              Assigned Meal Options
+            </h3>
+
+            <div className="history-cards">
               {energyProteinDistribution[showOptionGridPopup.index].options.map(
                 (opt, i) => (
-                  <div className="col-md-4 mb-4" key={i}>
-                    <div className="card h-100">
-                      <div className="card-body">
-                        <h5 className="card-title text-primary">
-                          Option {i + 1}
-                        </h5>
-                        <p
-                          className="card-text"
-                          style={{
-                            wordBreak: "break-word", // ✅ force break long words
-                            whiteSpace: "normal", // ✅ allow wrapping
-                            overflowWrap: "break-word",
-                            lineHeight: "1.4",
-                            maxWidth: "100%", // ✅ keep it inside the card
-                          }}
-                        >
-                          <strong>Meal:</strong> {opt.meal || "N/A"}
-                        </p>
-                      </div>
-                      <div className="card-footer d-flex justify-content-between">
-                        <button
-                          className="btn btn-primary"
-                          onClick={() => handleOptionView(opt)}
-                        >
-                          View
-                        </button>
-                        <button
-                          className="btn btn-primary"
-                          onClick={() =>
-                            handleOptionEdit(showOptionGridPopup.index, i)
-                          }
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="btn btn-primary"
-                          onClick={() =>
-                            handleDeleteConfirm(showOptionGridPopup.index, i)
-                          }
-                        >
-                          Delete
-                        </button>
-                      </div>
+                  <div className="history-card" key={i}>
+                    <h5 style={{ color: "#cc5500", marginBottom: "0.5rem" }}>
+                      Option {i + 1}
+                    </h5>
+                    <p
+                      style={{
+                        wordBreak: "break-word",
+                        whiteSpace: "normal",
+                        overflowWrap: "break-word",
+                        lineHeight: "1.4",
+                      }}
+                    >
+                      <strong>Meal:</strong> {opt.meal || "N/A"}
+                    </p>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        gap: "0.5rem",
+                        marginTop: "1rem",
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      <button
+                        className="btn btn-primary"
+                        style={{ flex: "1", minWidth: "60px" }}
+                        onClick={() => handleOptionView(opt)}
+                      >
+                        View
+                      </button>
+                      <button
+                        className="btn btn-primary"
+                        style={{ flex: "1", minWidth: "60px" }}
+                        onClick={() =>
+                          handleOptionEdit(showOptionGridPopup.index, i)
+                        }
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="btn btn-primary"
+                        style={{ flex: "1", minWidth: "60px" }}
+                        onClick={() =>
+                          handleDeleteConfirm(showOptionGridPopup.index, i)
+                        }
+                      >
+                        Delete
+                      </button>
                     </div>
                   </div>
                 )
               )}
             </div>
-            <div className="text-end mt-3">
-              <center>
-                <button
-                  className="btn btn-primary"
-                  onClick={() =>
-                    setShowOptionGridPopup({ visible: false, index: null })
-                  }
-                >
-                  Close
-                </button>
-              </center>
+
+            <div style={{ textAlign: "center", marginTop: "1rem" }}>
+              <button
+                className="btn btn-primary"
+                onClick={() =>
+                  setShowOptionGridPopup({ visible: false, index: null })
+                }
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
       )}
 
       {showPdfViewer && pdfUrl && (
-        <div
-          className="popup-overlay"
-          onClick={() => setShowPdfViewer(false)}
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "var(--bg-primary)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 9999,
-          }}
-        >
+        <div className="popup-overlay" onClick={() => setShowPdfViewer(false)}>
           <div
-            className="popup-content card"
+            className="popup-content"
             onClick={(e) => e.stopPropagation()}
-            style={{
-              backgroundColor: "var(--bg-primary)",
-              padding: "1rem",
-              borderRadius: "8px",
-              width: "90%",
-              maxWidth: "800px",
-              maxHeight: "90vh",
-              overflowY: "auto",
-            }}
+            style={{ maxWidth: "800px" }}
           >
             <button
+              className="close-btn"
               onClick={() => setShowPdfViewer(false)}
-              style={{
-                position: "absolute",
-                top: "10px",
-                right: "10px",
-                background: "#cc5500",
-                border: "none",
-                padding: "0.5rem 1rem",
-                fontWeight: "bold",
-                borderRadius: "4px",
-                color: "white",
-                cursor: "pointer",
-              }}
             >
               Close
             </button>
@@ -2591,9 +2417,9 @@ const DietMealPlanAssign = () => {
           left: "-9999px",
           top: 0,
           backgroundColor: "var(--bg-primary)",
-          olor: "black",
+          color: "black",
           padding: "2rem",
-          width: "794px", // exact A4 width @ 96dpi
+          width: "794px",
           fontSize: "14px",
           lineHeight: "1.6",
           zIndex: -1,
@@ -2660,7 +2486,6 @@ const DietMealPlanAssign = () => {
             {energyProteinDistribution.map((meal, idx) => (
               <tr key={idx}>
                 <td>{meal.meal || meal.mealName}</td>
-
                 <td>{meal.calories}</td>
                 <td>{meal.protein}</td>
                 <td>

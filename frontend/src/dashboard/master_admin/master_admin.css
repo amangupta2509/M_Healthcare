@@ -1044,4 +1044,39 @@ form.card .d-flex .btn-secondary:hover {
   border: 2px solid transparent;
   background-clip: content-box;
 }
+.dashboard-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.dashboard-card {
+  padding: 12px;
+  min-width: 240px;
+  max-width: 100%;
+  border: 1px solid #cc5500;
+  background-color: transparent;
+  text-align: center;
+  font-size: 20px;
+  border-radius: 8px;
+  flex: 0 0 auto;
+  flex-basis: calc(33.33% - 20px); /* 3 cards per row by default */
+}
+
+/* Medium screens (tablets) - 2 cards per row */
+@media (max-width: 768px) {
+  .dashboard-card {
+    flex-basis: calc(50% - 20px);
+  }
+}
+
+/* Small screens (mobile) - 1 card per row */
+@media (max-width: 480px) {
+  .dashboard-card {
+    flex-basis: 100%;
+  }
+}
+
 

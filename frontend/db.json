@@ -1615,29 +1615,29 @@
       "id": "05fd"
     }
   ],
- "mealclients": [
-  {
-    "mrn": "MRN123",
-    "name": "Aman Gupta",
-    "age": 38,
-    "gender": "Male",
-    "height": 163,
-    "weight": 62,
-    "bmi": "23.3",
-    "goal": "Mild Deficit - 1700 kcal/day",
-    "modifiedBMI": {
-      "bmiCategory": "Normal",
-      "bmr": "1288 kcal/day",
-      "tdee": "2000 kcal/day",
-      "target": "1700 kcal/day",
-      "energy": "1700 kcal/day",
-      "protein": "110g",
-      "carbohydrate": "190g",
-      "fats": "30g"
-    },
-    "id": "521d"
-  }
-],
+  "mealclients": [
+    {
+      "mrn": "MRN123",
+      "name": "Aman Gupta",
+      "age": 38,
+      "gender": "Male",
+      "height": 163,
+      "weight": 62,
+      "bmi": "23.3",
+      "goal": "Mild Deficit - 1700 kcal/day",
+      "modifiedBMI": {
+        "bmiCategory": "Normal",
+        "bmr": "1288 kcal/day",
+        "tdee": "2000 kcal/day",
+        "target": "1700 kcal/day",
+        "energy": "1700 kcal/day",
+        "protein": "110g",
+        "carbohydrate": "190g",
+        "fats": "30g"
+      },
+      "id": "521d"
+    }
+  ],
   "assignedMeals": [
     {
       "id": "1",
@@ -1681,6 +1681,41 @@
               "meal": "Grilled Chicken Salad",
               "ingredients": "Chicken, Lettuce, Cucumber, Olive oil",
               "recipe": "Grill chicken and toss with veggies and dressing"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3574",
+      "mrn": "MRN123",
+      "fromDateTime": "2025-07-22",
+      "toDateTime": "2025-07-23",
+      "bmiData": {
+        "bmiCategory": "Normal",
+        "bmr": "1453.75",
+        "tdee": "1.37",
+        "target": "1 kcal/day",
+        "energy": "1 kcal/day",
+        "protein": "1 g",
+        "carbohydrate": "1 g",
+        "fats": "1 g",
+        "bmi": "23.34",
+        "calculatedTdee": "1991.64"
+      },
+      "meals": [
+        {
+          "mealName": "Breakfast",
+          "mealTime": "08:00",
+          "calories": "400",
+          "protein": "20",
+          "enabled": true,
+          "options": [
+            {
+              "meal": "AI Suggested",
+              "ingredients": "-",
+              "recipe": "🍽️ Hello! I'm your AI diet assistant. How can I help you with a meal plan today?",
+              "cookingVideo": ""
             }
           ]
         }
@@ -2145,5 +2180,6 @@
         }
       ]
     }
-  ],"phleboBookingsData": []
+  ],
+  "phleboBookingsData": []
 }
