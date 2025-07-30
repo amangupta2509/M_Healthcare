@@ -1,6 +1,7 @@
+// babel.config.js
 module.exports = {
   presets: [
-    '@babel/preset-env',  // Transpile modern JavaScript (e.g., import/export) to compatible JS
-    '@babel/preset-react'  // Transpile JSX (React code)
-  ]
+    '@babel/preset-env',  // Transpile modern JS features (ES6+)
+    '@babel/preset-react',  // Transform JSX into JavaScript
+  ],
 };

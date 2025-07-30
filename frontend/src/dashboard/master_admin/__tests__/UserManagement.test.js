@@ -1,76 +1,83 @@
-// Import necessary testing libraries
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import UserManagement from '../UserManagement';  // Adjust the import path if necessary
-import axios from 'axios';
+import React from "react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import UserManagement from "../UserManagement"; // Adjust the import path if necessary
+import { MemoryRouter } from "react-router-dom";
+import axios from "axios";  // Import axios
 
-// Mock axios to simulate API requests
-jest.mock('axios');
+// Mock useTheme to return a mock theme value
+jest.mock("../../../ThemeProvider", () => ({
+  useTheme: () => ({ theme: "light" }), // Mock theme value (e.g., 'light' or 'dark')
+}));
 
-// Test for rendering the component
-test('renders UserManagement page', () => {
-  render(<UserManagement />);
-  // Check if a key element is present, such as the title
-  const userManagementTitle = screen.getByText(/User Management/i);
-  expect(userManagementTitle).toBeInTheDocument();
-});
+// Mock axios to prevent real API calls during tests
+jest.mock("axios");
 
-// Test for adding a user
-test('can add a new user', async () => {
-  render(<UserManagement />);
-
-  // Get input field and submit button
-  const usernameInput = screen.getByPlaceholderText(/Enter username/i);
-  const submitButton = screen.getByText(/Add User/i);
-
-  // Simulate user input
-  fireEvent.change(usernameInput, { target: { value: 'newuser' } });
-  fireEvent.click(submitButton);
-
-  // Verify the user was added to the list (replace with your actual UI behavior)
-  await waitFor(() => screen.getByText(/newuser/i));
-  expect(screen.getByText(/newuser/i)).toBeInTheDocument();
-});
-
-// Test for fetching user data from an API
-test('loads and displays user data from API', async () => {
-  // Mock the API response
-  axios.get.mockResolvedValueOnce({
-    data: [{ id: 1, username: 'testuser' }]
+describe("UserManagement - Admin Actions", () => {
+  it("renders user management header", () => {
+    render(
+      <MemoryRouter>
+        <UserManagement />
+      </MemoryRouter>
+    );
+    expect(screen.getByText(/User Management/i)).toBeInTheDocument();
   });
 
-  render(<UserManagement />);
-
-  // Check if the user data is displayed on the page
-  const user = await screen.findByText(/testuser/i);
-  expect(user).toBeInTheDocument();
-});
-
-// Test for error handling in API request
-test('shows error message if API request fails', async () => {
-  // Mock API failure
-  axios.get.mockRejectedValueOnce(new Error('Failed to fetch users'));
-
-  render(<UserManagement />);
-
-  // Check if error message is displayed
-  const errorMessage = await screen.findByText(/Failed to load users/i);
-  expect(errorMessage).toBeInTheDocument();
-});
-
-// Test for user deletion (if applicable in your component)
-test('can delete a user', async () => {
-  // Assuming the component has a delete button
-  render(<UserManagement />);
-  
-  // Mock an API response for users
-  axios.get.mockResolvedValueOnce({
-    data: [{ id: 1, username: 'testuser' }]
+  it("renders add user form", () => {
+    render(
+      <MemoryRouter>
+        <UserManagement />
+      </MemoryRouter>
+    );
+    expect(screen.getByLabelText(/Username/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
+    expect(screen.getByText(/Add User/i)).toBeInTheDocument();
   });
 
-  // Simulate delete button click (replace with actual delete action in your component)
-  const deleteButton = screen.getByText(/Delete/i); // Adjust if the button text is different
-  fireEvent.click(deleteButton);
+  it("can add a new user", async () => {
+    const usernameInput = screen.getByLabelText(/Username/i);
+    const emailInput = screen.getByLabelText(/Email/i);
+    const submitButton = screen.getByText(/Add User/i);
 
-  // Verify that the user has been deleted (adjust based on how your UI behaves)
-  await waitFor(() => expect(screen.queryByText(/testuser/i)).not.toBeInTheDocument());
+    fireEvent.change(usernameInput, { target: { value: "newuser" } });
+    fireEvent.change(emailInput, { target: { value: "newuser@example.com" } });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/newuser/i)).toBeInTheDocument();
+      expect(screen.getByText(/newuser@example.com/i)).toBeInTheDocument();
+    });
+  });
+
+  it("can delete a user", async () => {
+    axios.get.mockResolvedValueOnce({
+      data: [{ id: 1, username: "testuser", email: "testuser@example.com" }],
+    });
+
+    render(
+      <MemoryRouter>
+        <UserManagement />
+      </MemoryRouter>
+    );
+
+    // Wait for the user to be rendered
+    await screen.findByText("testuser");
+
+    const deleteButton = screen.getByRole("button", { name: /Delete/i });
+    fireEvent.click(deleteButton);
+
+    await screen.findByText("User deleted successfully");
+  });
+
+  it("displays error message if API fails to fetch users", async () => {
+    axios.get.mockRejectedValueOnce(new Error("Failed to load users"));
+
+    render(
+      <MemoryRouter>
+        <UserManagement />
+      </MemoryRouter>
+    );
+
+    const errorMessage = await screen.findByText(/Failed to load users/i);
+    expect(errorMessage).toBeInTheDocument();
+  });
 });
