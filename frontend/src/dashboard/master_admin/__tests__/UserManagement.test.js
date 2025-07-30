@@ -34,6 +34,17 @@ describe("UserManagement - Admin Actions", () => {
   });
 
   it("can add a new user", async () => {
+    // Mock API response
+    axios.post.mockResolvedValueOnce({
+      data: { id: 1, username: "newuser", email: "newuser@example.com" }
+    });
+
+    render(
+      <MemoryRouter>
+        <UserManagement />
+      </MemoryRouter>
+    );
+
     const usernameInput = screen.getByLabelText(/Username/i);
     const emailInput = screen.getByLabelText(/Email/i);
     const submitButton = screen.getByText(/Add User/i);
@@ -49,9 +60,11 @@ describe("UserManagement - Admin Actions", () => {
   });
 
   it("can delete a user", async () => {
+    // Mock API response
     axios.get.mockResolvedValueOnce({
       data: [{ id: 1, username: "testuser", email: "testuser@example.com" }],
     });
+    axios.delete.mockResolvedValueOnce({});
 
     render(
       <MemoryRouter>
@@ -59,7 +72,7 @@ describe("UserManagement - Admin Actions", () => {
       </MemoryRouter>
     );
 
-    // Wait for the user to be rendered
+    // Wait for the u   ser to be rendered
     await screen.findByText("testuser");
 
     const deleteButton = screen.getByRole("button", { name: /Delete/i });
