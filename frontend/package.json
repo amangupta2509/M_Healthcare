@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
-    "@testing-library/user-event": "^13.5.0",
     "chart.js": "^4.4.9",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.1",
@@ -51,22 +50,23 @@
   "devDependencies": {
     "@babel/preset-env": "^7.28.0",
     "@babel/preset-react": "^7.27.1",
-    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/jest-dom": "^6.6.4",
     "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "autoprefixer": "^10.4.21",
     "axios": "^1.11.0",
     "babel-jest": "^30.0.5",
-    "jest": "^27.5.1",
+    "jest": "^30.0.5",
     "json-server": "^1.0.0-beta.3",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.6"
   },
   "jest": {
     "transformIgnorePatterns": [
-      "/node_modules/(?!axios)/" 
+      "/node_modules/(?!axios)/"
     ],
     "transform": {
-      "^.+\\.(js|jsx)$": "babel-jest"  
+      "^.+\\.(js|jsx)$": "babel-jest"
     }
   }
 }
