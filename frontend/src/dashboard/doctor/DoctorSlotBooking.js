@@ -382,63 +382,145 @@ const DoctorSlotBooking = () => {
               <h2 className="card-title">
                 <span className="title-icon">📋</span>
                 Saved Slot Periods
+                <span className="slot-count">({allSlotData.length})</span>
               </h2>
             </div>
 
-            <div className="table-container">
-              <table className="summary-table">
-                <thead>
-                  <tr>
-                    <th>SI_NO</th>
-                    <th>Date Range</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {allSlotData.map((entry, index) => (
-                    <tr key={index}>
-                      <td data-label="SI_NO" className="serial-cell">
-                        <span className="serial-number">{index + 1}</span>
-                      </td>
-                      <td data-label="Date Range" className="date-range-cell">
-                        <div className="date-range">
-                          <span className="date-from">{entry.startDate}</span>
-                          <span className="date-separator">to</span>
-                          <span className="date-to">{entry.endDate}</span>
-                        </div>
-                      </td>
-                      <td data-label="Actions" className="actions-cell">
-                        <div className="action-buttons">
-                          <button
-                            className="btn btn-info btn-small"
-                            onClick={() => setViewSlotIndex(index)}
-                            title="View details"
-                          >
-                            <span className="btn-icon">👁️</span>
-                            View
-                          </button>
-                          <button
-                            className="btn btn-warning btn-small"
-                            onClick={() => handleEdit(index)}
-                            title="Edit slot"
-                          >
-                            <span className="btn-icon">✏️</span>
-                            Edit
-                          </button>
-                          <button
-                            className="btn btn-danger btn-small"
-                            onClick={() => confirmDelete(entry.id)}
-                            title="Delete slot"
-                          >
-                            <span className="btn-icon">🗑️</span>
-                            Delete
-                          </button>
-                        </div>
-                      </td>
+            {/* Desktop Table View */}
+            <div className="desktop-table-view">
+              <div className="table-container">
+                <table className="summary-table">
+                  <thead>
+                    <tr>
+                      <th>SI_NO</th>
+                      <th>Date Range</th>
+                      <th>Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {allSlotData.map((entry, index) => (
+                      <tr key={index} className="summary-row">
+                        <td className="serial-cell">
+                          <span className="serial-number">{index + 1}</span>
+                        </td>
+                        <td className="date-range-cell">
+                          <div className="date-range-container">
+                            <div className="date-range">
+                              <span className="date-badge date-from">{entry.startDate}</span>
+                              <span className="date-separator">→</span>
+                              <span className="date-badge date-to">{entry.endDate}</span>
+                            </div>
+                            <div className="date-duration">
+                              {(() => {
+                                const start = new Date(entry.startDate)
+                                const end = new Date(entry.endDate)
+                                const diffTime = Math.abs(end - start)
+                                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1
+                                return `${diffDays} day${diffDays > 1 ? "s" : ""}`
+                              })()}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="actions-cell">
+                          <div className="action-buttons">
+                            <button
+                              className="btn btn-info btn-small"
+                              onClick={() => setViewSlotIndex(index)}
+                              title="View details"
+                            >
+                              <span className="btn-icon">👁️</span>
+                              <span className="btn-text">View</span>
+                            </button>
+                            <button
+                              className="btn btn-warning btn-small"
+                              onClick={() => handleEdit(index)}
+                              title="Edit slot"
+                            >
+                              <span className="btn-icon">✏️</span>
+                              <span className="btn-text">Edit</span>
+                            </button>
+                            <button
+                              className="btn btn-danger btn-small"
+                              onClick={() => confirmDelete(entry.id)}
+                              title="Delete slot"
+                            >
+                              <span className="btn-icon">🗑️</span>
+                              <span className="btn-text">Delete</span>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="mobile-card-view">
+              <div className="slot-cards-container">
+                {allSlotData.map((entry, index) => (
+                  <div key={index} className="slot-card">
+                    <div className="slot-card-header">
+                      <div className="slot-number">
+                        <span className="slot-number-badge">#{index + 1}</span>
+                      </div>
+                      <div className="slot-duration">
+                        {(() => {
+                          const start = new Date(entry.startDate)
+                          const end = new Date(entry.endDate)
+                          const diffTime = Math.abs(end - start)
+                          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1
+                          return `${diffDays} day${diffDays > 1 ? "s" : ""}`
+                        })()}
+                      </div>
+                    </div>
+
+                    <div className="slot-card-content">
+                      <div className="date-info">
+                        <div className="date-label">Period</div>
+                        <div className="mobile-date-range">
+                          <div className="mobile-date-item">
+                            <span className="mobile-date-label">From:</span>
+                            <span className="mobile-date-value">{entry.startDate}</span>
+                          </div>
+                          <div className="mobile-date-item">
+                            <span className="mobile-date-label">To:</span>
+                            <span className="mobile-date-value">{entry.endDate}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="slot-card-actions">
+                      <button
+                        className="btn btn-info btn-mobile"
+                        onClick={() => setViewSlotIndex(index)}
+                        title="View details"
+                      >
+                        <span className="btn-icon">👁️</span>
+                        View
+                      </button>
+                      <button
+                        className="btn btn-warning btn-mobile"
+                        onClick={() => handleEdit(index)}
+                        title="Edit slot"
+                      >
+                        <span className="btn-icon">✏️</span>
+                        Edit
+                      </button>
+                      <button
+                        className="btn btn-danger btn-mobile"
+                        onClick={() => confirmDelete(entry.id)}
+                        title="Delete slot"
+                      >
+                        <span className="btn-icon">🗑️</span>
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
