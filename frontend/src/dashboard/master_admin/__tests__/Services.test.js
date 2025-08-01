@@ -1,13 +1,13 @@
 import { render, screen, fireEvent, act } from "@testing-library/react";
-
+import { ThemeProvider } from "../../../ThemeProvider"; // Adjust path if needed
+import Services from "../Services";  // Correct default import for Services
 import {
-  Services,
   ServiceForm,
   ServiceCard,
   ServiceModal,
   toastUtils,
   formUtils,
-} from "../Services"; // Adjust the path as needed
+} from "../Services"; // Adjust the path if needed
 import userEvent from "@testing-library/user-event";
 
 // Mocking fetch and other dependencies
@@ -25,16 +25,26 @@ global.fetch = jest.fn(() =>
   })
 );
 
+// Mocking submit to avoid the not implemented error
+beforeAll(() => {
+  HTMLFormElement.prototype.submit = jest.fn();
+});
+
 describe("Unit tests for Services Component", () => {
   test("renders Services component and fetches data", async () => {
-    render(<Services apiUrl="http://localhost:8080/api/services" />);
+    render(
+      <ThemeProvider>
+        <Services apiUrl="http://localhost:8080/api/services" />
+      </ThemeProvider>
+    );
 
     // Check for loading state or services list
     expect(screen.getByText("Manage Services")).toBeInTheDocument();
-    expect(await screen.findByText("Test Service")).toBeInTheDocument();
+    await screen.findByText("Test Service");  // Ensure the service appears
+    expect(screen.getByText("Test Service")).toBeInTheDocument();
   });
 
-  test("renders ServiceForm component", () => {
+  test("renders ServiceForm component", async () => {
     const formData = {
       title: "Test Title",
       subtitle: "Test Subtitle",
@@ -65,15 +75,14 @@ describe("Unit tests for Services Component", () => {
     // Ensure all fields are rendered
     expect(screen.getByLabelText("Title")).toHaveValue(formData.title);
     expect(screen.getByLabelText("Sub-Title")).toHaveValue(formData.subtitle);
-    expect(screen.getByLabelText("Description")).toHaveValue(
-      formData.description
-    );
+    expect(screen.getByLabelText("Description")).toHaveValue(formData.description);
 
     // Check for the button and click it
     const submitButton = screen.getByRole("button", {
       name: /submit service/i,
     });
-    fireEvent.click(submitButton);
+
+    await userEvent.click(submitButton);
 
     expect(mockOnSubmit).toHaveBeenCalledTimes(1);
   });
@@ -104,12 +113,12 @@ describe("Unit tests for Services Component", () => {
 
     // Trigger edit action
     const editButton = screen.getByRole("button", { name: /edit/i });
-    fireEvent.click(editButton);
+    userEvent.click(editButton);
     expect(mockEdit).toHaveBeenCalledWith(service);
 
     // Trigger delete action
     const deleteButton = screen.getByRole("button", { name: /delete/i });
-    fireEvent.click(deleteButton);
+    userEvent.click(deleteButton);
     expect(mockDelete).toHaveBeenCalledWith(service.id);
   });
 
@@ -173,5 +182,16 @@ describe("Unit tests for Services Component", () => {
     );
 
     expect(updatedData.title).toBe("New Service");
+  });
+
+  test("formUtils handleInputChange updates feature data", () => {
+    const initialData = formUtils.getInitialFormData();
+    const updatedData = formUtils.handleInputChange(
+      initialData,
+      "features",
+      ["New Feature"]
+    );
+
+    expect(updatedData.features).toEqual(["New Feature"]);
   });
 });

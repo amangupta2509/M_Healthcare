@@ -2003,13 +2003,11 @@
       "to": "2025-07-18",
       "assignedDates": [
         {
-          "date": "2025-07-11",
+          "date": "2025-08-06",
           "exercises": [
             {
               "type": "Yoga",
-              "name": "Diaphragmatic breathing",
-              "breaths": "12",
-              "rounds": "12"
+              "name": "Diaphragmatic breathing"
             }
           ]
         }
@@ -2175,6 +2173,24 @@
               "name": "Diaphragmatic breathing",
               "breaths": "12",
               "rounds": "12"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "e4a6",
+      "mrn": "MRN123",
+      "batchId": 1754027938961,
+      "from": "2025-08-02",
+      "to": "2025-08-08",
+      "assignedDates": [
+        {
+          "date": "2025-08-06",
+          "exercises": [
+            {
+              "type": "Yoga",
+              "name": "Diaphragmatic breathing"
             }
           ]
         }

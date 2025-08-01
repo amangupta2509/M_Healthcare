@@ -1,5 +1,7 @@
-// jest-dom adds custom jest matchers for asserting on DOM nodes.
-// allows you to do things like:
-// expect(element).toHaveTextContent(/react/i)
-// learn more: https://github.com/testing-library/jest-dom
+// Importing the necessary extensions for jest-dom
 import '@testing-library/jest-dom';
+
+// Mocking the submit method globally to avoid errors during tests
+beforeAll(() => {
+  HTMLFormElement.prototype.submit = jest.fn();  // Mocking the form submit method
+});
