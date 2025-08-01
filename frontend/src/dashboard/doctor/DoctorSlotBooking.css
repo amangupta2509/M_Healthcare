@@ -68,7 +68,8 @@
   background-color: var(--bg-secondary);
   color: var(--text-primary);
   padding: 0.75rem;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", sans-serif;
   line-height: 1.5;
 }
 
@@ -1166,7 +1167,11 @@
 }
 
 .summary-table th {
-  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--bg-secondary) 0%,
+    var(--bg-tertiary) 100%
+  );
   color: var(--text-primary);
   font-weight: 600;
   padding: 1rem 0.75rem;
@@ -1220,7 +1225,11 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--primary-hover) 100%
+  );
   color: var(--text-inverse);
   border-radius: 50%;
   font-size: 0.85rem;
@@ -1350,7 +1359,11 @@
   }
 
   .slot-card-header {
-    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--bg-secondary) 0%,
+      var(--bg-tertiary) 100%
+    );
     padding: 0.75rem 1rem;
     display: flex;
     justify-content: space-between;
@@ -1359,7 +1372,11 @@
   }
 
   .slot-number-badge {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--primary-color) 0%,
+      var(--primary-hover) 100%
+    );
     color: var(--text-inverse);
     padding: 0.3rem 0.6rem;
     border-radius: var(--border-radius);
@@ -1540,4 +1557,325 @@
 .empty-state-text {
   font-size: 1.1rem;
   font-weight: 500;
+}
+
+/* Toast Notifications - Theme Compatible */
+.Toastify__toast-container {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", sans-serif;
+}
+
+/* Light Theme Toast Styles */
+.Toastify__toast {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--border-radius-lg) !important;
+  box-shadow: var(--shadow-lg) !important;
+  font-size: 0.9rem !important;
+  min-height: 64px !important;
+}
+
+.Toastify__toast--success {
+  background-color: var(--bg-primary) !important;
+  border-left: 4px solid var(--success-color) !important;
+}
+
+.Toastify__toast--error {
+  background-color: var(--bg-primary) !important;
+  border-left: 4px solid var(--danger-color) !important;
+}
+
+.Toastify__toast--info {
+  background-color: var(--bg-primary) !important;
+  border-left: 4px solid var(--info-color) !important;
+}
+
+.Toastify__toast--warning {
+  background-color: var(--bg-primary) !important;
+  border-left: 4px solid var(--warning-color) !important;
+}
+
+/* Toast Body */
+.Toastify__toast-body {
+  color: var(--text-primary) !important;
+  padding: 0.75rem !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+}
+
+/* Toast Icons */
+.Toastify__toast-icon {
+  width: 20px !important;
+  height: 20px !important;
+  margin-right: 0.75rem !important;
+}
+
+.Toastify__toast-icon svg {
+  fill: var(--text-primary) !important;
+}
+
+.Toastify__toast--success .Toastify__toast-icon svg {
+  fill: var(--success-color) !important;
+}
+
+.Toastify__toast--error .Toastify__toast-icon svg {
+  fill: var(--danger-color) !important;
+}
+
+.Toastify__toast--info .Toastify__toast-icon svg {
+  fill: var(--info-color) !important;
+}
+
+.Toastify__toast--warning .Toastify__toast-icon svg {
+  fill: var(--warning-color) !important;
+}
+
+/* Close Button */
+.Toastify__close-button {
+  color: var(--text-secondary) !important;
+  opacity: 0.7 !important;
+  align-self: flex-start !important;
+  margin-top: 0.25rem !important;
+}
+
+.Toastify__close-button:hover {
+  color: var(--text-primary) !important;
+  opacity: 1 !important;
+}
+
+/* Progress Bar */
+.Toastify__progress-bar {
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--primary-hover)
+  ) !important;
+  height: 3px !important;
+}
+
+.Toastify__progress-bar--success {
+  background: linear-gradient(90deg, var(--success-color), #1e7e34) !important;
+}
+
+.Toastify__progress-bar--error {
+  background: linear-gradient(90deg, var(--danger-color), #c82333) !important;
+}
+
+.Toastify__progress-bar--info {
+  background: linear-gradient(90deg, var(--info-color), #138496) !important;
+}
+
+.Toastify__progress-bar--warning {
+  background: linear-gradient(90deg, var(--warning-color), #e0a800) !important;
+}
+
+/* Dark Theme Specific Overrides */
+.dark .Toastify__toast,
+[data-theme="dark"] .Toastify__toast {
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.dark .Toastify__toast-body,
+[data-theme="dark"] .Toastify__toast-body {
+  color: var(--text-primary) !important;
+}
+
+.dark .Toastify__close-button,
+[data-theme="dark"] .Toastify__close-button {
+  color: var(--text-secondary) !important;
+}
+
+.dark .Toastify__close-button:hover,
+[data-theme="dark"] .Toastify__close-button:hover {
+  color: var(--text-primary) !important;
+}
+
+/* Custom Delete Confirmation Toast Styling */
+.delete-confirmation {
+  text-align: center;
+  padding: 1rem;
+  color: var(--text-primary) !important;
+}
+
+.delete-confirmation p {
+  margin-bottom: 1rem;
+  color: var(--text-primary) !important;
+  font-weight: 500;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.delete-confirmation strong {
+  color: var(--danger-color);
+  font-weight: 600;
+}
+
+.delete-confirmation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.delete-confirmation-buttons .btn {
+  min-width: 80px;
+  font-size: 0.8rem;
+  padding: 0.5rem 1rem;
+}
+
+/* Toast Animation Improvements */
+.Toastify__toast {
+  animation-duration: 0.3s !important;
+}
+
+.Toastify__bounce-enter--top-center {
+  animation-name: toastSlideInDown !important;
+}
+
+.Toastify__bounce-exit--top-center {
+  animation-name: toastSlideOutUp !important;
+}
+
+@keyframes toastSlideInDown {
+  from {
+    opacity: 0;
+    transform: translate3d(-50%, -100%, 0) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0) scale(1);
+  }
+}
+
+@keyframes toastSlideOutUp {
+  from {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(-50%, -100%, 0) scale(0.95);
+  }
+}
+
+/* Mobile Toast Adjustments */
+@media (max-width: 768px) {
+  .Toastify__toast-container {
+    width: calc(100vw - 2rem) !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    margin: 0 !important;
+  }
+
+  .Toastify__toast {
+    margin-bottom: 0.5rem !important;
+    border-radius: var(--border-radius) !important;
+    min-height: 56px !important;
+  }
+
+  .Toastify__toast-body {
+    padding: 0.6rem !important;
+    font-size: 0.85rem !important;
+  }
+
+  .delete-confirmation {
+    padding: 0.75rem;
+  }
+
+  .delete-confirmation p {
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .delete-confirmation-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .delete-confirmation-buttons .btn {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
+/* High Contrast Mode for Toasts */
+@media (prefers-contrast: high) {
+  .Toastify__toast {
+    border-width: 2px !important;
+  }
+
+  .Toastify__toast--success {
+    border-left-width: 6px !important;
+  }
+
+  .Toastify__toast--error {
+    border-left-width: 6px !important;
+  }
+
+  .Toastify__toast--info {
+    border-left-width: 6px !important;
+  }
+
+  .Toastify__toast--warning {
+    border-left-width: 6px !important;
+  }
+}
+
+/* Reduced Motion for Toasts */
+@media (prefers-reduced-motion: reduce) {
+  .Toastify__toast {
+    animation-duration: 0.01ms !important;
+  }
+
+  @keyframes toastSlideInDown {
+    from,
+    to {
+      opacity: 1;
+      transform: translate3d(-50%, 0, 0) scale(1);
+    }
+  }
+
+  @keyframes toastSlideOutUp {
+    from,
+    to {
+      opacity: 0;
+      transform: translate3d(-50%, 0, 0) scale(1);
+    }
+  }
+}
+
+/* Toast Container Positioning */
+.Toastify__toast-container--top-center {
+  top: 2rem !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: auto !important;
+  max-width: 500px !important;
+}
+
+/* Success Toast Enhancements */
+.Toastify__toast--success .Toastify__toast-body::before {
+  content: "✅ ";
+  margin-right: 0.5rem;
+}
+
+/* Error Toast Enhancements */
+.Toastify__toast--error .Toastify__toast-body::before {
+  content: "❌ ";
+  margin-right: 0.5rem;
+}
+
+/* Info Toast Enhancements */
+.Toastify__toast--info .Toastify__toast-body::before {
+  content: "ℹ️ ";
+  margin-right: 0.5rem;
+}
+
+/* Warning Toast Enhancements */
+.Toastify__toast--warning .Toastify__toast-body::before {
+  content: "⚠️ ";
+  margin-right: 0.5rem;
 }
