@@ -110,13 +110,13 @@ const DoctorAssignmentDashboard = () => {
             <table className="styled-table">
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>MRN</th>
-                  <th>Assigned To</th>
-                  <th>Prescription File</th>
-                  <th>Assign Tests</th>
-                  <th>Counselor Type</th>
-                  <th>History</th> {/* NEW COLUMN */}
+                  <th scope="col">Name</th>
+                  <th scope="col">MRN</th>
+                  <th scope="col">Assigned To</th>
+                  <th scope="col">Prescription File</th>
+                  <th scope="col">Assign Tests</th>
+                  <th scope="col">Counselor Type</th>
+                  <th scope="col">History</th>
                 </tr>
               </thead>
               <tbody>
@@ -188,7 +188,7 @@ const DoctorAssignmentDashboard = () => {
                         )}
                       </td>
                       <td data-label="History" style={{ textAlign: "center" }}>
-                        <center>
+                        <div style={{ textAlign: "center" }}>
                           <button
                             className="btn btn-primary"
                             onClick={() => handleViewHistory(patient.id)}
@@ -197,7 +197,7 @@ const DoctorAssignmentDashboard = () => {
                           >
                             <FileText size={18} />
                           </button>
-                        </center>
+                        </div>
                       </td>
                     </tr>
                   );
